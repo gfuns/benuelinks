@@ -1,0 +1,133 @@
+
+.front-preview-container {
+    /* width: 50%; */
+    margin: 0 auto;
+    border: 1px dashed #b1becc;
+    background: #e0e8f3;
+    border-radius: 4px;
+    padding: 25px 0 20px;
+    text-align: center;
+
+}
+
+.front-preview-container img {
+    /* width: 100%; */
+    display: none;
+    margin-bottom: 30px;
+    max-height: 100px;
+}
+
+.front-preview-container input {
+    display: none;
+}
+
+.front-preview-container label {
+    display: block;
+    width: 35%;
+    height: 35px;
+    margin-left: 30%;
+    text-align: center;
+    background: #21a184;
+    border-color: #21a184;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+.back-preview-container {
+    /* width: 50%; */
+    margin: 0 auto;
+    border: 1px dashed #b1becc;
+    background: #e0e8f3;
+    border-radius: 4px;
+    padding: 25px 0 20px;
+    text-align: center;
+
+}
+
+.back-preview-container img {
+    /* width: 100%; */
+    display: none;
+    margin-bottom: 30px;
+    max-height: 100px;
+}
+
+.back-preview-container input {
+    display: none;
+}
+
+.back-preview-container label {
+    display: block;
+    width: 35%;
+    height: 35px;
+    margin-left: 30%;
+    text-align: center;
+    background: #21a184;
+    border-color: #21a184;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+.selfie-preview-container {
+    /* width: 50%; */
+    margin: 0 auto;
+    border: 1px dashed #b1becc;
+    background: #e0e8f3;
+    border-radius: 4px;
+    padding: 25px 0 20px;
+    text-align: center;
+
+}
+
+.selfie-preview-container img {
+    /* width: 100%; */
+    display: none;
+    margin-bottom: 30px;
+    max-height: 100px;
+}
+
+.selfie-preview-container input {
+    display: none;
+}
+
+.selfie-preview-container label {
+    display: block;
+    width: 35%;
+    height: 35px;
+    margin-left: 30%;
+    text-align: center;
+    background: #21a184;
+    border-color: #21a184;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.preview{
+    display:flex;
+    justify-content:center;
+}
