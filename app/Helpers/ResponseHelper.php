@@ -18,11 +18,11 @@ class ResponseHelper
         ]]);
     }
 
-    public static function success($data)
+    public static function trfSuccess($data)
     {
         return new JsonResponse(['response' => [
             'statusCode' => (int) 200,
-            'status'     => "Successful",
+            'status'     => "Transfer Successful",
             'data'       => $data,
         ]]);
     }
@@ -30,18 +30,18 @@ class ResponseHelper
     public static function successOk($message)
     {
         return new JsonResponse(['response' => [
+            'message'    => $message,
             'statusCode' => (int) 200,
             'status'     => "Successful",
-            'message'    => $message,
         ]]);
     }
 
     public static function error($message, $code = 400)
     {
         return new JsonResponse(['response' => [
+            'message'    => $message,
             'statusCode' => (int) $code,
             'status'     => "Failed",
-            'message'    => $message,
         ]], (int) $code);
     }
 
@@ -57,9 +57,9 @@ class ResponseHelper
     public static function timeout($message, $code = 408)
     {
         return new JsonResponse(['response' => [
+            'message'    => $message,
             'statusCode' => (int) $code,
             'status'     => "Request Timeout",
-            'message'    => $message,
         ]], (int) $code);
     }
 }

@@ -226,7 +226,7 @@ class HomeController extends Controller
                     $trx->narration      = $request->narration;
                     $trx->remark         = "Funds Transferred to beneficiary";
                     $trx->trx_type       = "single";
-                    $trx->status         = "successful";
+                    $trx->status         = "payment successful";
                     $trx->user_id        = Auth::user()->id;
                     $trx->save();
 

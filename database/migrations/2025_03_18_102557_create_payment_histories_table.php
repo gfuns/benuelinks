@@ -27,6 +27,7 @@ return new class extends Migration
             $table->integer("uploaded")->default(0);
             $table->string("remark")->nullable();
             $table->integer("user_id")->unsigned();
+            $table->enum("channel", ["web", "api"])->default("web");
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

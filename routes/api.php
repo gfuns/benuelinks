@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\TransferController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +23,7 @@ Route::group([
     'middleware' => ['api', 'validatekey'],
     'prefix'     => 'v1',
 ], function ($router) {
-    Route::post('/transfer/single', [FaddedSocialsController::class, 'singleTransfer']);
+    Route::post('/transfer/single', [TransferController::class, 'processSingleTransfer']);
 
-    Route::post('/transfer/bulk', [FaddedSocialsController::class, 'bulkTransfer']);
+    Route::post('/transfer/bulk', [TransferController::class, 'bulkTransfer']);
 });

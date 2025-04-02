@@ -1,9 +1,15 @@
 <?php
 namespace App\Http\Controllers\API;
 
+use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Bank;
+use App\Models\PaymentHistory;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Ramsey\Uuid\Uuid;
 
 class TransferController extends Controller
 {
@@ -19,25 +25,30 @@ class TransferController extends Controller
      *
      * @return void
      */
-    public function validateBankAccount(Request $request)
+    public function validateBankAccount($bankCode, $accountNo)
     {
+        try {
 
-        $response = Http::accept('application/json')->withHeaders([
-            'Authorization' => "Bearer " . env('PAYSTACK_SECRET_KEY'),
-        ])->get("https://api.paystack.co/bank/resolve", ["account_number" => $request->accountnumber, "bank_code" => $request->bank]);
+            $response = Http::accept('application/json')->withHeaders([
+                'Authorization' => "Bearer " . env('PAYSTACK_SECRET_KEY'),
+            ])->get("https://api.paystack.co/bank/resolve", ["account_number" => $accountNo, "bank_code" => $bankCode]);
 
-        $accountInfo = $response->json();
+            $accountInfo = $response->json();
 
-        if ($accountInfo["status"] === true) {
-            $bankInfo = $response->collect("data");
-            if (isset($bankInfo["account_name"])) {
-                return response()->json(['account_name' => $bankInfo["account_name"]], 200);
+            if ($accountInfo["status"] === true) {
+                $bankInfo = $response->collect("data");
+                if (isset($bankInfo["account_name"])) {
+                    return true;
+                } else {
+                    return false;
+                }
+
             } else {
-                return response()->json(['message' => "AGUNTA Account Number Validation Failed"], 400);
+                return false;
             }
-
-        } else {
-            return response()->json(['message' => "Samuel Account Number Validation Failed"], 400);
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return false;
         }
     }
 
@@ -50,7 +61,7 @@ class TransferController extends Controller
      */
     public function processSingleTransfer(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = $this->validate($request, [
             'bank_code'      => 'required',
             'account_number' => 'required',
             'account_name'   => 'required',
@@ -58,16 +69,15 @@ class TransferController extends Controller
             'narration'      => 'required',
         ]);
 
-        if ($validator->fails()) {
-            $errors = $validator->errors()->all();
-            $errors = implode("<br>", $errors);
-            toast($errors, 'error');
-            return back();
-        }
-
         $bank = Bank::where("bank_code", $request->bank_code)->first();
         if (! isset($bank)) {
-            return back()->with(["error" => "Something went wrong: Bank does not exist"]);
+            return ResponseHelper::error('Bank with provided bank code does not exist', 400);
+        }
+
+        $validated = $this->validateBankAccount($request->bank_code, $request->account_number);
+
+        if ($validated !== true) {
+            return ResponseHelper::error('Account details validation failed.', 400);
         }
 
         try {
@@ -79,7 +89,7 @@ class TransferController extends Controller
                 "type"           => "nuban",
                 "name"           => $request->account_name,
                 "account_number" => $request->account_number,
-                "bank_code"      => $request->bank,
+                "bank_code"      => $request->bank_code,
                 "currency"       => "NGN",
             ]);
 
@@ -118,27 +128,33 @@ class TransferController extends Controller
                     $trx->narration      = $request->narration;
                     $trx->remark         = "Funds Transferred to beneficiary";
                     $trx->trx_type       = "single";
-                    $trx->status         = "successful";
-                    $trx->user_id        = Auth::user()->id;
+                    $trx->status         = "payment successful";
+                    $trx->user_id        = 1;
+                    $trx->channel        = "api";
                     $trx->save();
 
                     DB::commit();
 
-                    toast('Transfer Successful.', 'success');
-                    return back();
+                    $data = [
+                        "bank"          => $bank->bank_name,
+                        "bankCode"      => $bank->bank_code,
+                        "accountNumber" => $request->account_number,
+                        "accountName"   => $request->account_name,
+                        "amount"        => (double) $request->amount,
+                        "narration"     => $request->narration,
+                    ];
+
+                    return ResponseHelper::trfSuccess($data);
                 } else {
-                    toast($transferRes["message"], 'error');
-                    return redirect()->back();
+                    return ResponseHelper::error($transferRes["message"], 400);
                 }
             } else {
-                toast($result["message"], 'error');
-                return redirect()->back();
+                return ResponseHelper::error($result["message"], 400);
             }
         } catch (\Exception $e) {
+            \Log::error($e);
             DB::rollback();
-            \Log::info($e->getMessage());
-            toast($e->getMessage(), 'error');
-            return redirect()->back();
+            return ResponseHelper::error($e->getMessage(), 400);
         }
 
     }
