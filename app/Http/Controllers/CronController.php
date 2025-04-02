@@ -112,6 +112,7 @@ class CronController extends Controller
 
                 if ($responseData["status"] === true) {
                     $transferData = $response->collect("data");
+                    dd($transferData);
                 } else {
                     foreach ($beneficiaries as $ben) {
                         $bene         = PaymentHistory::where("reference", $ben["reference"])->first();

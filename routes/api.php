@@ -17,3 +17,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group([
+    'middleware' => ['api', 'validatekey'],
+    'prefix'     => 'v1',
+], function ($router) {
+    Route::post('/transfer/single', [FaddedSocialsController::class, 'singleTransfer']);
+
+    Route::post('/transfer/bulk', [FaddedSocialsController::class, 'bulkTransfer']);
+});
