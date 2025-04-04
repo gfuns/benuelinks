@@ -25,5 +25,5 @@ Route::group([
 ], function ($router) {
     Route::post('/transfer/single', [TransferController::class, 'processSingleTransfer']);
 
-    Route::post('/transfer/bulk', [TransferController::class, 'bulkTransfer']);
+    Route::post('/transfer/bulk', [TransferController::class, 'processBulkTransfer']);
 });

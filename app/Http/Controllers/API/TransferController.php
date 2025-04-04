@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
+use App\Models\PaymentFiles;
 use App\Models\PaymentHistory;
 use Auth;
 use Illuminate\Http\Request;
@@ -157,5 +158,68 @@ class TransferController extends Controller
             return ResponseHelper::error($e->getMessage(), 400);
         }
 
+    }
+
+    /**
+     * processBulkTransfer
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function processBulkTransfer(Request $request)
+    {
+        $validated = $request->validate([
+            'file_name'                      => 'required|string|unique:payment_files',
+            'memo'                           => 'required|string',
+            'beneficiaries'                  => 'required|array|min:1',
+            'beneficiaries.*.account_name'   => 'required|string',
+            'beneficiaries.*.account_number' => 'required|string',
+            'beneficiaries.*.bank_code'      => 'required|string',
+            'beneficiaries.*.amount'         => 'required|numeric|min:1',
+        ], [
+            'beneficiaries.required'                  => 'There are no beneficiaries provided.',
+            'beneficiaries.*.account_name.required'   => 'Each beneficiary must have an account name.',
+            'beneficiaries.*.account_number.required' => 'Each beneficiary must have an account number.',
+            'beneficiaries.*.bank_code.required'      => 'Each beneficiary must have a bank code.',
+            'beneficiaries.*.amount.required'         => 'Each beneficiary must have an amount.',
+            'beneficiaries.*.amount.numeric'          => 'The amount must be a valid number.',
+            'beneficiaries.*.amount.min'              => 'The amount must be at least 1.',
+        ]);
+
+        try {
+
+            $paymentFile            = new PaymentFiles;
+            $paymentFile->file_name = $request->file_name;
+            $paymentFile->memo      = $request->memo;
+            $paymentFile->user_id   = 1;
+            $paymentFile->channel   = "api";
+            $paymentFile->save();
+
+            // Store each beneficiary in the database
+            foreach ($validated['beneficiaries'] as $beneficiary) {
+
+                $bank = Bank::where("bank_code", $beneficiary['bank_code'])->first();
+
+                $payment                 = new PaymentHistory;
+                $payment->file_id        = $paymentFile->id;
+                $payment->account_name   = $beneficiary['account_name'];
+                $payment->account_number = $beneficiary['account_number'];
+                $payment->bank_name      = $bank->bank_name;
+                $payment->bank_code      = $beneficiary['bank_code'];
+                $payment->amount         = $beneficiary['amount'];
+                $payment->status         = "validating account details";
+                $payment->narration      = $paymentFile->memo;
+                $payment->user_id        = 1;
+                $payment->channel        = "api";
+                $payment->trx_type       = "bulk";
+                $payment->save();
+            }
+
+            return ResponseHelper::bulkTrfSuccess();
+
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 400);
+        }
     }
 }

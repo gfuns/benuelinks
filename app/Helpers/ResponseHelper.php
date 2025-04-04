@@ -27,6 +27,14 @@ class ResponseHelper
         ]]);
     }
 
+    public static function bulkTrfSuccess()
+    {
+        return new JsonResponse(['response' => [
+            'statusCode' => (int) 200,
+            'status'     => "Transfer Request Received",
+        ]]);
+    }
+
     public static function successOk($message)
     {
         return new JsonResponse(['response' => [

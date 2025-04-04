@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string("memo");
             $table->enum("status", ["validating account details", "processing payment", "payment data uploaded to gateway"]);
             $table->integer("user_id")->unsigned();
+            $table->enum("channel", ["web", "api"])->default("web");
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
