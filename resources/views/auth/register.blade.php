@@ -3,126 +3,184 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="apps" content="{{ env('APP_NAME') }}">
-    <meta name="author" content="{{ env('APP_NAME') }} - No. 1 P2P Platform">
+    <meta name="apps" content="Xtratech Global Solution">
+    <meta name="author" content="Xtratech Global Solution">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}?version={{ date('his') }}">
-    <title>Sign Up | {{ env('APP_NAME') }}</title>
-    <link rel="stylesheet" href="{{ asset('auth/css/vendor.bundle.css') }}?ver={{ date('his') }}">
-    <link rel="stylesheet" href="{{ asset('auth/css/style-green.css') }}?ver={{ date('his') }}">
+    <link rel="shortcut icon" href="images/favicon.png">
+    <title>Sign Up | TransLite</title>
+    <link rel="stylesheet" href="assets/css/vendor.bundle.css?ver=20241116180">
+    <link rel="stylesheet" href="assets/css/register.css?ver=20241116180">
+
+    <style>
+        .customPageContent {
+            background: #fff;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            margin: 50px 200px 20px 200px;
+            padding: 20px;
+            width: 500px;
+        }
+
+        .page-ath-form,
+        .page-ath-header,
+        .page-ath-footer,
+        .page-ath-text {
+            margin-left: 5px;
+            margin-right: 5px;
+            padding: 0 10px
+        }
+
+        @media (max-width: 575px) {
+            .customPageContent {
+                background: #fff;
+                border: none;
+                border-radius: 0px;
+                margin: 30px 0px 0px 0px;
+                padding: 0px
+            }
+
+            .page-ath-form,
+            .page-ath-header,
+            .page-ath-footer,
+            .page-ath-text {
+                margin-left: auto;
+                margin-right: auto;
+                padding: 0 30px
+            }
+        }
+    </style>
+
 </head>
 
-<body class="page-ath theme-modern page-ath-modern page-ath-alt">
+<body class="page-ath theme-modern page-ath-modern">
 
-    <div class="page-ath-wrap">
-        <div class="page-ath-content">
+    <div class="page-ath-wrap flex-row-reverse">
+        <div class="page-ath-content customPageContent">
+            <div class="page-ath-header">
+                <a href="/" class="page-ath-logo">
+                    <img class="page-ath-logo-img" src="images/logo.png" alt="TransLite Logo">
+                </a>
+            </div>
 
-            <center>
-                <div class="page-ath-header"><a href="/" class="page-ath-logo"
-                        style="font-weight:bold; font-size: 30px"><img class="page-ath-logo-img"
-                            src="{{ asset('auth/images/logo.png') }}" alt="Logo" style="height: 50px"></a></div>
-            </center>
 
 
-            <div class="page-ath-form" style="width: 600px">
+            <div class="page-ath-form">
+                <h2 class=""><small><strong>Sign Up For Your PMT Account!</strong></small></h2>
 
-                <h2 class="page-ath-heading">
-                    <center>Sign Up <small>Create Your {{ env('APP_NAME') }} Account
-                        </small></center>
-                </h2>
+                {{-- @if ($errors->has('regError'))
+                    <div class="alert alert-dismissible fade show alert-danger"><a href="javascript:void(0)"
+                            class="close" data-dismiss="alert" aria-label="close" style="color:white">&nbsp;</a>
+                        {{ $errors->first('regError') }}
+                    </div>
+                @endif --}}
 
                 @if ($errors->any())
-
-                    <div class="alert alert-danger" class="close" data-dismiss="alert" aria-label="close">
-                        <ul>
+                    <div class="alert alert-dismissible fade show alert-danger"><a href="javascript:void(0)"
+                            class="close" data-dismiss="alert" aria-label="close" style="color:white">&nbsp;</a>
+                        <ul class="mb-0">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
-
                 @endif
 
                 <form class="register-form validate validate-modern" method="POST" action="{{ route('register') }}"
                     id="register">
                     @csrf
-
-                    <input type="hidden" name="referral_code" value="" />
-
-                    <div class="input-item">
-                        <input type="text" placeholder="Your First Name" class="input-bordered" name="first_name"
-                            value="{{ old('first_name') }}" minlength="3" data-msg-required="Required."
-                            data-msg-minlength="At least 3 chars." required>
+                    <div style="display: flex; gap: 20px; ">
+                        <div class="input-item" style="width:100%">
+                            {{-- <label style="font-size:12px; font-weight:bold">First Name <span style="color:red">*</span></label> --}}
+                            <input type="text" placeholder="Your Last Name" class="input-bordered" name="last_name"
+                                value="{{ old('last_name') }}" data-msg-required="Required." required>
+                        </div>
+                        <div class="input-item" style="width:100%">
+                            {{-- <label style="font-size:12px; font-weight:bold">Last Name <span style="color:red">*</span></label> --}}
+                            <input type="text" placeholder="Your First Name" class="input-bordered" name="first_name"
+                                value="{{ old('first_name') }}" data-msg-required="Required." required>
+                        </div>
                     </div>
                     <div class="input-item">
-                        <input type="text" placeholder="Your Last Name" class="input-bordered" name="last_name"
-                            value="{{ old('last_name') }}" minlength="3" data-msg-required="Required."
-                            data-msg-minlength="At least 3 chars." required>
-                    </div>
-                    <div class="input-item">
-                        <input type="email" placeholder="Your Email" class="input-bordered" name="email"
+                        {{-- <label style="font-size:12px; font-weight:bold">Email Address <span style="color:red">*</span></label> --}}
+                        <input type="email" placeholder="Your Email Address" class="input-bordered" name="email"
                             value="{{ old('email') }}" data-msg-required="Required."
                             data-msg-email="Enter valid email." required>
                     </div>
+
                     <div class="input-item">
+                        {{-- <label style="font-size:12px; font-weight:bold">Phone Number <span style="color:red">*</span></label> --}}
+                        <input type="text" placeholder="Your Phone Number" class="input-bordered" name="phone_number"
+                            value="{{ old('phone_number') }}" data-msg-required="Required."
+                            data-msg-email="Enter valid phone number." required>
+                    </div>
+
+                    <div class="input-item">
+                        {{-- <label style="font-size:12px; font-weight:bold">Password <span style="color:red">*</span></label> --}}
                         <input type="password" placeholder="Password" class="input-bordered" name="password"
                             id="password" minlength="6" data-msg-required="Required."
                             data-msg-minlength="At least 6 chars." required>
                     </div>
+
                     <div class="input-item">
-                        <input type="password" placeholder="Repeat Password" class="input-bordered"
-                            name="password_confirmation" data-rule-equalTo="#password" minlength="6"
-                            data-msg-required="Required." data-msg-equalTo="Enter the same value."
+                        {{-- <label style="font-size:12px; font-weight:bold">Password <span style="color:red">*</span></label> --}}
+                        <input type="password" placeholder="Confirm Password" class="input-bordered"
+                            name="password_confirmation" id="password" minlength="6" data-msg-required="Required."
                             data-msg-minlength="At least 6 chars." required>
                     </div>
 
-                    <div class="input-item text-left">
-                        <input name="terms" class="input-checkbox input-checkbox-md" id="agree" type="checkbox"
-                            required="required" data-msg-required="You should accept our terms and policy.">
-                        <label for="agree">I agree to the <a target="_blank"
-                                href="#">Terms and
-                                Condition</a> and
-                            <a target="_blank" href="#">Privacy and
-                                Policy</a>.</label>
+                    <div class="input-item">
+                        {{-- <label style="font-size:12px; font-weight:bold">How did you hear about us?</label> --}}
+                        <select name="referral_channel" class="select select-block select-bordered">
+                            <option value="">How did you hear about us?</option>
+                            <option value="Twitter" @if (old('referral_channel') == 'Twitter')
+                                selected @endif>Twitter</option>
+                            <option value="Facebook" @if (old('referral_channel') == 'Facebook')
+                                selected @endif>Facebook</option>
+                            <option value="Instagram" @if (old('referral_channel') == 'Instagram') selected @endif>Instagram</option>
+                            <option value="Newspaper" @if (old('referral_channel') == 'Newspaper') selected @endif>Newspaper</option>
+                            <option value="TV" @if (old('referral_channel') == 'TV')
+                                selected @endif>TV</option>
+                            <option value="Bill Board" @if (old('referral_channel') == 'Bill Board') selected @endif>Bill Board</option>
+                            <option value="Referral" @if (old('referral_channel') == 'Referral')
+                                selected @endif>Referral</option>
+                            <option value="Others" @if (old('referral_channel') == 'Others')
+                                selected @endif>Others</option>
+                        </select>
                     </div>
 
-                    {{-- <div class="g-recaptcha" data-sitekey="{{ env('GOOGLE_RECAPTCHA_KEY') }}"></div> --}}
-                    @if ($errors->has('token'))
-                        <span class="text-danger">{{ $errors->first('token') }}</span>
-                    @endif
-                    <button class="btn btn-primary btn-block">Create Account</button>
+                    <input type="hidden" name="invitation_code" value="">
+                    <div class="input-item text-left">
+                        <input name="terms" class="input-checkbox input-checkbox-md" id="agree"
+                            type="checkbox" required="required"
+                            data-msg-required="You should accept our terms and policy." {{ old('terms') ? 'checked' : '' }}>
+                        <label for="agree">I agree to the <a target="_blank" href="#">Terms</a>
+                            and <a target="_blank" href="#">Privacy
+                                Policy</a>.</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
                 </form>
 
 
                 <div class="gaps-4x"></div>
                 <div class="form-note">
-                    Already have an account ? <a href="/login"> <strong>Sign in
-                            instead</strong></a>
+                    Already have an account ? <a href="/login"> <strong>Sign In Instead</strong></a>
                 </div>
+                <div class="mb-2">&nbsp;</div>
             </div>
 
+        </div>
+        <div class="page-ath-gfx"
+            style="background-image: url(images/ath-gfx.png); no-repeat; background-size:cover; ">
+            <div class="w-100 d-flex justify-content-center">
+                <div class="col-md-8 col-xl-5">
 
-            <div class="page-ath-footer">
-                <ul class="socials mb-3">
-                    <li><a href="#" title="Facebook"><em class="fab fa-facebook-f"></em></a></li>
-                    <li><a href="#" title="Twitter"><em class="fab fa-twitter"></em></a></li>
-                    <li><a href="#" title="Telegram"><em class="fab fa-telegram"></em></a></li>
-                    <li><a href="#" title="Instagram"><em class="fab fa-instagram"></em></a></li>
-                    <li><a href="#" title="LinkedIn"><em class="fab fa-linkedin"></em></a></li>
-                </ul>
-                <ul class="footer-links guttar-20px align-items-center">
-                    <li><a href="#">Privacy and Policy</a></li>
-                    <li><a href="#">Terms and Condition</a></li>
-                </ul>
-                <div class="copyright-text">&copy; {{ date('Y') }} {{ env('APP_NAME') }}. All Right Reserved.
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="{{ asset('auth/js/jquery.bundle.js') }}?ver={{ date('his') }}"></script>
-    <script src="{{ asset('auth/js/script.js') }}?ver={{ date('his') }}"></script>
-
+    <script src="assets/js/jquery.bundle.js?ver=20241116180"></script>
+    <script src="assets/js/script.js?ver=20241116180"></script>
     <script type="text/javascript">
         jQuery(function() {
             var $frv = jQuery('.validate');
@@ -132,11 +190,7 @@
                 });
             }
         });
-
-
-
     </script>
-
 
 </body>
 

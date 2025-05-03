@@ -12,16 +12,19 @@ class User extends Authenticatable implements Auditable
 {
     use HasApiTokens, HasFactory, Notifiable;
     use \OwenIt\Auditing\Auditable;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'last_name',
+        'other_names',
         'email',
+        'phone_number',
         'password',
+        'referral_channel',
+        'role_id',
     ];
 
     /**

@@ -15,8 +15,8 @@ class AdminSeeder extends Seeder
     {
         $data = [
             [
-                'first_name'        => 'Gabriel',
                 'last_name'         => 'Nwankwo',
+                'other_names'       => 'Gabriel',
                 'email'             => 'gfunzy@gmail.com',
                 'phone_number'      => '07037382623',
                 'email_verified_at' => date('Y-m-d H:i:s'),

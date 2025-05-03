@@ -40,6 +40,13 @@ class HomeController extends Controller
      */
     public function dashboard()
     {
+        if (Auth::user()->role_id == 1) {
+            return redirect()->route("superadmin.dashboard");
+        } else if (Auth::user()->role_id == 2) {
+            return redirect()->route("passenger.dashboard");
+        } else {
+            return redirect()->route("admin.dashboard");
+        }
         return view("dashboard");
     }
 

@@ -3,102 +3,138 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="apps" content="{{ env('APP_NAME') }}">
-    <meta name="author" content="{{ env('APP_NAME') }} - No. 1 P2P Platform">
+    <meta name="apps" content="Xtratech Global Solution">
+    <meta name="author" content="Xtratech Global Solution">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}?version={{ date('his') }}">
-    <title>Sign-In | {{ env('APP_NAME') }}</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/vendor.bundle.css') }}?ver={{ date('his') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style-green.css') }}?ver={{ date('his') }}">
+    <link rel="shortcut icon" href="images/favicon.png">
+    <title>Sign Up | TransLite</title>
+    <link rel="stylesheet" href="assets/css/vendor.bundle.css?ver=20241116180">
+    <link rel="stylesheet" href="assets/css/register.css?ver=20241116180">
 
-    <style type="text/css">
-
-        /* Footer styling */
-        .footer {
-            text-align: center;
-            color: #000;
-            font-size: 1rem;
-            margin-top: 20px;
-            padding: 10px 0;
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
-            z-index: 2;
+    <style>
+        .guest-prompt {
+            background: #F6F7F9;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
         }
 
-        .gfuns {
-            font-weight: bold;
-            color: black;
+        .guest-btn {
+            background-color: #fd7e14;
+            color: white;
+            border-radius: 30px;
+            /* font-size: 12px; */
         }
 
-        .page-ath-form {
-            padding: 35px 40px;
+        .guest-btn:hover {
+            background-color: #FF7302;
+            color: white;
         }
 
-        .jiggy {
-            min-width: 410px;
+
+
+        .customPageContent {
+            background: #fff;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            margin: 50px 200px 20px 200px;
+            padding: 20px;
+            width: 500px;
+        }
+
+        .page-ath-form,
+        .page-ath-header,
+        .page-ath-footer,
+        .page-ath-text {
+            margin-left: 5px;
+            margin-right: 5px;
+            padding: 0 10px
         }
 
         @media (max-width: 575px) {
-            .page-ath-form {
-                padding: 25px 30px !important;
+            .customPageContent {
+                background: #fff;
+                border: none;
+                border-radius: 0px;
+                margin: 30px 0px 0px 0px;
+                padding: 0px
             }
 
-            .jiggy {
-                min-width: 300px;
+            .page-ath-form,
+            .page-ath-header,
+            .page-ath-footer,
+            .page-ath-text {
+                margin-left: auto;
+                margin-right: auto;
+                padding: 0 30px
             }
         }
     </style>
+
 </head>
 
-<body class="page-ath theme-modern page-ath-modern page-ath-alt">
+<body class="page-ath theme-modern page-ath-modern">
 
-    <div class="page-ath-wrap">
-        <div class="page-ath-content">
+    <div class="page-ath-wrap flex-row-reverse">
+        <div class="page-ath-content customPageContent">
+            <div class="page-ath-header">
+                <a href="/" class="page-ath-logo">
+                    <img class="page-ath-logo-img" src="images/logo.png" alt="TransLite Logo">
+                </a>
+            </div>
 
-            <center>
-                <div class="page-ath-header"><a href="/" class="page-ath-logo"
-                        style="font-weight:bold; font-size: 30px"><img class="page-ath-logo-img"
-                            src="{{ asset('assets/logo.png') }}" alt="Logo" style="height: 50px">
-                    </a></div>
-            </center>
+
 
             <div class="page-ath-form">
-                <h2 class="page-ath-heading">
-                    <center>Sign In
-                        <small class="jiggy">Access Your {{ env('APP_NAME') }} Account</small>
-                    </center>
-                </h2>
-                <form class="login-form validate validate-modern" action="{{ route('login') }}" method="POST">
+                <h2 class=""><small><strong>Sign Into Your PMT Account!</strong></small></h2>
+
+
+                {{-- @if ($errors->has('regError'))
+                <div class="alert alert-dismissible fade show alert-danger"><a href="javascript:void(0)" class="close"
+                        data-dismiss="alert" aria-label="close" style="color:white">&nbsp;</a>
+                    {{ $errors->first('regError') }}
+                </div>
+            @endif --}}
+
+                @if ($errors->any())
+                    <div class="alert alert-dismissible fade show alert-danger"><a href="javascript:void(0)"
+                            class="close" data-dismiss="alert" aria-label="close" style="color:white">&nbsp;</a>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form class="login-form validate validate-modern" method="POST" action="{{ route('login') }}"
+                    id="register">
                     @csrf
-                    @if (Session::has('suspended'))
-                        <div class="alert alert-dismissible fade show alert-danger" role="alert">
-                            <a href="javascript:void(0)" class="close" data-dismiss="alert"
-                                aria-label="close">&nbsp;</a>
-                            Your account may be inactive or suspended. Please contact us if something is wrong.
+
+                    <div class="mb-4 guest-prompt">
+                        <div class="row">
+                            <div class="col-9" class="text-muted"> Don't want to create an account now? No worries, you
+                                can ontinue as a guest</div>
+                            <div class="col-3"> <img src="images/onboarding.png" /></div>
                         </div>
-                    @endif
+                        <a href="#" class="btn btn-sm rounded-pill px-4 guest-btn">Continue as Guest</a>
 
-                    @if ($errors->any())
-                        <div class="alert alert-dismissible fade show alert-danger"><a href="javascript:void(0)"
-                                class="close" data-dismiss="alert" aria-label="close">&nbsp;</a> These credentials do
-                            not match our records.</div>
-                    @endif
+                    </div>
 
-                    @if (Session::has('success'))
-                        <div class="alert alert-dismissible fade show alert-success"><a href="javascript:void(0)"
-                                class="close" data-dismiss="alert" aria-label="close">&nbsp;</a>Password Changed
-                            Successfully. <br />You can now sign in with your new password</div>
-                    @endif
+                    <div class="mb-4 text-center">
+                        ----------------------------------- OR ----------------------------------------
+                    </div>
 
                     <div class="input-item">
-                        <input type="email" placeholder="Your Email" data-msg-required="Required."
-                            class="input-bordered" name="email" value="" required autofocus>
+                        <input type="email" placeholder="Your Email" class="input-bordered" name="email"
+                            value="{{ old('email') }}" data-msg-required="Required." data-msg-email="Enter valid email." required>
                     </div>
                     <div class="input-item">
-                        <input type="password" placeholder="Password" minlength="6" data-msg-required="Required."
-                            data-msg-minlength="At least 6 chars." class="input-bordered" name="password" required>
+                        <input type="password" placeholder="Password" class="input-bordered" name="password"
+                            id="password" minlength="6" data-msg-required="Required."
+                            data-msg-minlength="At least 6 chars." required>
                     </div>
+
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="input-item text-left">
                             <input class="input-checkbox input-checkbox-md" type="checkbox" name="remember"
@@ -110,39 +146,30 @@
                             <div class="gaps-2x"></div>
                         </div>
                     </div>
+
                     <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                 </form>
 
+
                 <div class="gaps-4x"></div>
                 <div class="form-note">
-                    Don’t have an account? <a href="#"> <strong>Sign up
-                            here</strong></a>
+                    Don't have an account ? <a href="/register"> <strong>Sign Up Now</strong></a>
                 </div>
+                <div class="mb-2">&nbsp;</div>
             </div>
 
+        </div>
+        <div class="page-ath-gfx" style="background-image: url(images/ath-gfx.png); no-repeat; background-size:cover; ">
+            <div class="w-100 d-flex justify-content-center">
+                <div class="col-md-8 col-xl-5">
 
-            <div class="page-ath-footer">
-                <ul class="socials mb-3">
-                    <li><a href="" title="Facebook"><em class="fab fa-facebook-f"></em></a></li>
-                    <li><a href="" title="Twitter"><em class="fab fa-twitter"></em></a></li>
-                    <li><a href="" title="Telegram"><em class="fab fa-telegram"></em></a></li>
-                    <li><a href="" title="Instagram"><em class="fab fa-instagram"></em></a></li>
-                    <li><a href="" title="LinkedIn"><em class="fab fa-linkedin"></em></a>
-                    </li>
-                </ul>
-                <ul class="footer-links guttar-20px align-items-center">
-                    <li><a href="#" class="">Privacy and Policy</a></li>
-                    <li><a href="#" class="">Terms and Condition</a></li>
-                </ul>
-                <div class="copyright-text gfuns">&copy; {{ date('Y') }} {{ env('APP_NAME') }}. All Right
-                    Reserved.
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="{{ asset('assets/js/jquery.bundle.js') }}?ver={{ date('his') }}"></script>
-    <script src="{{ asset('assets/js/script.js') }}?ver={{ date('his') }}"></script>
+    <script src="assets/js/jquery.bundle.js?ver=20241116180"></script>
+    <script src="assets/js/script.js?ver=20241116180"></script>
     <script type="text/javascript">
         jQuery(function() {
             var $frv = jQuery('.validate');

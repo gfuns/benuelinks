@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CronController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,53 +20,59 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/cron/validateAccounts', [CronController::class, 'validateAccounts'])->name('validateAccounts');
-
-Route::get('/cron/initiateBulkTransfer', [CronController::class, 'initiateBulkTransfer'])->name('initiateBulkTransfer');
-
 Route::get('/home', [HomeController::class, 'dashboard'])->name('home');
 
 Route::group([
-    'prefix'     => 'portal',
-    'middleware' => ['g2fa'],
+    'prefix' => 'portal/superadmin',
 ], function ($router) {
 
-    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
 
     Route::get('/change-password', [HomeController::class, 'changePassword'])->name('changePassword');
 
     Route::post('/update-password', [HomeController::class, 'updatePassword'])->name('updatePassword');
 
-    Route::get('/profile', [HomeController::class, 'profile'])->name('profile');
+    Route::get('/platform-features', [AdminController::class, 'platformFeatures'])->name('super.platformFeatures');
 
-    Route::get('/single-transfer', [HomeController::class, 'singleTransfer'])->name('singleTransfer');
+    Route::get('/user-management', [AdminController::class, 'userManagement'])->name('super.usermgt');
 
-    Route::post('/processSingleTransfer', [HomeController::class, 'processSingleTransfer'])->name('processSingleTransfer');
+    Route::post('/storeUserPayrolRights', [AdminController::class, 'storeUserPayrolRights'])->name('super.storeUserPayrolRights');
 
-    Route::get('/single-transactions', [HomeController::class, 'singleTransactionHistory'])->name('singleTransactionHistory');
+    Route::post('/store-user', [AdminController::class, 'storeUser'])->name('super.storeUser');
 
-    Route::get('/bulk-transfer', [HomeController::class, 'bulkTransfer'])->name('bulkTransfer');
+    Route::post('/update-user', [AdminController::class, 'updateUser'])->name('super.updateUser');
 
-    Route::post('/processBulkTransfer', [HomeController::class, 'processBulkTransfer'])->name('processBulkTransfer');
+    Route::get('/suspend-user', [AdminController::class, 'suspendUser'])->name('super.suspendUser');
 
-    Route::get('/bulkTransferUploadReport/{trackingCode}', [HomeController::class, 'bulkTransferUploadReport'])->name('bulkTransferUploadReport');
+    Route::get('/activate-user', [AdminController::class, 'activateUser'])->name('super.activateUser');
 
-    Route::get('/bulk-transactions', [HomeController::class, 'bulkTransactionHistory'])->name('bulkTransactionHistory');
+    Route::get('/user-roles', [AdminController::class, 'userRoles'])->name('super.userRoles');
 
-    Route::get('/bulk-transactions/beneficiaries/{id}', [HomeController::class, 'bulkTransferBeneficiaries'])->name('bulkTransferBeneficiaries');
+    Route::post('/store-user-role', [AdminController::class, 'storeUserRole'])->name('super.storeUserRole');
 
-    Route::get('/transaction-history', [HomeController::class, 'transactionHistory'])->name('transactionHistory');
+    Route::post('/update-user-role', [AdminController::class, 'updateUserRole'])->name('super.updateUserRole');
 
-    Route::post('/validate-account', [HomeController::class, 'validateBankAccount'])->name('business.validateAccount');
+    Route::get('/user-permissions/{id}', [AdminController::class, 'managePermissions'])->name('super.managePermissions');
 
-    Route::get('/exportBankCodes', [HomeController::class, 'exportBankCodes'])->name('exportBankCodes');
+    Route::get('/grant-feature-permission/{role}/{feature}', [AdminController::class, 'grantFeaturePermission'])->name('super.grantFeaturePermission');
 
-    Route::post('/resolveBulkTransferImportIssue', [HomeController::class, 'resolveBulkTransferImportIssue'])->name('resolveBulkTransferImportIssue');
+    Route::get('/revoke-feature-permission/{role}/{feature}', [AdminController::class, 'revokeFeaturePermission'])->name('super.revokeFeaturePermission');
 
-    Route::get('/screenBulkTransferUpload/{trackingCode}', [HomeController::class, 'screenBulkTransferUpload'])->name('screenBulkTransferUpload');
+    Route::get('/grant-create-permission/{role}/{feature}', [AdminController::class, 'grantCreatePermission'])->name('super.grantCreatePermission');
 
-    Route::get('/finalizeBulkTransferUpload/{trackingCode}', [HomeController::class, 'finalizeBulkTransferUpload'])->name('finalizeBulkTransferUpload');
+    Route::get('/revoke-create-permission/{role}/{feature}', [AdminController::class, 'revokeCreatePermission'])->name('super.revokeCreatePermission');
+
+    Route::get('/grant-edit-permission/{role}/{feature}', [AdminController::class, 'grantEditPermission'])->name('super.grantEditPermission');
+
+    Route::get('/revoke-edit-permission/{role}/{feature}', [AdminController::class, 'revokeEditPermission'])->name('super.revokeEditPermission');
+
+    Route::get('/grant-delete-permission/{role}/{feature}', [AdminController::class, 'grantDeletePermission'])->name('super.grantDeletePermission');
+
+    Route::get('/revoke-delete-permission/{role}/{feature}', [AdminController::class, 'revokeDeletePermission'])->name('super.revokeDeletePermission');
+
+    Route::get('/clear-cache', [AdminController::class, 'clearCache'])->name('super.clearCache');
 
 });
 
 require __DIR__ . '/admin.php';
+require __DIR__ . '/passenger.php';
