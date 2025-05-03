@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,9 +29,9 @@ Route::group([
 
     Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
 
-    Route::get('/change-password', [HomeController::class, 'changePassword'])->name('changePassword');
+    Route::get('/change-password', [SuperAdminController::class, 'changePassword'])->name('superadmin.changePassword');
 
-    Route::post('/update-password', [HomeController::class, 'updatePassword'])->name('updatePassword');
+    Route::post('/update-password', [SuperAdminController::class, 'updatePassword'])->name('superadmin.updatePassword');
 
     Route::get('/platform-features', [AdminController::class, 'platformFeatures'])->name('super.platformFeatures');
 
