@@ -58,9 +58,6 @@ $('#state').select2({
 });
 
 
-$('#role').select2({
-    dropdownParent: $('#offcanvasRight')
-});
 
 $('#subject').select2({});
 $('#exam').select2({});
@@ -81,7 +78,7 @@ $(document).ready(function() {
    });
 
 
-$('#editRole').on('show.bs.offcanvas', function(event) {
+   $('#editRole').on('show.bs.offcanvas', function(event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var myid = button.data('myid') // Extract info from data-* attributes
     var role = button.data('role') // Extract info from data-* attributes

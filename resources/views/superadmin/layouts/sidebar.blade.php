@@ -48,13 +48,13 @@
                         <ul class="nav nav-collapse">
 
                             <li id="features">
-                                <a href="">
+                                <a href="{{ route('superadmin.platformFeatures') }}">
                                     <span class="sub-item">Platform Features</span>
                                 </a>
                             </li>
 
                             <li id="roles">
-                                <a href="">
+                                <a href="{{ route('superadmin.manageRoles') }}">
                                     <span class="sub-item">Roles & Permissions</span>
                                 </a>
                             </li>
@@ -71,8 +71,8 @@
                 </li>
 
 
-                <li id="admins" class="nav-item mb-3">
-                    <a href="">
+                <li id="terminals" class="nav-item mb-3">
+                    <a href="{{ route('superadmin.terminalManagement') }}">
                         <i class="far fa-building"></i>
                         <p>Terminal Management</p>
                     </a>

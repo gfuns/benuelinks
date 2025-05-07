@@ -10,6 +10,11 @@ class UserRole extends Model implements Auditable
     use HasFactory;
     use \OwenIt\Auditing\Auditable;
 
+    public function permissions()
+    {
+        return $this->hasMany('App\Models\UserPermission', 'role_id');
+    }
+
     public function totalPermissions()
     {
         $totalPermissions = UserPermission::where("role_id", $this->id)->count();

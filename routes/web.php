@@ -33,45 +33,45 @@ Route::group([
 
     Route::post('/update-password', [SuperAdminController::class, 'updatePassword'])->name('superadmin.updatePassword');
 
-    Route::get('/platform-features', [AdminController::class, 'platformFeatures'])->name('super.platformFeatures');
+    Route::get('/platform-features', [SuperAdminController::class, 'platformFeatures'])->name('superadmin.platformFeatures');
 
-    Route::get('/user-management', [AdminController::class, 'userManagement'])->name('super.usermgt');
+    Route::get('/user-management', [SuperAdminController::class, 'userManagement'])->name('superadmin.usermgt');
 
-    Route::post('/storeUserPayrolRights', [AdminController::class, 'storeUserPayrolRights'])->name('super.storeUserPayrolRights');
+    Route::post('/store-user', [SuperAdminController::class, 'storeUser'])->name('superadmin.storeUser');
 
-    Route::post('/store-user', [AdminController::class, 'storeUser'])->name('super.storeUser');
+    Route::post('/update-user', [SuperAdminController::class, 'updateUser'])->name('superadmin.updateUser');
 
-    Route::post('/update-user', [AdminController::class, 'updateUser'])->name('super.updateUser');
+    Route::get('/suspend-user', [SuperAdminController::class, 'suspendUser'])->name('superadmin.suspendUser');
 
-    Route::get('/suspend-user', [AdminController::class, 'suspendUser'])->name('super.suspendUser');
+    Route::get('/activate-user', [SuperAdminController::class, 'activateUser'])->name('superadmin.activateUser');
 
-    Route::get('/activate-user', [AdminController::class, 'activateUser'])->name('super.activateUser');
+    Route::get('/user-roles', [SuperAdminController::class, 'manageRoles'])->name('superadmin.manageRoles');
 
-    Route::get('/user-roles', [AdminController::class, 'userRoles'])->name('super.userRoles');
+    Route::post('/store-user-role', [SuperAdminController::class, 'storeUserRole'])->name('superadmin.storeUserRole');
 
-    Route::post('/store-user-role', [AdminController::class, 'storeUserRole'])->name('super.storeUserRole');
+    Route::post('/update-user-role', [SuperAdminController::class, 'updateUserRole'])->name('superadmin.updateUserRole');
 
-    Route::post('/update-user-role', [AdminController::class, 'updateUserRole'])->name('super.updateUserRole');
+    Route::get('/user-permissions/{id}', [SuperAdminController::class, 'managePermissions'])->name('superadmin.managePermissions');
 
-    Route::get('/user-permissions/{id}', [AdminController::class, 'managePermissions'])->name('super.managePermissions');
+    Route::get('/grant-feature-permission/{role}/{feature}', [SuperAdminController::class, 'grantFeaturePermission'])->name('superadmin.grantFeaturePermission');
 
-    Route::get('/grant-feature-permission/{role}/{feature}', [AdminController::class, 'grantFeaturePermission'])->name('super.grantFeaturePermission');
+    Route::get('/revoke-feature-permission/{role}/{feature}', [SuperAdminController::class, 'revokeFeaturePermission'])->name('superadmin.revokeFeaturePermission');
 
-    Route::get('/revoke-feature-permission/{role}/{feature}', [AdminController::class, 'revokeFeaturePermission'])->name('super.revokeFeaturePermission');
+    Route::get('/grant-create-permission/{role}/{feature}', [SuperAdminController::class, 'grantCreatePermission'])->name('superadmin.grantCreatePermission');
 
-    Route::get('/grant-create-permission/{role}/{feature}', [AdminController::class, 'grantCreatePermission'])->name('super.grantCreatePermission');
+    Route::get('/revoke-create-permission/{role}/{feature}', [SuperAdminController::class, 'revokeCreatePermission'])->name('superadmin.revokeCreatePermission');
 
-    Route::get('/revoke-create-permission/{role}/{feature}', [AdminController::class, 'revokeCreatePermission'])->name('super.revokeCreatePermission');
+    Route::get('/grant-edit-permission/{role}/{feature}', [SuperAdminController::class, 'grantEditPermission'])->name('superadmin.grantEditPermission');
 
-    Route::get('/grant-edit-permission/{role}/{feature}', [AdminController::class, 'grantEditPermission'])->name('super.grantEditPermission');
+    Route::get('/revoke-edit-permission/{role}/{feature}', [SuperAdminController::class, 'revokeEditPermission'])->name('superadmin.revokeEditPermission');
 
-    Route::get('/revoke-edit-permission/{role}/{feature}', [AdminController::class, 'revokeEditPermission'])->name('super.revokeEditPermission');
+    Route::get('/grant-delete-permission/{role}/{feature}', [SuperAdminController::class, 'grantDeletePermission'])->name('superadmin.grantDeletePermission');
 
-    Route::get('/grant-delete-permission/{role}/{feature}', [AdminController::class, 'grantDeletePermission'])->name('super.grantDeletePermission');
+    Route::get('/revoke-delete-permission/{role}/{feature}', [SuperAdminController::class, 'revokeDeletePermission'])->name('superadmin.revokeDeletePermission');
 
-    Route::get('/revoke-delete-permission/{role}/{feature}', [AdminController::class, 'revokeDeletePermission'])->name('super.revokeDeletePermission');
+    Route::get('/terminal-management', [SuperAdminController::class, 'terminalManagement'])->name('superadmin.terminalManagement');
 
-    Route::get('/clear-cache', [AdminController::class, 'clearCache'])->name('super.clearCache');
+    Route::get('/clear-cache', [SuperAdminController::class, 'clearCache'])->name('superadmin.clearCache');
 
 });
 
