@@ -78,25 +78,49 @@
                     </a>
                 </li>
 
-                <li id="admins" class="nav-item mb-3">
-                    <a href="">
+                <li id="fleet" class="nav-item mb-3">
+                    <a href="{{ route("superadmin.fleetManagement") }}">
                         <i class="fas fa-bus-alt"></i>
                         <p>Fleet Management</p>
                     </a>
                 </li>
 
-                <li id="admins" class="nav-item mb-3">
-                    <a href="">
+                <li id="routes" class="nav-item mb-3">
+                    <a href="{{ route("superadmin.routeManagement") }}">
                         <i class="fas fa-road"></i>
                         <p>Route Management</p>
                     </a>
                 </li>
 
-                <li id="admins" class="nav-item mb-3">
-                    <a href="">
+                <li id="adminreports" class="nav-item mb-3">
+                    <a data-bs-toggle="collapse" href="#reports" class="collapsed" aria-expanded="false">
                         <i class="fas fa-clipboard-list"></i>
                         <p>Reports</p>
+                        <span class="caret"></span>
                     </a>
+                    <div class="collapse" id="reports" style="">
+                        <ul class="nav nav-collapse">
+
+                            <li id="features">
+                                <a href="{{ route('superadmin.platformFeatures') }}">
+                                    <span class="sub-item">Financial Report</span>
+                                </a>
+                            </li>
+
+                            <li id="roles">
+                                <a href="{{ route('superadmin.manageRoles') }}">
+                                    <span class="sub-item">Audit Trail</span>
+                                </a>
+                            </li>
+
+                            <li id="roles">
+                                <a href="{{ route('superadmin.manageRoles') }}">
+                                    <span class="sub-item">Authentication Logs</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
                 </li>
 
                 <li id="logout" class="nav-item">

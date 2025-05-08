@@ -71,7 +71,35 @@ Route::group([
 
     Route::get('/terminal-management', [SuperAdminController::class, 'terminalManagement'])->name('superadmin.terminalManagement');
 
+    Route::post('/store-terminal', [SuperAdminController::class, 'storeTerminal'])->name('superadmin.storeTerminal');
+
+    Route::post('/update-terminal', [SuperAdminController::class, 'updateTerminal'])->name('superadmin.updateTerminal');
+
+    Route::get('/activate-terminal/{id}', [SuperAdminController::class, 'activateTerminal'])->name('superadmin.activateTerminal');
+
+    Route::get('/deactivate-terminal/{id}', [SuperAdminController::class, 'deactivateTerminal'])->name('superadmin.deactivateTerminal');
+
     Route::get('/clear-cache', [SuperAdminController::class, 'clearCache'])->name('superadmin.clearCache');
+
+    Route::get('/fleet-management', [SuperAdminController::class, 'fleetManagement'])->name('superadmin.fleetManagement');
+
+    Route::post('/storeVehicleDetails', [SuperAdminController::class, 'storeVehicleDetails'])->name('superadmin.storeVehicleDetails');
+
+    Route::post('/updateVehicleDetails', [SuperAdminController::class, 'updateVehicleDetails'])->name('superadmin.updateVehicleDetails');
+
+    Route::get('/vehicle/sold/{id}', [SuperAdminController::class, 'vehicleSold'])->name('superadmin.vehicleSold');
+
+    Route::get('/vehicle/activate/{id}', [SuperAdminController::class, 'activateVehicle'])->name('superadmin.activateVehicle');
+
+    Route::get('/vehicle/decommissioned/{id}', [SuperAdminController::class, 'vehicleDecommissioned'])->name('superadmin.vehicleDecommissioned');
+
+    Route::get('/vehicle/maintenance/{id}', [SuperAdminController::class, 'underMaintenance'])->name('superadmin.underMaintenance');
+
+    Route::get('/route-management', [SuperAdminController::class, 'routeManagement'])->name('superadmin.routeManagement');
+
+    Route::post('/storeRoute', [SuperAdminController::class, 'storeRoute'])->name('superadmin.storeRoute');
+
+    Route::post('/updateRoute', [SuperAdminController::class, 'updateRoute'])->name('superadmin.updateRoute');
 
 });
 

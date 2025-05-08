@@ -2,8 +2,11 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
+use App\Models\CompanyVehicles;
 use App\Models\PlatformFeature;
+use App\Models\States;
 use App\Models\UserPermission;
 use App\Models\UserRole;
 use Auth;
@@ -361,6 +364,312 @@ class SuperAdminController extends Controller
     public function terminalManagement()
     {
         $terminals = CompanyTerminals::all();
-        return view("superadmin.terminal_management", compact("terminals"));
+        $states    = States::all();
+        return view("superadmin.terminal_management", compact("terminals", "states"));
+    }
+
+    /**
+     * storeTerminal
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function storeTerminal(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'terminal' => 'required',
+            'state'    => 'required',
+            'lga'      => 'required',
+            'address'  => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $terminal           = new CompanyTerminals;
+        $terminal->terminal = $request->terminal;
+        $terminal->state    = $request->state;
+        $terminal->lga      = $request->lga;
+        $terminal->address  = $request->address;
+        if ($terminal->save()) {
+            toast('Terminal Created Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    public function updateTerminal(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'terminal_id' => 'required',
+            'terminal'    => 'required',
+            'state'       => 'required',
+            'lga'         => 'required',
+            'address'     => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $terminal           = CompanyTerminals::find($request->terminal_id);
+        $terminal->terminal = $request->terminal;
+        $terminal->state    = $request->state;
+        $terminal->lga      = $request->lga;
+        $terminal->address  = $request->address;
+        if ($terminal->save()) {
+            toast('Terminal Updated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * activateTerminal
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function activateTerminal($id)
+    {
+        $terminal         = CompanyTerminals::find($id);
+        $terminal->status = "active";
+        if ($terminal->save()) {
+            toast('Terminal Activate Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * deactivateTerminal
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function deactivateTerminal($id)
+    {
+        $terminal         = CompanyTerminals::find($id);
+        $terminal->status = "inactive";
+        if ($terminal->save()) {
+            toast('Terminal Deactivate Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * fleetManagement
+     *
+     * @return void
+     */
+    public function fleetManagement()
+    {
+        $companyVehicles = CompanyVehicles::all();
+        return view("superadmin.fleet_management", compact("companyVehicles"));
+    }
+
+    /**
+     * storeVehicleDetails
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function storeVehicleDetails(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'vehicle_number'     => 'required|unique:company_vehicles',
+            'manufacturer'       => 'required',
+            'year'               => 'required',
+            'model'              => 'required',
+            'color'              => 'required',
+            'plate_number'       => 'required|unique:company_vehicles',
+            'chassis_number'     => 'required|unique:company_vehicles',
+            'engine_number'      => 'required|unique:company_vehicles',
+            'passenger_capacity' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $vehicle                 = new CompanyVehicles;
+        $vehicle->vehicle_number = $request->vehicle_number;
+        $vehicle->manufacturer   = $request->manufacturer;
+        $vehicle->year           = $request->year;
+        $vehicle->model          = $request->model;
+        $vehicle->color          = $request->color;
+        $vehicle->plate_number   = $request->plate_number;
+        $vehicle->chassis_number = $request->chassis_number;
+        $vehicle->engine_number  = $request->engine_number;
+        $vehicle->seats          = $request->passenger_capacity;
+        if ($vehicle->save()) {
+            toast('Vechicle Information Stored Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * underMaintenance
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function underMaintenance($id)
+    {
+        $vehicle         = CompanyVehicles::find($id);
+        $vehicle->status = "under maintenance";
+        if ($vehicle->save()) {
+            toast('Vehicle Placed Under Maintenance', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * vehicleDecommissioned
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function vehicleDecommissioned($id)
+    {
+        $vehicle         = CompanyVehicles::find($id);
+        $vehicle->status = "decommissioned";
+        if ($vehicle->save()) {
+            toast('Vehicle Marked As Decommissioned', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * vehicleSold
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function vehicleSold($id)
+    {
+        $vehicle         = CompanyVehicles::find($id);
+        $vehicle->status = "sold";
+        if ($vehicle->save()) {
+            toast('Vehicle Marked As Sold', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * activateVehicle
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function activateVehicle($id)
+    {
+        $vehicle         = CompanyVehicles::find($id);
+        $vehicle->status = "active";
+        if ($vehicle->save()) {
+            toast('Vehicle Activated', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * updateVehicleDetails
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function updateVehicleDetails(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'vehicle_id'         => 'required',
+            'vehicle_number'     => 'required',
+            'manufacturer'       => 'required',
+            'year'               => 'required',
+            'model'              => 'required',
+            'color'              => 'required',
+            'plate_number'       => 'required',
+            'chassis_number'     => 'required',
+            'engine_number'      => 'required',
+            'passenger_capacity' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $vehicle                 = CompanyVehicles::find($request->vehicle_id);
+        $vehicle->vehicle_number = $request->vehicle_number;
+        $vehicle->manufacturer   = $request->manufacturer;
+        $vehicle->year           = $request->year;
+        $vehicle->model          = $request->model;
+        $vehicle->color          = $request->color;
+        $vehicle->plate_number   = $request->plate_number;
+        $vehicle->chassis_number = $request->chassis_number;
+        $vehicle->engine_number  = $request->engine_number;
+        $vehicle->seats          = $request->passenger_capacity;
+        if ($vehicle->save()) {
+            toast('Vechicle Information Updated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * routeManagement
+     *
+     * @return void
+     */
+    public function routeManagement()
+    {
+        $companyTravelRoutes = CompanyRoutes::all();
+        return view("superadmin.route_management", compact("companyTravelRoutes"));
     }
 }

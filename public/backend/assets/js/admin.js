@@ -41,9 +41,6 @@ $('#postTerminal').select2({
     dropdownParent: $('#assignTerminal')
 });
 
-$('#model').select2({
-    dropdownParent: $('#offcanvasRight')
-});
 
 $('#gender').select2({
     dropdownParent: $('#offcanvasRight')
@@ -63,10 +60,8 @@ $('#subject').select2({});
 $('#exam').select2({});
 $('#session').select2({});
 $('#computation').select2({});
-$('#terminal').select2({});
 $('#event').select2({});
 $('#month').select2({});
-$('#year').select2({});
 
 $(document).ready(function() {
        $('#example').DataTable({
@@ -197,12 +192,11 @@ $('#closeDispute').on('show.bs.modal', function(event) {
 $('#editTerminal').on('show.bs.offcanvas', function(event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var myid = button.data('myid') // Extract info from data-* attributes
-    var model = button.data('model') // Extract info from data-* attributes
-    var terminalid = button.data('terminalid') // Extract info from data-* attributes
-    var serialno = button.data('serialno') // Extract info from data-* attributes
-    var sim = button.data('sim') // Extract info from data-* attributes
-    var ip = button.data('ip') // Extract info from data-* attributes
-    var port = button.data('port') // Extract info from data-* attributes
+    var state = button.data('state') // Extract info from data-* attributes
+    var terminal = button.data('terminal') // Extract info from data-* attributes
+    var lga = button.data('lga') // Extract info from data-* attributes
+    var state = button.data('state') // Extract info from data-* attributes
+    var address = button.data('address') // Extract info from data-* attributes
 
     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -210,41 +204,73 @@ $('#editTerminal').on('show.bs.offcanvas', function(event) {
     var offcanvas = $(this)
     // modal.find('.modal-body #myid').val(myid)
     offcanvas.find('.offcanvas-body #myid').val(myid)
-    offcanvas.find('.offcanvas-body #terminalid').val(terminalid)
-    offcanvas.find('.offcanvas-body #serialno').val(serialno)
-    offcanvas.find('.offcanvas-body #sim').val(sim)
-    offcanvas.find('.offcanvas-body #ip').val(ip)
-    offcanvas.find('.offcanvas-body #port').val(port)
-    $('#model').select2({
+    offcanvas.find('.offcanvas-body #terminal').val(terminal)
+    offcanvas.find('.offcanvas-body #lga').val(lga)
+    offcanvas.find('.offcanvas-body #state').val(state)
+    offcanvas.find('.offcanvas-body #address').val(address)
+    $('#ustate').select2({
         dropdownParent: $('#editTerminal'),
-    }).val(model).trigger('change');
+    }).val(state).trigger('change');
+})
+
+$('#editVehicle').on('show.bs.offcanvas', function(event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var myid = button.data('myid') // Extract info from data-* attributes
+    var model = button.data('model') // Extract info from data-* attributes
+    var year = button.data('year') // Extract info from data-* attributes
+    var color = button.data('color') // Extract info from data-* attributes
+    var manufacturer = button.data('manufacturer') // Extract info from data-* attributes
+    var enginenumber = button.data('enginenumber') // Extract info from data-* attributes
+    var chassisnumber = button.data('chassisnumber') // Extract info from data-* attributes
+    var vehiclenumber = button.data('vehiclenumber') // Extract info from data-* attributes
+    var platenumber = button.data('platenumber') // Extract info from data-* attributes
+    var seats = button.data('seats') // Extract info from data-* attributes
+
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+    var offcanvas = $(this)
+    // modal.find('.modal-body #myid').val(myid)
+    offcanvas.find('.offcanvas-body #myid').val(myid)
+    offcanvas.find('.offcanvas-body #model').val(model)
+    offcanvas.find('.offcanvas-body #color').val(color)
+    offcanvas.find('.offcanvas-body #year').val(year)
+    offcanvas.find('.offcanvas-body #plateno').val(platenumber)
+    offcanvas.find('.offcanvas-body #engno').val(enginenumber)
+    offcanvas.find('.offcanvas-body #chasno').val(chassisnumber)
+    offcanvas.find('.offcanvas-body #pmtno').val(vehiclenumber)
+    offcanvas.find('.offcanvas-body #manufacturer').val(manufacturer)
+    offcanvas.find('.offcanvas-body #seats').val(seats)
+
 })
 
 
-$('#viewTerminal').on('show.bs.modal', function(event) {
+$('#vehicleDetails').on('show.bs.modal', function(event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var model = button.data('model') // Extract info from data-* attributes
-    var terminalid = button.data('terminalid') // Extract info from data-* attributes
-    var serialno = button.data('serialno') // Extract info from data-* attributes
-    var assigned = button.data('assigned') // Extract info from data-* attributes
+    var year = button.data('year') // Extract info from data-* attributes
+    var color = button.data('color') // Extract info from data-* attributes
+    var manufacturer = button.data('manufacturer') // Extract info from data-* attributes
+    var enginenumber = button.data('enginenumber') // Extract info from data-* attributes
+    var chassisnumber = button.data('chassisnumber') // Extract info from data-* attributes
     var status = button.data('status') // Extract info from data-* attributes
-    var sim = button.data('sim') // Extract info from data-* attributes
-    var date = button.data('date') // Extract info from data-* attributes
-    var ip = button.data('ip') // Extract info from data-* attributes
-    var port = button.data('port') // Extract info from data-* attributes
+    var vehiclenumber = button.data('vehiclenumber') // Extract info from data-* attributes
+    var platenumber = button.data('platenumber') // Extract info from data-* attributes
+    var seats = button.data('seats') // Extract info from data-* attributes
     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 
     var modal = $(this)
     document.getElementById("vmodel").innerHTML = model;
-    document.getElementById("vterminalid").innerHTML = terminalid;
-    document.getElementById("vserialno").innerHTML = serialno;
-    document.getElementById("vassigned").innerHTML = assigned;
+    document.getElementById("vyear").innerHTML = year;
+    document.getElementById("vcolor").innerHTML = color;
+    document.getElementById("vmanufacturer").innerHTML = manufacturer;
+    document.getElementById("venginenumber").innerHTML = enginenumber;
+    document.getElementById("vchassisnumber").innerHTML = chassisnumber;
     document.getElementById("vstatus").innerHTML = status;
-    document.getElementById("vsim").innerHTML = sim;
-    document.getElementById("vdate").innerHTML = date;
-    document.getElementById("vip").innerHTML = ip;
-    document.getElementById("vport").innerHTML = port;
+    document.getElementById("vvehiclenumber").innerHTML = vehiclenumber;
+    document.getElementById("vplatenumber").innerHTML = platenumber;
+    document.getElementById("vseats").innerHTML = seats;
 })
 
 
