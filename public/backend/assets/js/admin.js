@@ -54,10 +54,23 @@ $('#state').select2({
     dropdownParent: $('#offcanvasRight')
 });
 
+$('#takeoff').select2({
+    dropdownParent: $('#offcanvasRight')
+});
+
+$('#destination').select2({
+    dropdownParent: $('#offcanvasRight')
+});
+
+$('#station').select2({
+    dropdownParent: $('#offcanvasRight')
+});
+
+$('#role').select2({
+    dropdownParent: $('#offcanvasRight')
+});
 
 
-$('#subject').select2({});
-$('#exam').select2({});
 $('#session').select2({});
 $('#computation').select2({});
 $('#event').select2({});
@@ -87,29 +100,31 @@ $(document).ready(function() {
     offcanvas.find('.offcanvas-body #role').val(role)
 })
 
-$('#editCustomer').on('show.bs.offcanvas', function(event) {
+$('#editUser').on('show.bs.offcanvas', function(event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var myid = button.data('myid') // Extract info from data-* attributes
-    var surname = button.data('lastname') // Extract info from data-* attributes
-    var firstname = button.data('firstname') // Extract info from data-* attributes
+    var lastname = button.data('lastname') // Extract info from data-* attributes
     var othernames = button.data('othernames') // Extract info from data-* attributes
     var email = button.data('email') // Extract info from data-* attributes
     var phone = button.data('phone') // Extract info from data-* attributes
-    var accounttype = button.data('accounttype') // Extract info from data-* attributes
+    var station = button.data('station') // Extract info from data-* attributes
+    var role = button.data('role') // Extract info from data-* attributes
 
     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
     var offcanvas = $(this)
     // modal.find('.modal-body #myid').val(myid)
     offcanvas.find('.offcanvas-body #myid').val(myid)
-    offcanvas.find('.offcanvas-body #surname').val(surname)
-    offcanvas.find('.offcanvas-body #firstname').val(firstname)
+    offcanvas.find('.offcanvas-body #lastname').val(lastname)
     offcanvas.find('.offcanvas-body #othernames').val(othernames)
     offcanvas.find('.offcanvas-body #email').val(email)
     offcanvas.find('.offcanvas-body #phone').val(phone)
-    $('#accountType').select2({
-        dropdownParent: $('#editCustomer'),
-    }).val(accounttype).trigger('change');
+    $('#usrstation').select2({
+        dropdownParent: $('#editUser'),
+    }).val(station).trigger('change');
+    $('#usrrole').select2({
+        dropdownParent: $('#editUser'),
+    }).val(role).trigger('change');
 })
 
 $('#editAccountType').on('show.bs.offcanvas', function(event) {
@@ -241,6 +256,25 @@ $('#editVehicle').on('show.bs.offcanvas', function(event) {
     offcanvas.find('.offcanvas-body #pmtno').val(vehiclenumber)
     offcanvas.find('.offcanvas-body #manufacturer').val(manufacturer)
     offcanvas.find('.offcanvas-body #seats').val(seats)
+
+})
+
+$('#editRoute').on('show.bs.offcanvas', function(event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var myid = button.data('myid') // Extract info from data-* attributes
+    var destination = button.data('destination') // Extract info from data-* attributes
+    var departure = button.data('departure') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+    var offcanvas = $(this)
+    offcanvas.find('.offcanvas-body #myid').val(myid)
+    $('#utakeoff').select2({
+        dropdownParent: $('#editRoute'),
+    }).val(departure).trigger('change');
+    $('#udestination').select2({
+        dropdownParent: $('#editRoute'),
+    }).val(destination).trigger('change');
 
 })
 

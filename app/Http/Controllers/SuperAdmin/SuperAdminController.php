@@ -7,6 +7,7 @@ use App\Models\CompanyTerminals;
 use App\Models\CompanyVehicles;
 use App\Models\PlatformFeature;
 use App\Models\States;
+use App\Models\User;
 use App\Models\UserPermission;
 use App\Models\UserRole;
 use Auth;
@@ -357,6 +358,143 @@ class SuperAdminController extends Controller
     }
 
     /**
+     * userManagement
+     *
+     * @return void
+     */
+    public function userManagement()
+    {
+        $users     = User::where("role_id", "!=", 2)->get();
+        $userRoles = UserRole::where("id", ">", 2)->get();
+        $stations  = CompanyTerminals::where("status", "active")->get();
+        return view("superadmin.user_management", compact("users", "userRoles", "stations"));
+    }
+
+    /**
+     * storeUser
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function storeUser(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'surname'      => 'required',
+            'other_names'  => 'required',
+            'email'        => 'required|unique:users',
+            'phone_number' => 'required|unique:users',
+            'station'      => 'required',
+            'role'         => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $user               = new User;
+        $user->last_name    = $request->surname;
+        $user->other_names  = $request->other_names;
+        $user->email        = $request->email;
+        $user->phone_number = $request->phone_number;
+        $user->station      = $request->station;
+        $user->role_id      = $request->role;
+        $user->password     = Hash::make($request->phone_number);
+        if ($user->save()) {
+            toast('User Account Created Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * updateUser
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function updateUser(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id'      => 'required',
+            'surname'      => 'required',
+            'other_names'  => 'required',
+            'email'        => 'required',
+            'phone_number' => 'required',
+            'station'      => 'required',
+            'role'         => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $user               = User::find($request->user_id);
+        $user->last_name    = $request->surname;
+        $user->other_names  = $request->other_names;
+        $user->email        = $request->email;
+        $user->phone_number = $request->phone_number;
+        $user->station      = $request->station;
+        $user->role_id      = $request->role;
+        if ($user->save()) {
+            toast('User Account Updated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * activateUser
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function activateUser($id)
+    {
+        $user         = User::find($id);
+        $user->status = "active";
+        if ($user->save()) {
+            toast('User Account Activated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * suspendUser
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function suspendUser($id)
+    {
+        $user         = User::find($id);
+        $user->status = "suspended";
+        if ($user->save()) {
+            toast('User Account Suspended Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
      * terminalManagement
      *
      * @return void
@@ -670,6 +808,124 @@ class SuperAdminController extends Controller
     public function routeManagement()
     {
         $companyTravelRoutes = CompanyRoutes::all();
-        return view("superadmin.route_management", compact("companyTravelRoutes"));
+        $terminals           = CompanyTerminals::where("status", "active")->where("id", ">", 1)->get();
+        return view("superadmin.route_management", compact("companyTravelRoutes", "terminals"));
+    }
+
+    /**
+     * storeRoute
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function storeRoute(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'take_off_point' => 'required',
+            'destination'    => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        if ($request->take_off_point == $request->destination) {
+            toast('Destination cannot be same as Take Off Point.', 'error');
+            return back();
+        }
+
+        $route              = new CompanyRoutes;
+        $route->departure   = $request->take_off_point;
+        $route->destination = $request->destination;
+        if ($route->save()) {
+            toast('Travel Route Added Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * updateRoute
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function updateRoute(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'route_id'       => 'required',
+            'take_off_point' => 'required',
+            'destination'    => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        if ($request->take_off_point == $request->destination) {
+            toast('Destination cannot be same as Take Off Point.', 'error');
+            return back();
+        }
+
+        $route              = CompanyRoutes::find($request->route_id);
+        $route->departure   = $request->take_off_point;
+        $route->destination = $request->destination;
+        if ($route->save()) {
+            toast('Travel Route Updated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * activateRoute
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function activateRoute($id)
+    {
+        $route         = CompanyRoutes::find($id);
+        $route->status = "active";
+        if ($route->save()) {
+            toast('Travel Route Activated', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * suspendRoute
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function suspendRoute($id)
+    {
+        $route         = CompanyRoutes::find($id);
+        $route->status = "suspended";
+        if ($route->save()) {
+            toast('Travel Route Suspended', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
     }
 }

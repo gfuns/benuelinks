@@ -64,7 +64,7 @@
                 </li>
 
                 <li id="admins" class="nav-item mb-3">
-                    <a href="">
+                    <a href="{{ route("superadmin.userManagement") }}">
                         <i class="fas fa-users"></i>
                         <p>User Management</p>
                     </a>

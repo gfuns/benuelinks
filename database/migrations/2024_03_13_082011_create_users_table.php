@@ -20,11 +20,13 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('role_id')->unsigned();
+            $table->integer('station')->unsigned()->nullable();
             $table->enum("status", ["active", "suspended", "banned"])->default("active");
             $table->string('token')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->foreign('role_id')->references('id')->on('user_roles')->onDelete('cascade');
+            $table->foreign('station')->references('id')->on('company_terminals')->onDelete('cascade');
         });
     }
 

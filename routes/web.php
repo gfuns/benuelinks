@@ -35,15 +35,15 @@ Route::group([
 
     Route::get('/platform-features', [SuperAdminController::class, 'platformFeatures'])->name('superadmin.platformFeatures');
 
-    Route::get('/user-management', [SuperAdminController::class, 'userManagement'])->name('superadmin.usermgt');
+    Route::get('/user-management', [SuperAdminController::class, 'userManagement'])->name('superadmin.userManagement');
 
     Route::post('/store-user', [SuperAdminController::class, 'storeUser'])->name('superadmin.storeUser');
 
     Route::post('/update-user', [SuperAdminController::class, 'updateUser'])->name('superadmin.updateUser');
 
-    Route::get('/suspend-user', [SuperAdminController::class, 'suspendUser'])->name('superadmin.suspendUser');
+    Route::get('/suspend-user/{id}', [SuperAdminController::class, 'suspendUser'])->name('superadmin.suspendUser');
 
-    Route::get('/activate-user', [SuperAdminController::class, 'activateUser'])->name('superadmin.activateUser');
+    Route::get('/activate-user/{id}', [SuperAdminController::class, 'activateUser'])->name('superadmin.activateUser');
 
     Route::get('/user-roles', [SuperAdminController::class, 'manageRoles'])->name('superadmin.manageRoles');
 
@@ -100,6 +100,10 @@ Route::group([
     Route::post('/storeRoute', [SuperAdminController::class, 'storeRoute'])->name('superadmin.storeRoute');
 
     Route::post('/updateRoute', [SuperAdminController::class, 'updateRoute'])->name('superadmin.updateRoute');
+
+    Route::get('/suspendRoute/{id}', [SuperAdminController::class, 'suspendRoute'])->name('superadmin.suspendRoute');
+
+    Route::get('/activateRoute/{id}', [SuperAdminController::class, 'activateRoute'])->name('superadmin.activateRoute');
 
 });
 

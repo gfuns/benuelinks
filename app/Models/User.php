@@ -47,6 +47,11 @@ class User extends Authenticatable implements Auditable
         'password'          => 'hashed',
     ];
 
+    public function terminal()
+    {
+        return $this->belongsTo('App\Models\CompanyTerminals', 'station');
+    }
+
     public function userRole()
     {
         return $this->belongsTo('App\Models\UserRole', 'role_id');

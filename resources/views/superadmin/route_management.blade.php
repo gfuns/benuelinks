@@ -33,10 +33,8 @@
                                         @foreach ($companyTravelRoutes as $route)
                                             <tr>
                                                 <td class="align-middle"> {{ $loop->index + 1 }} </td>
-                                                <td class="align-middle"> {{ $route->vehicle_number }} </td>
-                                                <td class="align-middle">{{ $route->manufacturer }}</td>
-                                                <td class="align-middle">{{ $route->model }}</td>
-                                                <td class="align-middle">{{ $route->plate_number }}</td>
+                                                <td class="align-middle"> {{ $route->departurePoint->terminal }} </td>
+                                                <td class="align-middle">{{ $route->destinationPoint->terminal }}</td>
                                                 <td>
                                                     @if ($route->status == 'active')
                                                         <span class="badge badge-success p-2"
@@ -59,56 +57,25 @@
                                                         <ul class="dropdown-menu" role="menu" style="">
                                                             <li>
                                                                 <a class="dropdown-item mb-2" href="#"
-                                                                    data-bs-toggle="offcanvas" data-bs-target="#editVehicle"
-                                                                    data-backdrop="static"
-                                                                    data-backdrop="static" data-myid="{{ $vehicle->id }}"
-                                                                    data-manufacturer="{{ $vehicle->manufacturer }}"
-                                                                    data-model="{{ $vehicle->model }}"
-                                                                    data-year="{{ $vehicle->year }}"
-                                                                    data-color="{{ $vehicle->color }}"
-                                                                    data-vehiclenumber="{{ $vehicle->vehicle_number }}"
-                                                                    data-platenumber="{{ $vehicle->plate_number }}"
-                                                                    data-chassisnumber="{{ $vehicle->chassis_number }}"
-                                                                    data-enginenumber="{{ $vehicle->engine_number }}"
-                                                                    data-seats="{{ $vehicle->seats }}"
-                                                                    data-status="{{ ucwords($vehicle->status) }}"><i
+                                                                    data-bs-toggle="offcanvas" data-bs-target="#editRoute"
+                                                                    data-backdrop="static" data-backdrop="static"
+                                                                    data-myid="{{ $route->id }}"
+                                                                    data-destination="{{ $route->destination }}"
+                                                                    data-departure="{{ $route->departure }}"><i
                                                                         class="fe fe-eye dropdown-item-icon"></i>Edit
                                                                     Details</a>
                                                             </li>
-                                                            @if ($vehicle->status == 'active')
+                                                            @if ($route->status == 'active')
                                                                 <li>
                                                                     <a class="dropdown-item mb-2"
-                                                                        href="{{ route('superadmin.underMaintenance', [$vehicle->id]) }}"><i
-                                                                            class="fe fe-eye dropdown-item-icon"></i>Place
-                                                                        Under
-                                                                        Maintenance</a>
+                                                                        href="{{ route('superadmin.suspendRoute', [$route->id]) }}" onclick="return confirm('Are you sure you want to suspend this travel route');"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Suspend Travel Route</a>
                                                                 </li>
-                                                            @endif
-
-                                                            @if ($vehicle->status == 'under maintenance')
+                                                            @else
                                                                 <li>
                                                                     <a class="dropdown-item mb-2"
-                                                                        href="{{ route('superadmin.activateVehicle', [$vehicle->id]) }}"><i
-                                                                            class="fe fe-eye dropdown-item-icon"></i>Activate
-                                                                        Vehicle</a>
-                                                                </li>
-                                                            @endif
-
-                                                            @if ($vehicle->status == 'active' || $vehicle->status == 'under maintenance')
-                                                                <li>
-                                                                    <a class="dropdown-item mb-2"
-                                                                        href="{{ route('superadmin.vehicleDecommissioned', [$vehicle->id]) }}"><i
-                                                                            class="fe fe-eye dropdown-item-icon"></i>Mark As
-                                                                        Decommissioned</a>
-                                                                </li>
-                                                            @endif
-
-                                                            @if ($vehicle->status == 'active' || $vehicle->status == 'under maintenance' || $vehicle->status == 'decommissioned')
-                                                                <li>
-                                                                    <a class="dropdown-item mb-2"
-                                                                        href="{{ route('superadmin.vehicleSold', [$vehicle->id]) }}"><i
-                                                                            class="fe fe-eye dropdown-item-icon"></i>Mark As
-                                                                        Sold</a>
+                                                                        href="{{ route('superadmin.activateRoute', [$route->id]) }}" onclick="return confirm('Are you sure you want to activate this travel route');"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Activate Travel Route</a>
                                                                 </li>
                                                             @endif
                                                         </ul>
@@ -140,86 +107,39 @@
             <!-- card body -->
             <div class="container">
                 <!-- form -->
-                <form novalidate method="post" action="{{ route('superadmin.storeVehicleDetails') }}">
+                <form novalidate method="post" action="{{ route('superadmin.storeRoute') }}">
                     @csrf
                     <div class="row">
                         <!-- form group -->
                         <div class="mb-3 col-12">
-                            <label class="form-label"><strong>PMT Vehicle Number</strong> <span
+                            <label class="form-label"><strong>Take Off Point</strong> <span
                                     class="text-danger">*</span></label>
-                            <input type="text" name="vehicle_number" class="form-control"
-                                placeholder="Enter PMT Number" required>
-                            <div class="invalid-feedback">Please provide PMT Vehicle Number.</div>
+                            <select id="takeoff" name="take_off_point" class="form-select" data-width="100%" required>
+                                <option value="">Select Take Off Point</option>
+                                @foreach ($terminals as $dp)
+                                    <option value="{{ $dp->id }}">{{ $dp->terminal }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback">Please select take off point.</div>
                         </div>
 
                         <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Vehicle Manufacturer</strong> <span
+                            <label class="form-label"><strong>Destination</strong> <span
                                     class="text-danger">*</span></label>
-                            <input type="text" name="manufacturer" class="form-control"
-                                placeholder="Enter Vehicle Manufacturer" required>
-                            <div class="invalid-feedback">Please provide vehicle manaufacturer.</div>
+                                    <select id="destination" name="destination" class="form-select" data-width="100%" required>
+                                        <option value="">Select Destination</option>
+                                        @foreach ($terminals as $destination)
+                                            <option value="{{ $destination->id }}">{{ $destination->terminal }}</option>
+                                        @endforeach
+                                    </select>
+                            <div class="invalid-feedback">Please select destination.</div>
                         </div>
 
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Year Manufactured</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="year" class="form-control"
-                                placeholder="Enter Year Manufactured" required>
-                            <div class="invalid-feedback">Please provide year manufactured.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Vehicle Model</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="model" class="form-control" placeholder="Enter Vehicle Model"
-                                required>
-                            <div class="invalid-feedback">Please provide vehicle model.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Vehicle Color</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="color" class="form-control" placeholder="Enter Vehicle Color"
-                                required>
-                            <div class="invalid-feedback">Please provide vehicle color.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Plate Number</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="plate_number" class="form-control"
-                                placeholder="Enter Plate Number" required>
-                            <div class="invalid-feedback">Please provide plate number.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Chassis Number</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="chassis_number" class="form-control"
-                                placeholder="Enter Chassis Number" required>
-                            <div class="invalid-feedback">Please provide chassis number.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Engine Number</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="engine_number" class="form-control"
-                                placeholder="Enter Engine Number" required>
-                            <div class="invalid-feedback">Please provide engine number.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Passenger Capacity (No. of seats)</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="passenger_capacity" class="form-control"
-                                placeholder="Enter Passenger Capacity" required>
-                            <div class="invalid-feedback">Please provide passenger capacity.</div>
-                        </div>
 
                         <div class="col-md-12 border-bottom"></div>
                         <!-- button -->
                         <div class="col-12 mt-4">
-                            <button class="btn btn-primary" type="submit">Add Vehicle To Fleet</button>
+                            <button class="btn btn-primary" type="submit">Add Travel Route</button>
                             <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
                                 aria-label="Close">Close</button>
                         </div>
@@ -229,85 +149,10 @@
         </div>
     </div>
 
-
-    <div class="modal fade" id="vehicleDetails" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title mb-0" id="newCatgoryLabel">
-                        Vehicle Details
-                    </h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-bordered">
-                        <tbody>
-                            <tr>
-                                <td class=""><strong>PMT Vehicle Number</strong></td>
-                                <td class=""><span id="vvehiclenumber"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Vehicle Manufacturer:</strong></td>
-                                <td class=""><span id="vmanufacturer"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Vehicle Model:</strong></td>
-                                <td class=""><span id="vmodel"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Year of Manufacture:</strong></td>
-                                <td class=""><span id="vyear"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Vehicle Color:</strong></td>
-                                <td class=""><span id="vcolor"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Plate Number:</strong></td>
-                                <td class=""><span id="vplatenumber"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Engine Number</strong></td>
-                                <td class=""><span id="venginenumber"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Chassis Number</strong></td>
-                                <td class=""><span id="vchassisnumber"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Passenger Capacity</strong></td>
-                                <td class=""><span id="vseats"></span> Seater</td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Status</strong></td>
-                                <td class=""><span id="vstatus"></span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="editVehicle" style="width: 600px;">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="editRoute" style="width: 600px;">
         <div class="offcanvas-body" data-simplebar>
             <div class="offcanvas-header px-2 pt-0">
-                <h3 class="offcanvas-title" id="offcanvasExampleLabel"> Update Vehicle Information</h3>
+                <h3 class="offcanvas-title" id="offcanvasExampleLabel"> Update Route Information</h3>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                     aria-label="Close"></button>
             </div>
@@ -315,83 +160,35 @@
             <div class="container">
                 <!-- form -->
                 <form class="needs-validation" novalidate method="post"
-                    action="{{ route('superadmin.updateVehicleDetails') }}" enctype="multipart/form-data">
+                    action="{{ route('superadmin.updateRoute') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <!-- form group -->
                         <div class="mb-3 col-12">
-                            <label class="form-label"><strong>PMT Vehicle Number</strong> <span
+                            <label class="form-label"><strong>Take Off Point</strong> <span
                                     class="text-danger">*</span></label>
-                            <input id="pmtno" type="text" name="vehicle_number" class="form-control"
-                                placeholder="Enter PMT Number" required>
-                            <div class="invalid-feedback">Please provide PMT Vehicle Number.</div>
+                            <select id="utakeoff" name="take_off_point" class="form-select" data-width="100%" required>
+                                <option value="">Select Take Off Point</option>
+                                @foreach ($terminals as $dp)
+                                    <option value="{{ $dp->id }}">{{ $dp->terminal }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback">Please select take off point.</div>
                         </div>
 
                         <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Vehicle Manufacturer</strong> <span
+                            <label class="form-label"><strong>Destination</strong> <span
                                     class="text-danger">*</span></label>
-                            <input id="manufacturer" type="text" name="manufacturer" class="form-control"
-                                placeholder="Enter Vehicle Manufacturer" required>
-                            <div class="invalid-feedback">Please provide vehicle manaufacturer.</div>
+                                    <select id="udestination" name="destination" class="form-select" data-width="100%" required>
+                                        <option value="">Select Destination</option>
+                                        @foreach ($terminals as $destination)
+                                            <option value="{{ $destination->id }}">{{ $destination->terminal }}</option>
+                                        @endforeach
+                                    </select>
+                            <div class="invalid-feedback">Please select destination.</div>
                         </div>
 
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Year Manufactured</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input id="year" type="text" name="year" class="form-control"
-                                placeholder="Enter Year Manufactured" required>
-                            <div class="invalid-feedback">Please provide year manufactured.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Vehicle Model</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input id="model" type="text" name="model" class="form-control"
-                                placeholder="Enter Vehicle Model" required>
-                            <div class="invalid-feedback">Please provide vehicle model.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Vehicle Color</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input id="color" type="text" name="color" class="form-control"
-                                placeholder="Enter Vehicle Color" required>
-                            <div class="invalid-feedback">Please provide vehicle color.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Plate Number</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input id="plateno" type="text" name="plate_number" class="form-control"
-                                placeholder="Enter Plate Number" required>
-                            <div class="invalid-feedback">Please provide plate number.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Chassis Number</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input id="chasno" type="text" name="chassis_number" class="form-control"
-                                placeholder="Enter Chassis Number" required>
-                            <div class="invalid-feedback">Please provide chassis number.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Engine Number</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input id="engno" type="text" name="engine_number" class="form-control"
-                                placeholder="Enter Engine Number" required>
-                            <div class="invalid-feedback">Please provide engine number.</div>
-                        </div>
-
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Passenger Capacity (No. of seats)</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input id="seats" type="text" name="passenger_capacity" class="form-control"
-                                placeholder="Enter Passenger Capacity" required>
-                            <div class="invalid-feedback">Please provide passenger capacity.</div>
-                        </div>
-
-                        <input id="myid" type="hidden" name="vehicle_id" class="form-control" required>
+                        <input id="myid" type="hidden" name="route_id" class="form-control" required>
 
                         <div class="col-md-12 border-bottom"></div>
                         <!-- button -->
