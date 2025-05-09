@@ -71,8 +71,9 @@ $('#role').select2({
 });
 
 
-$('#session').select2({});
-$('#computation').select2({});
+$('#fdeparture').select2({});
+$('#fdestination').select2({});
+$('#fterminal').select2({});
 $('#event').select2({});
 $('#month').select2({});
 

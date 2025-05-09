@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditTrails;
+use App\Models\AuthenticationLogs;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
 use App\Models\CompanyVehicles;
@@ -11,12 +13,25 @@ use App\Models\User;
 use App\Models\UserPermission;
 use App\Models\UserRole;
 use Auth;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use \Carbon\Carbon;
 
 class SuperAdminController extends Controller
 {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Show the application dashboard.
      *
@@ -927,5 +942,239 @@ class SuperAdminController extends Controller
             toast('Something went wrong. Please try again', 'error');
             return back();
         }
+    }
+
+    /**
+     * travelSchedule
+     *
+     * @return void
+     */
+    public function travelSchedule()
+    {
+        $terminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
+        return view("superadmin.travel_schedule", compact("terminals"));
+    }
+
+    /**
+     * authenticationReport
+     *
+     *
+     * @return void
+     */
+    public function authenticationReport()
+    {
+        $terminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
+        return view("superadmin.authentication_logs", compact("terminals"));
+    }
+
+    /**
+     * searchUserAuths
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function searchUserAuths(Request $request)
+    {
+
+        if (isset($request->start_date) || isset($request->end_date)) {
+            $validator = Validator::make($request->all(), [
+                'start_date' => 'required',
+                'end_date'   => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors()->all();
+                $errors = implode("<br>", $errors);
+                toast($errors, 'error');
+                return back();
+            }
+        }
+
+        $eventType = $request->event_type;
+        $startDate = isset($request->start_date) ? $this->cleanDate($request->start_date) : $request->start_date;
+        $endDate   = isset($request->end_date) ? $this->cleanDate($request->end_date) : $request->end_date;
+
+        if ($startDate > $endDate) {
+            toast('End Date must be a date after Start Date.', 'error');
+            return back();
+        }
+
+        return redirect()->route("superadmin.fetchUserAuths", [$eventType, $startDate, $endDate]);
+    }
+
+    /**
+     * fetchUserAuths
+     *
+     * @param mixed workgroup
+     * @param mixed eventType
+     * @param mixed startDate
+     * @param mixed endDate
+     *
+     * @return void
+     */
+    public function fetchUserAuths($eventType = null, $startDate = null, $endDate = null)
+    {
+
+        $eventType = $eventType == "null" ? null : $eventType;
+        $startDate = isset($startDate) ? $this->purifyDate($startDate) : $startDate;
+        $endDate   = isset($endDate) ? $this->purifyDate($endDate) : $endDate;
+
+        if (isset($eventType) && isset($startDate) && isset($endDate)) {
+            $activities = AuthenticationLogs::orderBy("id", "desc")->where("event", $eventType)->whereBetween('created_at', [$startDate, $endDate])->get();
+
+        } else if (isset($eventType) && ! isset($startDate) && ! isset($endDate)) {
+            $startDate  = Carbon::today()->startOfMonth();
+            $endDate    = Carbon::today()->endOfMonth();
+            $activities = AuthenticationLogs::orderBy("id", "desc")->where("event", $eventType)->whereBetween('created_at', [$startDate, $endDate])->get();
+
+        } elseif (! isset($eventType) && isset($startDate) && isset($endDate)) {
+            $activities = AuthenticationLogs::orderBy("id", "desc")->whereBetween('created_at', [$startDate, $endDate])->get();
+        } else {
+            $startDate  = Carbon::today()->startOfMonth();
+            $endDate    = Carbon::today()->endOfMonth();
+            $activities = AuthenticationLogs::orderBy("id", "desc")->whereBetween('created_at', [$startDate, $endDate])->get();
+
+        }
+
+        return view("superadmin.authentication_logs", compact("activities", "eventType", "startDate", "endDate"));
+    }
+
+    /**
+     * auditTrailReport
+     *
+     *
+     * @return void
+     */
+    public function auditTrailReport()
+    {
+        $terminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
+        return view("superadmin.audit_trails", compact("terminals"));
+    }
+
+    /**
+     * searchAuditTrails
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function searchAuditTrails(Request $request)
+    {
+
+        if (isset($request->start_date) || isset($request->end_date)) {
+            $validator = Validator::make($request->all(), [
+                'start_date' => 'required',
+                'end_date'   => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors()->all();
+                $errors = implode("<br>", $errors);
+                toast($errors, 'error');
+                return back();
+            }
+        }
+
+        $eventType = $request->event_type;
+        $startDate = isset($request->start_date) ? $this->cleanDate($request->start_date) : $request->start_date;
+        $endDate   = isset($request->end_date) ? $this->cleanDate($request->end_date) : $request->end_date;
+
+        if ($startDate > $endDate) {
+            toast('End Date must be a date after Start Date.', 'error');
+            return back();
+        }
+
+        return redirect()->route("superadmin.fetchAuditTrails", [$eventType, $startDate, $endDate]);
+    }
+
+    /**
+     * fetchAuditTrails
+     *
+     * @param mixed eventType
+     * @param mixed startDate
+     * @param mixed endDate
+     *
+     * @return void
+     */
+    public function fetchAuditTrails($eventType = null, $startDate = null, $endDate = null)
+    {
+
+        $eventType = $eventType == "null" ? null : $eventType;
+        $startDate = isset($startDate) ? $this->purifyDate($startDate) : $startDate;
+        $endDate   = isset($endDate) ? $this->purifyDate($endDate) : $endDate;
+
+        if (isset($eventType) && isset($startDate) && isset($endDate)) {
+            $activities = AuditTrails::orderBy("id", "desc")->where("event", $eventType)->whereBetween('created_at', [$startDate, $endDate])->get();
+
+        } else if (isset($eventType) && ! isset($startDate) && ! isset($endDate)) {
+            $startDate  = Carbon::today()->startOfMonth();
+            $endDate    = Carbon::today()->endOfMonth();
+            $activities = AuditTrails::orderBy("id", "desc")->where("event", $eventType)->whereBetween('created_at', [$startDate, $endDate])->get();
+
+        } elseif (! isset($eventType) && isset($startDate) && isset($endDate)) {
+            $activities = AuditTrails::orderBy("id", "desc")->whereBetween('created_at', [$startDate, $endDate])->get();
+        } else {
+            $startDate  = Carbon::today()->startOfMonth();
+            $endDate    = Carbon::today()->endOfMonth();
+            $activities = AuditTrails::orderBy("id", "desc")->whereBetween('created_at', [$startDate, $endDate])->get();
+
+        }
+
+        if ($eventType == "created") {
+            $eventType = "New Record Creation";
+        } else if ($eventType == "updated") {
+            $eventType = "Record Update";
+        } else if ($eventType == "deleted") {
+            $eventType = "Record Deletion";
+        } else if ($eventType == "restored") {
+            $eventType = "Record Restoration";
+        } else {
+            $eventType = "Record Retrieval";
+        }
+
+        return view("superadmin.audit_trails", compact("activities", "eventType", "startDate", "endDate"));
+    }
+
+    /**
+     * cleanDate
+     *
+     * @param mixed date
+     *
+     * @return void
+     */
+    public function cleanDate($date)
+    {
+        $newDate = preg_replace("|/|", "-", $date);
+        return $newDate;
+    }
+
+    /**
+     * purifyDate
+     *
+     * @param mixed date
+     *
+     * @return void
+     */
+    public function purifyDate($date)
+    {
+        $date    = preg_replace("|-|", "/", $date);
+        $newDate = $this->formatDate($date);
+        return $newDate;
+    }
+
+    /**
+     * formatDate
+     *
+     * @param mixed date
+     *
+     * @return void
+     */
+    public function formatDate($date)
+    {
+        $date          = str_replace('/', '-', $date);
+        $newDate       = date('Y-m-d', strtotime($date));
+        $formattedDate = new DateTime($newDate);
+        return $formattedDate;
     }
 }

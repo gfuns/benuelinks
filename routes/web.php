@@ -105,6 +105,22 @@ Route::group([
 
     Route::get('/activateRoute/{id}', [SuperAdminController::class, 'activateRoute'])->name('superadmin.activateRoute');
 
+    Route::get('/travel-schedule', [SuperAdminController::class, 'travelSchedule'])->name('superadmin.travelSchedule');
+
+    Route::post('/searchTravelSchedule', [SuperAdminController::class, 'searchTravelSchedule'])->name('superadmin.searchTravelSchedule');
+
+    Route::get('/auth', [SuperAdminController::class, 'authenticationReport'])->name('superadmin.userAuths');
+
+    Route::post('/searchUserAuths', [SuperAdminController::class, 'searchUserAuths'])->name('superadmin.searchUserAuths');
+
+    Route::get('/userauths/{et?}/{sd?}/{ed?}', [SuperAdminController::class, 'fetchUserAuths'])->name('superadmin.fetchUserAuths');
+
+    Route::get('/audit', [SuperAdminController::class, 'auditTrailReport'])->name('superadmin.auditTrailReport');
+
+    Route::post('/searchAuditTrails', [SuperAdminController::class, 'searchAuditTrails'])->name('superadmin.searchAuditTrails');
+
+    Route::get('/audittrails/{et?}/{sd?}/{ed?}', [SuperAdminController::class, 'fetchAuditTrails'])->name('superadmin.fetchAuditTrails');
+
 });
 
 require __DIR__ . '/admin.php';

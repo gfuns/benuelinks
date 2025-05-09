@@ -92,6 +92,13 @@
                     </a>
                 </li>
 
+                <li id="schedules" class="nav-item mb-3">
+                    <a href="{{ route("superadmin.travelSchedule") }}">
+                        <i class="fas fa-calendar-alt"></i>
+                        <p>Travel Schedule</p>
+                    </a>
+                </li>
+
                 <li id="adminreports" class="nav-item mb-3">
                     <a data-bs-toggle="collapse" href="#reports" class="collapsed" aria-expanded="false">
                         <i class="fas fa-clipboard-list"></i>
@@ -107,14 +114,14 @@
                                 </a>
                             </li>
 
-                            <li id="roles">
-                                <a href="{{ route('superadmin.manageRoles') }}">
+                            <li id="audittrail">
+                                <a href="{{ route('superadmin.auditTrailReport') }}">
                                     <span class="sub-item">Audit Trail</span>
                                 </a>
                             </li>
 
-                            <li id="roles">
-                                <a href="{{ route('superadmin.manageRoles') }}">
+                            <li id="authlogs">
+                                <a href="{{ route('superadmin.userAuths') }}">
                                     <span class="sub-item">Authentication Logs</span>
                                 </a>
                             </li>
