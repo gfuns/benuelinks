@@ -117,8 +117,8 @@
                                         <tr>
                                             <td class="th">S/No.</td>
                                             <td class="th">Surname</td>
-                                            <td class="th">First Name</td>
-                                            <td class="th">Other Names</td>
+                                           <td class="th">Other Names</td>
+                                            <td class="th">Station</td>
                                             <td class="th">User Role</td>
                                             <td class="th">Activity</td>
                                             <td class="th">Activity Date</td>
@@ -131,9 +131,9 @@
                                             @foreach ($activities as $act)
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $act->user->lastName }}</td>
-                                                    <td>{{ $act->user->firstName }}</td>
-                                                    <td>{{ $act->user->otherNames ?? 'Nil' }}</td>
+                                                    <td>{{ $act->user->last_name }}</td>
+                                                   <td>{{ $act->user->other_names }}</td>
+                                                    <td>{{ $act->station() }}</td>
                                                     <td>{{ $act->user->userRole->role }}</td>
                                                     <td>{{ $act->event() }}</td>
                                                     <td>{{ date_format($act->created_at, 'jS M, Y g:ia') }}</td>
@@ -141,9 +141,9 @@
                                                         <button class="btn btn-primary btn-xs" type="button"
                                                             data-bs-toggle="modal" data-bs-target="#viewAuditDetails"
                                                             data-backdrop="static" data-myid="{{ $act->id }}"
-                                                            data-surname="{{ $act->user->lastName }}"
-                                                            data-firstname="{{ $act->user->firstName }}"
-                                                            data-othernames="{{ $act->user->otherNames ?? 'Nil' }}"
+                                                            data-surname="{{ $act->user->last_name }}"
+                                                            data-othernames="{{ $act->user->other_names }}"
+                                                            data-terminal="{{ $act->station() }}"
                                                             data-role="{{ $act->user->userRole->role }}"
                                                             data-event="{{ $act->event() }}"
                                                             data-table="{{ preg_replace('/App\\\\Models\\\\/', '', $act->auditable_type) }}"
@@ -190,13 +190,13 @@
                             </tr>
 
                             <tr>
-                                <td class="">First Name</td>
-                                <td class=""><span id="vfirstname"></span></td>
+                                <td class="">Other Names</td>
+                                <td class=""><span id="vothernames"></span></td>
                             </tr>
 
                             <tr>
-                                <td class="">Other Names</td>
-                                <td class=""><span id="vothernames"></span></td>
+                                <td class="">Station</td>
+                                <td class=""><span id="vstation"></span></td>
                             </tr>
 
                             <tr>

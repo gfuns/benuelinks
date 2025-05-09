@@ -113,13 +113,15 @@ Route::group([
 
     Route::post('/searchUserAuths', [SuperAdminController::class, 'searchUserAuths'])->name('superadmin.searchUserAuths');
 
-    Route::get('/userauths/{et?}/{sd?}/{ed?}', [SuperAdminController::class, 'fetchUserAuths'])->name('superadmin.fetchUserAuths');
+    Route::get('/userauths/{station?}/{et?}/{sd?}/{ed?}', [SuperAdminController::class, 'fetchUserAuths'])->name('superadmin.fetchUserAuths');
 
     Route::get('/audit', [SuperAdminController::class, 'auditTrailReport'])->name('superadmin.auditTrailReport');
 
     Route::post('/searchAuditTrails', [SuperAdminController::class, 'searchAuditTrails'])->name('superadmin.searchAuditTrails');
 
     Route::get('/audittrails/{et?}/{sd?}/{ed?}', [SuperAdminController::class, 'fetchAuditTrails'])->name('superadmin.fetchAuditTrails');
+
+    Route::get('/financial-report', [SuperAdminController::class, 'financialReport'])->name('superadmin.financialReport');
 
 });
 

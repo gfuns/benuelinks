@@ -13,8 +13,14 @@ class AuthenticationLogs extends Model
         return $this->belongsTo('App\Models\User');
     }
 
+    public function terminal()
+    {
+        return $this->belongsTo('App\Models\CompanyTerminals', 'station');
+    }
+
     protected $fillable = [
         'user_id',
+        'station',
         'event',
         'description',
         'ip_address',

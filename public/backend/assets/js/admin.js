@@ -417,7 +417,7 @@ $('#assignTerminal').on('show.bs.offcanvas', function(event) {
 $('#viewAuthDetails').on('show.bs.modal', function(event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var surname = button.data('surname') // Extract info from data-* attributes
-    var firstname = button.data('firstname') // Extract info from data-* attributes
+    var terminal = button.data('terminal') // Extract info from data-* attributes
     var othernames = button.data('othernames') // Extract info from data-* attributes
    var role = button.data('role') // Extract info from data-* attributes
     var datecreated = button.data('datecreated') // Extract info from data-* attributes
@@ -430,7 +430,7 @@ $('#viewAuthDetails').on('show.bs.modal', function(event) {
 
     var modal = $(this)
     document.getElementById("vsurname").innerHTML = surname;
-    document.getElementById("vfirstname").innerHTML = firstname;
+    document.getElementById("vstation").innerHTML = terminal;
     document.getElementById("vothernames").innerHTML = othernames;
     document.getElementById("vrole").innerHTML = role;
     document.getElementById("vdatecreated").innerHTML = datecreated;
@@ -443,7 +443,7 @@ $('#viewAuthDetails').on('show.bs.modal', function(event) {
 $('#viewAuditDetails').on('show.bs.modal', function(event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var surname = button.data('surname') // Extract info from data-* attributes
-    var firstname = button.data('firstname') // Extract info from data-* attributes
+    var terminal = button.data('terminal') // Extract info from data-* attributes
     var othernames = button.data('othernames') // Extract info from data-* attributes
     var role = button.data('role') // Extract info from data-* attributes
     var datecreated = button.data('datecreated') // Extract info from data-* attributes
@@ -458,7 +458,7 @@ $('#viewAuditDetails').on('show.bs.modal', function(event) {
 
     var modal = $(this)
     document.getElementById("vsurname").innerHTML = surname;
-    document.getElementById("vfirstname").innerHTML = firstname;
+    document.getElementById("vstation").innerHTML = terminal;
     document.getElementById("vothernames").innerHTML = othernames;
     document.getElementById("vrole").innerHTML = role;
     document.getElementById("vdatecreated").innerHTML = datecreated;

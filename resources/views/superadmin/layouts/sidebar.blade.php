@@ -108,8 +108,8 @@
                     <div class="collapse" id="reports" style="">
                         <ul class="nav nav-collapse">
 
-                            <li id="features">
-                                <a href="{{ route('superadmin.platformFeatures') }}">
+                            <li id="financial">
+                                <a href="{{ route('superadmin.financialReport') }}">
                                     <span class="sub-item">Financial Report</span>
                                 </a>
                             </li>

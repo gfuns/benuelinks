@@ -963,8 +963,12 @@ class SuperAdminController extends Controller
      */
     public function authenticationReport()
     {
-        $terminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
-        return view("superadmin.authentication_logs", compact("terminals"));
+        $terminals  = CompanyTerminals::where("status", "active")->get();
+        $startDate  = Carbon::today()->startOfMonth();
+        $endDate    = Carbon::today()->endOfMonth();
+        $activities = AuthenticationLogs::orderBy("id", "desc")->whereBetween('created_at', [$startDate, $endDate])->get();
+
+        return view("superadmin.authentication_logs", compact("terminals", "activities"));
     }
 
     /**
@@ -992,6 +996,7 @@ class SuperAdminController extends Controller
         }
 
         $eventType = $request->event_type;
+        $terminal  = $request->terminal;
         $startDate = isset($request->start_date) ? $this->cleanDate($request->start_date) : $request->start_date;
         $endDate   = isset($request->end_date) ? $this->cleanDate($request->end_date) : $request->end_date;
 
@@ -1000,7 +1005,7 @@ class SuperAdminController extends Controller
             return back();
         }
 
-        return redirect()->route("superadmin.fetchUserAuths", [$eventType, $startDate, $endDate]);
+        return redirect()->route("superadmin.fetchUserAuths", [$terminal, $eventType, $startDate, $endDate]);
     }
 
     /**
@@ -1013,31 +1018,40 @@ class SuperAdminController extends Controller
      *
      * @return void
      */
-    public function fetchUserAuths($eventType = null, $startDate = null, $endDate = null)
+    public function fetchUserAuths($terminal = null, $eventType = null, $startDate = null, $endDate = null)
     {
 
         $eventType = $eventType == "null" ? null : $eventType;
+        $terminal  = $terminal == "null" ? null : $terminal;
+        $station   = CompanyTerminals::find($terminal);
         $startDate = isset($startDate) ? $this->purifyDate($startDate) : $startDate;
         $endDate   = isset($endDate) ? $this->purifyDate($endDate) : $endDate;
 
-        if (isset($eventType) && isset($startDate) && isset($endDate)) {
-            $activities = AuthenticationLogs::orderBy("id", "desc")->where("event", $eventType)->whereBetween('created_at', [$startDate, $endDate])->get();
+        if (isset($terminal) && isset($eventType) && isset($startDate) && isset($endDate)) {
+            $activities = AuthenticationLogs::orderBy("id", "desc")->where("station", $terminal)->where("event", $eventType)->whereBetween('created_at', [$startDate, $endDate])->get();
 
-        } else if (isset($eventType) && ! isset($startDate) && ! isset($endDate)) {
+        } else if (isset($terminal) && isset($eventType) && ! isset($startDate) && ! isset($endDate)) {
             $startDate  = Carbon::today()->startOfMonth();
             $endDate    = Carbon::today()->endOfMonth();
-            $activities = AuthenticationLogs::orderBy("id", "desc")->where("event", $eventType)->whereBetween('created_at', [$startDate, $endDate])->get();
+            $activities = AuthenticationLogs::orderBy("id", "desc")->where("station", $terminal)->where("event", $eventType)->whereBetween('created_at', [$startDate, $endDate])->get();
 
-        } elseif (! isset($eventType) && isset($startDate) && isset($endDate)) {
+        } elseif (isset($terminal) && ! isset($eventType) && isset($startDate) && isset($endDate)) {
+            $activities = AuthenticationLogs::orderBy("id", "desc")->where("station", $terminal)->whereBetween('created_at', [$startDate, $endDate])->get();
+        } elseif (! isset($terminal) && isset($eventType) && isset($startDate) && isset($endDate)) {
+            $activities = AuthenticationLogs::orderBy("id", "desc")->where("event", $eventType)->whereBetween('created_at', [$startDate, $endDate])->get();
+        } elseif (! isset($terminal) && ! isset($eventType) && isset($startDate) && isset($endDate)) {
             $activities = AuthenticationLogs::orderBy("id", "desc")->whereBetween('created_at', [$startDate, $endDate])->get();
+        } elseif (isset($terminal) && ! isset($eventType) && ! isset($startDate) && ! isset($endDate)) {
+            $activities = AuthenticationLogs::orderBy("id", "desc")->where("station", $terminal)->get();
         } else {
             $startDate  = Carbon::today()->startOfMonth();
             $endDate    = Carbon::today()->endOfMonth();
             $activities = AuthenticationLogs::orderBy("id", "desc")->whereBetween('created_at', [$startDate, $endDate])->get();
 
         }
+        $terminals = CompanyTerminals::where("status", "active")->get();
 
-        return view("superadmin.authentication_logs", compact("activities", "eventType", "startDate", "endDate"));
+        return view("superadmin.authentication_logs", compact("terminals", "station", "activities", "eventType", "startDate", "endDate"));
     }
 
     /**
@@ -1048,8 +1062,11 @@ class SuperAdminController extends Controller
      */
     public function auditTrailReport()
     {
-        $terminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
-        return view("superadmin.audit_trails", compact("terminals"));
+        $terminals  = CompanyTerminals::where("status", "active")->get();
+        $startDate  = Carbon::today()->startOfMonth();
+        $endDate    = Carbon::today()->endOfMonth();
+        $activities = AuditTrails::orderBy("id", "desc")->whereBetween('created_at', [$startDate, $endDate])->get();
+        return view("superadmin.audit_trails", compact("terminals", "activities"));
     }
 
     /**
@@ -1097,12 +1114,14 @@ class SuperAdminController extends Controller
      *
      * @return void
      */
-    public function fetchAuditTrails($eventType = null, $startDate = null, $endDate = null)
+    public function fetchAuditTrails($terminal = null, $eventType = null, $startDate = null, $endDate = null)
     {
 
         $eventType = $eventType == "null" ? null : $eventType;
+        $terminal  = $terminal == "null" ? null : $terminal;
         $startDate = isset($startDate) ? $this->purifyDate($startDate) : $startDate;
         $endDate   = isset($endDate) ? $this->purifyDate($endDate) : $endDate;
+        $station   = CompanyTerminals::find($terminal);
 
         if (isset($eventType) && isset($startDate) && isset($endDate)) {
             $activities = AuditTrails::orderBy("id", "desc")->where("event", $eventType)->whereBetween('created_at', [$startDate, $endDate])->get();
@@ -1133,7 +1152,14 @@ class SuperAdminController extends Controller
             $eventType = "Record Retrieval";
         }
 
-        return view("superadmin.audit_trails", compact("activities", "eventType", "startDate", "endDate"));
+        $terminals = CompanyTerminals::where("status", "active")->get();
+        return view("superadmin.audit_trails", compact("terminals", "activities", "eventType", "startDate", "endDate"));
+    }
+
+    public function financialReport()
+    {
+        $terminals = CompanyTerminals::where("status", "active")->get();
+        return view("superadmin.financial_report", compact("terminals"));
     }
 
     /**

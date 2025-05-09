@@ -24,7 +24,7 @@ class LogUserAuthentication
         $eventType   = get_class($event);
         $description = '';
         $userId      = Auth::user()->id;
-        $workGroup   = Auth::user()->work_group_id;
+        $station     = Auth::user()->station;
 
         if ($event instanceof Login) {
             $eventType   = 'Login';
@@ -35,6 +35,7 @@ class LogUserAuthentication
         }
 
         AuthenticationLogs::create([
+            'station'     => $station,
             'user_id'     => $userId,
             'event'       => $eventType,
             'description' => $description,

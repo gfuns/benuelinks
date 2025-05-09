@@ -16,6 +16,12 @@ class AuditTrails extends Model
         return $this->belongsTo('App\Models\User', 'user_id');
     }
 
+    public function station()
+    {
+        $station = CompanyTerminals::find($this->tags);
+        return $station->terminal;
+    }
+
     public function event()
     {
         if ($this->event == "created") {
