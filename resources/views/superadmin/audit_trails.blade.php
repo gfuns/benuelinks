@@ -21,9 +21,9 @@
                                                 <label for="currentPassword"><strong>Terminal</strong></label>
                                                 <select id="fterminal" name="terminal" class="form-select"
                                                     data-width="100%" required>
-                                                    <option value="all">All Terminals</option>
+                                                    <option value="null">All Terminals</option>
                                                     @foreach ($terminals as $dp)
-                                                        <option value="{{ $dp->id }}">
+                                                        <option value="{{ $dp->id }}" @if($terminal == $dp->id) selected @endif>
                                                             {{ $dp->terminal }}</option>
                                                     @endforeach
                                                 </select>
@@ -45,11 +45,11 @@
                                                     data-width="100%" required>
                                                     <option value="null">Select Activity Type</option>
                                                     <option value="null">All Activities</option>
-                                                    <option value="created">New Record Creation</option>
+                                                    <option value="created" @if($event == "created") selected @endif>New Record Creation</option>
                                                     {{-- <option value="retrieved">Record Retrieval</option> --}}
-                                                    <option value="updated">Record Update</option>
-                                                    <option value="deleted">Record Deletion</option>
-                                                    <option value="restored">Record Restoration</option>
+                                                    <option value="updated" @if($event == "updated") selected @endif>Record Update</option>
+                                                    <option value="deleted" @if($event == "deleted") selected @endif>Record Deletion</option>
+                                                    <option value="restored" @if($event == "restored") selected @endif>Record Restoration</option>
                                                 </select>
 
                                                 @error('event_type')

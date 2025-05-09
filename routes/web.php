@@ -119,7 +119,7 @@ Route::group([
 
     Route::post('/searchAuditTrails', [SuperAdminController::class, 'searchAuditTrails'])->name('superadmin.searchAuditTrails');
 
-    Route::get('/audittrails/{et?}/{sd?}/{ed?}', [SuperAdminController::class, 'fetchAuditTrails'])->name('superadmin.fetchAuditTrails');
+    Route::get('/audittrails/{station?}/{et?}/{sd?}/{ed?}', [SuperAdminController::class, 'fetchAuditTrails'])->name('superadmin.fetchAuditTrails');
 
     Route::get('/financial-report', [SuperAdminController::class, 'financialReport'])->name('superadmin.financialReport');
 

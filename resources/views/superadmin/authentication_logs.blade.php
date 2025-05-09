@@ -23,7 +23,7 @@
                                                     required>
                                                     <option value="null">All Terminals</option>
                                                     @foreach ($terminals as $dp)
-                                                        <option value="{{ $dp->id }}">
+                                                        <option value="{{ $dp->id }}" @if($terminal == $dp->id) selected @endif>
                                                             {{ $dp->terminal }}</option>
                                                     @endforeach
                                                 </select>
@@ -45,8 +45,8 @@
                                                     data-width="100%" required>
                                                     <option value="null">Select Event Type</option>
                                                     <option value="null">All Events</option>
-                                                    <option value="Login">User Login</option>
-                                                    <option value="Logout">User Logout</option>
+                                                    <option value="Login" @if($event == "Login") selected @endif>User Login</option>
+                                                    <option value="Logout" @if($event == "Logout") selected @endif>User Logout</option>
                                                 </select>
 
                                                 @error('event_type')
