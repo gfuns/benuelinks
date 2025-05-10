@@ -74,4 +74,18 @@ class MenuController extends Controller
         }
         return $result;
     }
+
+    public function allowReport($role)
+    {
+
+        $result     = false;
+        $permission = UserPermission::where("role_id", $role)->whereIn("feature_id", [8, 9, 10])->first();
+        if (isset($permission)) {
+            $result = true;
+        } else {
+            $result = false;
+        }
+        return $result;
+
+    }
 }

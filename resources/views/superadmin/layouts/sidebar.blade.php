@@ -38,97 +38,120 @@
                 </li>
 
 
-                <li id="settings" class="nav-item mb-3">
-                    <a data-bs-toggle="collapse" href="#platform" class="collapsed" aria-expanded="false">
-                        <i class="fas fa-cog"></i>
-                        <p>Platform Settings</p>
-                        <span class="caret"></span>
-                    </a>
-                    <div class="collapse" id="platform" style="">
-                        <ul class="nav nav-collapse">
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 1) == true)
+                    <li id="settings" class="nav-item mb-3">
+                        <a data-bs-toggle="collapse" href="#platform" class="collapsed" aria-expanded="false">
+                            <i class="fas fa-cog"></i>
+                            <p>Platform Settings</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="platform" style="">
+                            <ul class="nav nav-collapse">
 
-                            <li id="features">
-                                <a href="{{ route('superadmin.platformFeatures') }}">
-                                    <span class="sub-item">Platform Features</span>
-                                </a>
-                            </li>
+                                <li id="features">
+                                    <a href="{{ route('superadmin.platformFeatures') }}">
+                                        <span class="sub-item">Platform Features</span>
+                                    </a>
+                                </li>
 
-                            <li id="roles">
-                                <a href="{{ route('superadmin.manageRoles') }}">
-                                    <span class="sub-item">Roles & Permissions</span>
-                                </a>
-                            </li>
+                                <li id="roles">
+                                    <a href="{{ route('superadmin.manageRoles') }}">
+                                        <span class="sub-item">Roles & Permissions</span>
+                                    </a>
+                                </li>
 
-                        </ul>
-                    </div>
-                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endif
 
-                <li id="admins" class="nav-item mb-3">
-                    <a href="{{ route("superadmin.userManagement") }}">
-                        <i class="fas fa-users"></i>
-                        <p>User Management</p>
-                    </a>
-                </li>
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 2) == true)
+                    <li id="admins" class="nav-item mb-3">
+                        <a href="{{ route('superadmin.userManagement') }}">
+                            <i class="fas fa-users"></i>
+                            <p>User Management</p>
+                        </a>
+                    </li>
+                @endif
 
 
-                <li id="terminals" class="nav-item mb-3">
-                    <a href="{{ route('superadmin.terminalManagement') }}">
-                        <i class="far fa-building"></i>
-                        <p>Terminal Management</p>
-                    </a>
-                </li>
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 3) == true)
+                    <li id="terminals" class="nav-item mb-3">
+                        <a href="{{ route('superadmin.terminalManagement') }}">
+                            <i class="far fa-building"></i>
+                            <p>Terminal Management</p>
+                        </a>
+                    </li>
+                @endif
 
-                <li id="fleet" class="nav-item mb-3">
-                    <a href="{{ route("superadmin.fleetManagement") }}">
-                        <i class="fas fa-bus-alt"></i>
-                        <p>Fleet Management</p>
-                    </a>
-                </li>
 
-                <li id="routes" class="nav-item mb-3">
-                    <a href="{{ route("superadmin.routeManagement") }}">
-                        <i class="fas fa-road"></i>
-                        <p>Route Management</p>
-                    </a>
-                </li>
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 4) == true)
+                    <li id="fleet" class="nav-item mb-3">
+                        <a href="{{ route('superadmin.fleetManagement') }}">
+                            <i class="fas fa-bus-alt"></i>
+                            <p>Fleet Management</p>
+                        </a>
+                    </li>
+                @endif
 
-                <li id="schedules" class="nav-item mb-3">
-                    <a href="{{ route("superadmin.travelSchedule") }}">
-                        <i class="fas fa-calendar-alt"></i>
-                        <p>Travel Schedule</p>
-                    </a>
-                </li>
 
-                <li id="adminreports" class="nav-item mb-3">
-                    <a data-bs-toggle="collapse" href="#reports" class="collapsed" aria-expanded="false">
-                        <i class="fas fa-clipboard-list"></i>
-                        <p>Reports</p>
-                        <span class="caret"></span>
-                    </a>
-                    <div class="collapse" id="reports" style="">
-                        <ul class="nav nav-collapse">
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 5) == true)
+                    <li id="routes" class="nav-item mb-3">
+                        <a href="{{ route('superadmin.routeManagement') }}">
+                            <i class="fas fa-road"></i>
+                            <p>Route Management</p>
+                        </a>
+                    </li>
+                @endif
 
-                            <li id="financial">
-                                <a href="{{ route('superadmin.financialReport') }}">
-                                    <span class="sub-item">Financial Report</span>
-                                </a>
-                            </li>
 
-                            <li id="audittrail">
-                                <a href="{{ route('superadmin.auditTrailReport') }}">
-                                    <span class="sub-item">Audit Trail</span>
-                                </a>
-                            </li>
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 6) == true)
+                    <li id="schedules" class="nav-item mb-3">
+                        <a href="{{ route('superadmin.travelSchedule') }}">
+                            <i class="fas fa-calendar-alt"></i>
+                            <p>Travel Schedule</p>
+                        </a>
+                    </li>
+                @endif
 
-                            <li id="authlogs">
-                                <a href="{{ route('superadmin.userAuths') }}">
-                                    <span class="sub-item">Authentication Logs</span>
-                                </a>
-                            </li>
+                @if (app('Menu')->allowReport(Auth::user()->role_id) == true)
+                    <li id="adminreports" class="nav-item mb-3">
+                        <a data-bs-toggle="collapse" href="#reports" class="collapsed" aria-expanded="false">
+                            <i class="fas fa-clipboard-list"></i>
+                            <p>Reports</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse" id="reports" style="">
+                            <ul class="nav nav-collapse">
 
-                        </ul>
-                    </div>
-                </li>
+                                @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
+                                    <li id="financial">
+                                        <a href="{{ route('superadmin.financialReport') }}">
+                                            <span class="sub-item">Financial Report</span>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if (app('Menu')->allowAccess(Auth::user()->role_id, 9) == true)
+                                    <li id="audittrail">
+                                        <a href="{{ route('superadmin.auditTrailReport') }}">
+                                            <span class="sub-item">Audit Trail</span>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if (app('Menu')->allowAccess(Auth::user()->role_id, 10) == true)
+                                    <li id="authlogs">
+                                        <a href="{{ route('superadmin.userAuths') }}">
+                                            <span class="sub-item">Authentication Logs</span>
+                                        </a>
+                                    </li>
+                                @endif
+
+                            </ul>
+                        </div>
+                    </li>
+                @endif
 
                 <li id="logout" class="nav-item">
                     <a href="{{ route('logout') }}"
