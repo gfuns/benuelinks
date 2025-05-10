@@ -24,6 +24,7 @@
                                             <th scope="col">S/No.</th>
                                             <th scope="col">Departure Point</th>
                                             <th scope="col">Destination</th>
+                                            <th scope="col">Transport Fare</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Date Created</th>
                                             <th scope="col">Action</th>
@@ -35,6 +36,8 @@
                                                 <td class="align-middle"> {{ $loop->index + 1 }} </td>
                                                 <td class="align-middle"> {{ $route->departurePoint->terminal }} </td>
                                                 <td class="align-middle">{{ $route->destinationPoint->terminal }}</td>
+                                                <td class="align-middle">
+                                                    &#8358;{{ number_format($route->transport_fare, 2) }}</td>
                                                 <td>
                                                     @if ($route->status == 'active')
                                                         <span class="badge badge-success p-2"
@@ -60,6 +63,7 @@
                                                                     data-bs-toggle="offcanvas" data-bs-target="#editRoute"
                                                                     data-backdrop="static" data-backdrop="static"
                                                                     data-myid="{{ $route->id }}"
+                                                                    data-tp="{{ $route->transport_fare }}"
                                                                     data-destination="{{ $route->destination }}"
                                                                     data-departure="{{ $route->departure }}"><i
                                                                         class="fe fe-eye dropdown-item-icon"></i>Edit
@@ -68,14 +72,18 @@
                                                             @if ($route->status == 'active')
                                                                 <li>
                                                                     <a class="dropdown-item mb-2"
-                                                                        href="{{ route('superadmin.suspendRoute', [$route->id]) }}" onclick="return confirm('Are you sure you want to suspend this travel route');"><i
-                                                                            class="fe fe-eye dropdown-item-icon"></i>Suspend Travel Route</a>
+                                                                        href="{{ route('superadmin.suspendRoute', [$route->id]) }}"
+                                                                        onclick="return confirm('Are you sure you want to suspend this travel route');"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Suspend
+                                                                        Travel Route</a>
                                                                 </li>
                                                             @else
                                                                 <li>
                                                                     <a class="dropdown-item mb-2"
-                                                                        href="{{ route('superadmin.activateRoute', [$route->id]) }}" onclick="return confirm('Are you sure you want to activate this travel route');"><i
-                                                                            class="fe fe-eye dropdown-item-icon"></i>Activate Travel Route</a>
+                                                                        href="{{ route('superadmin.activateRoute', [$route->id]) }}"
+                                                                        onclick="return confirm('Are you sure you want to activate this travel route');"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Activate
+                                                                        Travel Route</a>
                                                                 </li>
                                                             @endif
                                                         </ul>
@@ -126,15 +134,22 @@
                         <div class="mb-3 col-12">
                             <label class="form-label"><strong>Destination</strong> <span
                                     class="text-danger">*</span></label>
-                                    <select id="destination" name="destination" class="form-select" data-width="100%" required>
-                                        <option value="">Select Destination</option>
-                                        @foreach ($terminals as $destination)
-                                            <option value="{{ $destination->id }}">{{ $destination->terminal }}</option>
-                                        @endforeach
-                                    </select>
+                            <select id="destination" name="destination" class="form-select" data-width="100%" required>
+                                <option value="">Select Destination</option>
+                                @foreach ($terminals as $destination)
+                                    <option value="{{ $destination->id }}">{{ $destination->terminal }}</option>
+                                @endforeach
+                            </select>
                             <div class="invalid-feedback">Please select destination.</div>
                         </div>
 
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Transport Fare</strong> <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="transport_fare" class="form-control" placeholder="Enter Transport Fare"
+                                required>
+                            <div class="invalid-feedback">Please enter transport fare.</div>
+                        </div>
 
                         <div class="col-md-12 border-bottom"></div>
                         <!-- button -->
@@ -159,8 +174,8 @@
             <!-- card body -->
             <div class="container">
                 <!-- form -->
-                <form class="needs-validation" novalidate method="post"
-                    action="{{ route('superadmin.updateRoute') }}" enctype="multipart/form-data">
+                <form class="needs-validation" novalidate method="post" action="{{ route('superadmin.updateRoute') }}"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <!-- form group -->
@@ -179,13 +194,21 @@
                         <div class="mb-3 col-12">
                             <label class="form-label"><strong>Destination</strong> <span
                                     class="text-danger">*</span></label>
-                                    <select id="udestination" name="destination" class="form-select" data-width="100%" required>
-                                        <option value="">Select Destination</option>
-                                        @foreach ($terminals as $destination)
-                                            <option value="{{ $destination->id }}">{{ $destination->terminal }}</option>
-                                        @endforeach
-                                    </select>
+                            <select id="udestination" name="destination" class="form-select" data-width="100%" required>
+                                <option value="">Select Destination</option>
+                                @foreach ($terminals as $destination)
+                                    <option value="{{ $destination->id }}">{{ $destination->terminal }}</option>
+                                @endforeach
+                            </select>
                             <div class="invalid-feedback">Please select destination.</div>
+                        </div>
+
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Transport Fare</strong> <span
+                                    class="text-danger">*</span></label>
+                            <input id="tp" type="text" name="transport_fare" class="form-control" placeholder="Enter Transport Fare"
+                                required>
+                            <div class="invalid-feedback">Please enter transport fare.</div>
                         </div>
 
                         <input id="myid" type="hidden" name="route_id" class="form-control" required>

@@ -26,4 +26,18 @@ Route::group([
 
     Route::get('/travel-routes', [AdminController::class, 'travelRoutes'])->name('admin.travelRoutes');
 
+    Route::get('/auth', [AdminController::class, 'authenticationReport'])->name('admin.userAuths');
+
+    Route::post('/searchUserAuths', [AdminController::class, 'searchUserAuths'])->name('admin.searchUserAuths');
+
+    Route::get('/userauths/{et?}/{sd?}/{ed?}', [AdminController::class, 'fetchUserAuths'])->name('admin.fetchUserAuths');
+
+    Route::get('/audit', [AdminController::class, 'auditTrailReport'])->name('admin.auditTrailReport');
+
+    Route::post('/searchAuditTrails', [AdminController::class, 'searchAuditTrails'])->name('admin.searchAuditTrails');
+
+    Route::get('/audittrails/{et?}/{sd?}/{ed?}', [AdminController::class, 'fetchAuditTrails'])->name('admin.fetchAuditTrails');
+
+    Route::get('/financial-report', [AdminController::class, 'financialReport'])->name('admin.financialReport');
+
 });

@@ -85,7 +85,7 @@
 
                                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
                                     <li id="financial">
-                                        <a href="{{ route('superadmin.financialReport') }}">
+                                        <a href="{{ route('admin.financialReport') }}">
                                             <span class="sub-item">Financial Report</span>
                                         </a>
                                     </li>
@@ -93,7 +93,7 @@
 
                                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 9) == true)
                                     <li id="audittrail">
-                                        <a href="{{ route('superadmin.auditTrailReport') }}">
+                                        <a href="{{ route('admin.auditTrailReport') }}">
                                             <span class="sub-item">Audit Trail</span>
                                         </a>
                                     </li>
@@ -101,7 +101,7 @@
 
                                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 10) == true)
                                     <li id="authlogs">
-                                        <a href="{{ route('superadmin.userAuths') }}">
+                                        <a href="{{ route('admin.userAuths') }}">
                                             <span class="sub-item">Authentication Logs</span>
                                         </a>
                                     </li>

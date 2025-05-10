@@ -6,39 +6,15 @@
                 <div class="col-md-12">
                      <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Audit Trail Report</div>
+                            <div class="card-title">Financial Report</div>
                         </div>
 
                         <div class="card-body">
                             <div class="col-md-12">
-                                <form method="POST" action="{{ route('admin.searchAuditTrails') }}">
+                                <form method="POST" action="{{ route('superadmin.searchAuditTrails') }}">
                                     @csrf
 
                                     <div class="row">
-
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="currentPassword"><strong>Activity Performed</strong></label>
-                                                <select id="event" name="event_type" class="form-select"
-                                                    data-width="100%" required>
-                                                    <option value="null">Select Activity Type</option>
-                                                    <option value="null">All Activities</option>
-                                                    <option value="created" @if($event == "created") selected @endif>New Record Creation</option>
-                                                    {{-- <option value="retrieved">Record Retrieval</option> --}}
-                                                    <option value="updated" @if($event == "updated") selected @endif>Record Update</option>
-                                                    <option value="deleted" @if($event == "deleted") selected @endif>Record Deletion</option>
-                                                    <option value="restored" @if($event == "restored") selected @endif>Record Restoration</option>
-                                                </select>
-
-                                                @error('event_type')
-                                                    <span class="" role="alert">
-                                                        <strong
-                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-
-                                        </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Start Date</strong></label>
@@ -81,25 +57,23 @@
 
                             <hr />
                             <h6 class="mt-4 mb-4 ms-4"><strong>
-                                    Audit Trail For
-                                    <u>{{ ucwords(isset($eventType) ? 'User Activity: ' . $eventType : 'All User Activities') }}</u>
+                                    Financial Report For
+                                    <u>{{ ucwords(isset($terminal) ? $eventType.' Terminal'  : 'All Terminals') }}</u>
                                     @if (isset($startDate) && isset($endDate))
                                         - Between
                                         {{ date_format($startDate, 'jS M, Y') }} And
                                         {{ date_format($endDate, 'jS M, Y') }}
                                     @endif
                                 </strong></h6>
-                            <div class="table-responsive mb-2">
+                            <div class="table-responsive mb-5" style="padding-bottom: 100px">
                                 <table class="table mb-0 text-nowrap table-hover table-centered">
                                     <thead>
                                         <tr>
                                             <td class="th">S/No.</td>
-                                            <td class="th">Surname</td>
-                                           <td class="th">Other Names</td>
-                                            <td class="th">Station</td>
-                                            <td class="th">User Role</td>
-                                            <td class="th">Activity</td>
-                                            <td class="th">Activity Date</td>
+                                            <td class="th">Transaction Date</td>
+                                            <td class="th">Route</td>
+                                            <td class="th">Passengers</td>
+                                            <td class="th">Revenue Generated</td>
                                             <td class="th">Action</td>
                                         </tr>
                                     </thead>
@@ -109,9 +83,9 @@
                                             @foreach ($activities as $act)
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $act->user->last_name }}</td>
-                                                   <td>{{ $act->user->other_names }}</td>
-                                                    <td>{{ $act->station() }}</td>
+                                                    <td>{{ $act->user->lastName }}</td>
+                                                    <td>{{ $act->user->firstName }}</td>
+                                                    <td>{{ $act->user->otherNames ?? 'Nil' }}</td>
                                                     <td>{{ $act->user->userRole->role }}</td>
                                                     <td>{{ $act->event() }}</td>
                                                     <td>{{ date_format($act->created_at, 'jS M, Y g:ia') }}</td>
@@ -119,9 +93,9 @@
                                                         <button class="btn btn-primary btn-xs" type="button"
                                                             data-bs-toggle="modal" data-bs-target="#viewAuditDetails"
                                                             data-backdrop="static" data-myid="{{ $act->id }}"
-                                                            data-surname="{{ $act->user->last_name }}"
-                                                            data-othernames="{{ $act->user->other_names }}"
-                                                            data-terminal="{{ $act->station() }}"
+                                                            data-surname="{{ $act->user->lastName }}"
+                                                            data-firstname="{{ $act->user->firstName }}"
+                                                            data-othernames="{{ $act->user->otherNames ?? 'Nil' }}"
                                                             data-role="{{ $act->user->userRole->role }}"
                                                             data-event="{{ $act->event() }}"
                                                             data-table="{{ preg_replace('/App\\\\Models\\\\/', '', $act->auditable_type) }}"
@@ -168,13 +142,13 @@
                             </tr>
 
                             <tr>
-                                <td class="">Other Names</td>
-                                <td class=""><span id="vothernames"></span></td>
+                                <td class="">First Name</td>
+                                <td class=""><span id="vfirstname"></span></td>
                             </tr>
 
                             <tr>
-                                <td class="">Station</td>
-                                <td class=""><span id="vstation"></span></td>
+                                <td class="">Other Names</td>
+                                <td class=""><span id="vothernames"></span></td>
                             </tr>
 
                             <tr>
@@ -229,6 +203,6 @@
     <script type="text/javascript">
         document.getElementById("adminreports").classList.add('active');
         document.getElementById("reports").classList.add('show');
-        document.getElementById("audittrail").classList.add('active');
+        document.getElementById("financial").classList.add('active');
     </script>
 @endsection

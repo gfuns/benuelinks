@@ -265,11 +265,13 @@ $('#editRoute').on('show.bs.offcanvas', function(event) {
     var myid = button.data('myid') // Extract info from data-* attributes
     var destination = button.data('destination') // Extract info from data-* attributes
     var departure = button.data('departure') // Extract info from data-* attributes
+    var tp = button.data('tp') // Extract info from data-* attributes
     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 
     var offcanvas = $(this)
     offcanvas.find('.offcanvas-body #myid').val(myid)
+    offcanvas.find('.offcanvas-body #tp').val(tp)
     $('#utakeoff').select2({
         dropdownParent: $('#editRoute'),
     }).val(departure).trigger('change');

@@ -839,6 +839,7 @@ class SuperAdminController extends Controller
         $validator = Validator::make($request->all(), [
             'take_off_point' => 'required',
             'destination'    => 'required',
+            'transport_fare' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -853,9 +854,10 @@ class SuperAdminController extends Controller
             return back();
         }
 
-        $route              = new CompanyRoutes;
-        $route->departure   = $request->take_off_point;
-        $route->destination = $request->destination;
+        $route                 = new CompanyRoutes;
+        $route->departure      = $request->take_off_point;
+        $route->destination    = $request->destination;
+        $route->transport_fare = $request->transport_fare;
         if ($route->save()) {
             toast('Travel Route Added Successfully', 'success');
             return back();
@@ -878,6 +880,7 @@ class SuperAdminController extends Controller
             'route_id'       => 'required',
             'take_off_point' => 'required',
             'destination'    => 'required',
+            'transport_fare' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
@@ -892,9 +895,10 @@ class SuperAdminController extends Controller
             return back();
         }
 
-        $route              = CompanyRoutes::find($request->route_id);
-        $route->departure   = $request->take_off_point;
-        $route->destination = $request->destination;
+        $route                 = CompanyRoutes::find($request->route_id);
+        $route->departure      = $request->take_off_point;
+        $route->destination    = $request->destination;
+        $route->transport_fare = $request->transport_fare;
         if ($route->save()) {
             toast('Travel Route Updated Successfully', 'success');
             return back();

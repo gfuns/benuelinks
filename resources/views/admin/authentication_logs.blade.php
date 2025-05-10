@@ -18,28 +18,6 @@
 
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="currentPassword"><strong>Terminal</strong></label>
-                                                <select id="fterminal" name="terminal" class="form-select" data-width="100%"
-                                                    required>
-                                                    <option value="null">All Terminals</option>
-                                                    @foreach ($terminals as $dp)
-                                                        <option value="{{ $dp->id }}" @if($terminal == $dp->id) selected @endif>
-                                                            {{ $dp->terminal }}</option>
-                                                    @endforeach
-                                                </select>
-
-                                                @error('terminal')
-                                                    <span class="" role="alert">
-                                                        <strong
-                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <div class="form-group">
                                                 <label for="currentPassword"><strong>Event Type</strong></label>
                                                 <select id="event" name="event_type" class="form-select"
                                                     data-width="100%" required>
@@ -58,7 +36,7 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Start Date</strong></label>
                                                 <input type="date" name="start_date" class="form-control"
@@ -73,7 +51,7 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>End Date</strong></label>
                                                 <input type="date" name="end_date" class="form-control"
@@ -88,7 +66,7 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-2 filterButton">
+                                        <div class="col-md-3 filterButton">
                                             <button type="submit" class="btn btn-primary btn-md">Filter Report</button>
                                         </div>
                                     </div>
@@ -100,15 +78,14 @@
 
                             <hr />
                             <h6 class="mt-4 mb-4 ms-4"><strong>
-                                    User {{ ucwords(isset($eventType) ? $eventType : 'Login And Logout') }} Activities For
-                                    {{ isset($station) ? $station->terminal . ' Terminal' : 'All Terminals' }}
+                                    User {{ ucwords(isset($eventType) ? $eventType : 'Login And Logout') }} Activities
                                     @if (isset($startDate) && isset($endDate))
                                         Between:
                                         {{ date_format($startDate, 'jS M, Y') }} And
                                         {{ date_format($endDate, 'jS M, Y') }}
                                     @endif
                                 </strong></h6>
-                            <div class="table-responsive mb-5" style="padding-bottom: 100px">
+                            <div class="table-responsive mb-2">
                                 <table class="table mb-0 text-nowrap table-hover table-centered">
                                     <thead>
                                         <tr>
