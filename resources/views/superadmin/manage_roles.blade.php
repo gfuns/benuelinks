@@ -128,7 +128,7 @@
                         <!-- form group -->
                         <div class="mb-3 col-12">
                             <label class="form-label">User Role <span class="text-danger">*</span></label>
-                            <input id="role" type="text" name="role" class="form-control"
+                            <input id="urole" type="text" name="role" class="form-control"
                                 placeholder="Enter Role" required>
                             <div class="invalid-feedback">Please provide role.</div>
                         </div>

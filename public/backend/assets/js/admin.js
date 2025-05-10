@@ -98,7 +98,7 @@ $(document).ready(function() {
     var offcanvas = $(this)
     // modal.find('.modal-body #myid').val(myid)
     offcanvas.find('.offcanvas-body #myid').val(myid)
-    offcanvas.find('.offcanvas-body #role').val(role)
+    offcanvas.find('.offcanvas-body #urole').val(role)
 })
 
 $('#editUser').on('show.bs.offcanvas', function(event) {

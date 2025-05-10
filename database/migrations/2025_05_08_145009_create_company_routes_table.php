@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments("id");
             $table->integer("departure")->unsigned();
             $table->integer("destination")->unsigned();
+            $table->double("transport_fare", 12, 2);
             $table->enum("status", ["active", "suspended"])->default("active");
             $table->timestamps();
             $table->foreign('departure')->references('id')->on('company_terminals')->onDelete('cascade');
