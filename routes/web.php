@@ -107,9 +107,15 @@ Route::group([
 
     Route::get('/activateRoute/{id}', [SuperAdminController::class, 'activateRoute'])->name('superadmin.activateRoute');
 
+    Route::post('/searchTravelRoutes', [SuperAdminController::class, 'searchTravelRoutes'])->name('superadmin.searchTravelRoutes');
+
+    Route::get('/filterTravelRoutes/{depa?}/{dest?}', [SuperAdminController::class, 'filterTravelRoutes'])->name('superadmin.filterTravelRoutes');
+
     Route::get('/travel-schedule', [SuperAdminController::class, 'travelSchedule'])->name('superadmin.travelSchedule');
 
     Route::post('/searchTravelSchedule', [SuperAdminController::class, 'searchTravelSchedule'])->name('superadmin.searchTravelSchedule');
+
+    Route::get('/filterTravelSchedule/{depa?}/{dest?}/{date?}', [SuperAdminController::class, 'filterTravelSchedule'])->name('superadmin.filterTravelSchedule');
 
     Route::get('/auth', [SuperAdminController::class, 'authenticationReport'])->name('superadmin.userAuths');
 

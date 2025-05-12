@@ -7,7 +7,7 @@
     <meta name="author" content="Xtratech Global Solution">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="images/favicon.png">
-    <title>Sign Up | Peace Mass Transit</title>
+    <title>Sign In | Peace Mass Transit</title>
     <link rel="stylesheet" href="assets/css/vendor.bundle.css?ver=20241116180">
     <link rel="stylesheet" href="assets/css/register.css?ver=20241116180">
 

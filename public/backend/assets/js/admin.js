@@ -105,6 +105,7 @@ $(document).ready(function() {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var myid = button.data('myid') // Extract info from data-* attributes
     var role = button.data('role') // Extract info from data-* attributes
+    var category = button.data('category') // Extract info from data-* attributes
 
     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -113,6 +114,9 @@ $(document).ready(function() {
     // modal.find('.modal-body #myid').val(myid)
     offcanvas.find('.offcanvas-body #myid').val(myid)
     offcanvas.find('.offcanvas-body #urole').val(role)
+    $('#category').select2({
+        dropdownParent: $('#editRole'),
+    }).val(category).trigger('change');
 })
 
 $('#editUser').on('show.bs.offcanvas', function(event) {
@@ -271,7 +275,6 @@ $('#editVehicle').on('show.bs.offcanvas', function(event) {
     offcanvas.find('.offcanvas-body #pmtno').val(vehiclenumber)
     offcanvas.find('.offcanvas-body #manufacturer').val(manufacturer)
     offcanvas.find('.offcanvas-body #seats').val(seats)
-
 })
 
 $('#editRoute').on('show.bs.offcanvas', function(event) {
@@ -309,6 +312,7 @@ $('#vehicleDetails').on('show.bs.modal', function(event) {
     var platenumber = button.data('platenumber') // Extract info from data-* attributes
     var driver = button.data('driver') // Extract info from data-* attributes
     var seats = button.data('seats') // Extract info from data-* attributes
+    var dp = button.data('dp') // Extract info from data-* attributes
     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 
@@ -324,6 +328,7 @@ $('#vehicleDetails').on('show.bs.modal', function(event) {
     document.getElementById("vplatenumber").innerHTML = platenumber;
     document.getElementById("vdriver").innerHTML = driver;
     document.getElementById("vseats").innerHTML = seats;
+    document.getElementById("vdp").src = dp;
 })
 
 $('#viewScheduleDetails').on('show.bs.modal', function(event) {

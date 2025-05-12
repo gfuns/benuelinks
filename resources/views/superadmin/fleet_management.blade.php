@@ -77,6 +77,7 @@
                                                                     data-enginenumber="{{ $vehicle->engine_number }}"
                                                                     data-seats="{{ $vehicle->seats }}"
                                                                     data-driver="{{ $vehicle->getdriver() }}"
+                                                                    data-dp="{{ $vehicle->display_photo }}"
                                                                     data-status="{{ ucwords($vehicle->status) }}"><i
                                                                         class="fe fe-eye dropdown-item-icon"></i>View
                                                                     Details</a>
@@ -174,7 +175,7 @@
             <!-- card body -->
             <div class="container">
                 <!-- form -->
-                <form novalidate method="post" action="{{ route('superadmin.storeVehicleDetails') }}">
+                <form novalidate method="post" action="{{ route('superadmin.storeVehicleDetails') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <!-- form group -->
@@ -250,6 +251,13 @@
                             <div class="invalid-feedback">Please provide passenger capacity.</div>
                         </div>
 
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Display Photo</strong> <span
+                                    class="text-danger">*</span></label>
+                            <input type="file" name="display_photo" class="form-control" required>
+                            <div class="invalid-feedback">Please select display photo.</div>
+                        </div>
+
                         <div class="col-md-12 border-bottom"></div>
                         <!-- button -->
                         <div class="col-12 mt-4">
@@ -282,6 +290,7 @@
                             <tr>
                                 <td class=""><strong>PMT Vehicle Number</strong></td>
                                 <td class=""><span id="vvehiclenumber"></span></td>
+                                <td class="" rowspan="11" style="vertical-align: top"><img id="vdp" src=""/></td>
                             </tr>
 
                             <tr>
@@ -428,6 +437,12 @@
                             <input id="seats" type="text" name="passenger_capacity" class="form-control"
                                 placeholder="Enter Passenger Capacity" required>
                             <div class="invalid-feedback">Please provide passenger capacity.</div>
+                        </div>
+
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Display Photo</strong></label>
+                            <input type="file" name="display_photo" class="form-control">
+                            <div class="invalid-feedback">Please select display photo.</div>
                         </div>
 
                         <input id="myid" type="hidden" name="vehicle_id" class="form-control" required>

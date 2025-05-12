@@ -23,6 +23,7 @@
                                         <tr>
                                             <th scope="col">S/No.</th>
                                             <th scope="col">Role</th>
+                                            <th scope="col">Category</th>
                                             <th scope="col">Permissions</th>
                                             <th scope="col">Date Created</th>
                                             <th scope="col">Action</th>
@@ -33,6 +34,7 @@
                                             <tr>
                                                 <td class="align-middle"> {{ $loop->index + 1 }} </td>
                                                 <td class="align-middle"> {{ $role->role }} </td>
+                                                <td class="align-middle"> {{ ucwords($role->category) }} </td>
                                                 <td class="align-middle">
                                                     {{ $role->id == 1 ? $role->totalPermissions() : $role->permissions->count() }}
                                                     Permissions Found</td>
@@ -52,6 +54,7 @@
                                                                         data-bs-toggle="offcanvas"
                                                                         data-bs-target="#editRole" data-backdrop="static"
                                                                         data-myid="{{ $role->id }}"
+                                                                        data-category="{{ $role->category }}"
                                                                         data-role="{{ $role->role }}"><i
                                                                             class="fe fe-eye dropdown-item-icon"></i>Edit
                                                                         Role</a>
@@ -99,6 +102,16 @@
                             <div class="invalid-feedback">Please provide role.</div>
                         </div>
 
+                        <div class="mb-3 col-12">
+                            <label class="form-label">Role Category<span class="text-danger">*</span></label>
+                            <select id="takeoff" name="category" class="form-select" data-width="100%" required>
+                                <option value="">Select Role Category</option>
+                                <option value="administrative">Administrative</option>
+                                <option value="non administrative">Non Administrative</option>
+                            </select>
+                            <div class="invalid-feedback">Please select role category.</div>
+                        </div>
+
                         <div class="col-md-12 border-bottom"></div>
                         <!-- button -->
                         <div class="col-12 mt-4">
@@ -131,6 +144,16 @@
                             <input id="urole" type="text" name="role" class="form-control"
                                 placeholder="Enter Role" required>
                             <div class="invalid-feedback">Please provide role.</div>
+                        </div>
+
+                        <div class="mb-3 col-12">
+                            <label class="form-label">Role Category<span class="text-danger">*</span></label>
+                            <select id="category" name="category" class="form-select" data-width="100%" required>
+                                <option value="">Select Role Category</option>
+                                <option value="administrative">Administrative</option>
+                                <option value="non administrative">Non Administrative</option>
+                            </select>
+                            <div class="invalid-feedback">Please select role category.</div>
                         </div>
 
                         <input id="myid" type="hidden" name="role_id" class="form-control" required>

@@ -16,13 +16,78 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <div class="col-md-12">
+                                <form method="POST" action="{{ route('superadmin.searchTravelRoutes') }}">
+                                    @csrf
+
+                                    <div class="row">
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="currentPassword"><strong>Take-off Point</strong></label>
+                                                <select id="fdeparture" name="take_off_point" class="form-select"
+                                                    data-width="100%">
+                                                    <option value="null">All Terminals</option>
+                                                    @foreach ($terminals as $dp)
+                                                        <option value="{{ $dp->id }}"
+                                                            @if ($dp->id == $departure) selected @endif>
+                                                            {{ $dp->terminal }}</option>
+                                                    @endforeach
+                                                </select>
+
+                                                @error('take_off_point')
+                                                    <span class="" role="alert">
+                                                        <strong
+                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="currentPassword"><strong>Destination</strong></label>
+                                                <select id="fdestination" name="destination" class="form-select"
+                                                    data-width="100%">
+                                                    <option value="null">All Terminals</option>
+                                                    @foreach ($terminals as $destin)
+                                                        <option value="{{ $destin->id }}"
+                                                            @if ($destin->id == $destination) selected @endif>
+                                                            {{ $destin->terminal }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                                @error('destination')
+                                                    <span class="" role="alert">
+                                                        <strong
+                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-3 filterButton">
+                                            <button type="submit" class="btn btn-primary btn-md">Filter Travel
+                                                Routes</button>
+                                        </div>
+                                    </div>
+
+
+                                </form>
+                            </div>
+
+
+                            <hr />
+
                             <div class="table-responsive">
 
-                                <table id="example" class="table mb-0 text-nowrap table-hover table-centered">
+                                <table id="pagedexample" class="table mb-0 text-nowrap table-hover table-centered">
                                     <thead>
                                         <tr>
                                             <th scope="col">S/No.</th>
-                                            <th scope="col">Departure Point</th>
+                                            <th scope="col">Take Off Point</th>
                                             <th scope="col">Destination</th>
                                             <th scope="col">Transport Fare</th>
                                             <th scope="col">Status</th>

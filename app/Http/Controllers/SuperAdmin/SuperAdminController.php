@@ -9,6 +9,7 @@ use App\Models\CompanyTerminals;
 use App\Models\CompanyVehicles;
 use App\Models\PlatformFeature;
 use App\Models\States;
+use App\Models\TravelSchedule;
 use App\Models\User;
 use App\Models\UserPermission;
 use App\Models\UserRole;
@@ -131,7 +132,8 @@ class SuperAdminController extends Controller
     public function storeUserRole(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'role' => 'required|unique:user_roles',
+            'role'     => 'required|unique:user_roles',
+            'category' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -141,8 +143,9 @@ class SuperAdminController extends Controller
             return back();
         }
 
-        $role       = new UserRole;
-        $role->role = $request->role;
+        $role           = new UserRole;
+        $role->role     = $request->role;
+        $role->category = $request->category;
         if ($role->save()) {
             toast('User Role Created Successfully', 'success');
             return back();
@@ -162,8 +165,9 @@ class SuperAdminController extends Controller
     public function updateUserRole(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'role_id' => 'required|numeric',
-            'role'    => 'required',
+            'role_id'  => 'required|numeric',
+            'role'     => 'required',
+            'category' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -179,8 +183,9 @@ class SuperAdminController extends Controller
             return back();
         }
 
-        $role       = UserRole::find($request->role_id);
-        $role->role = $request->role;
+        $role           = UserRole::find($request->role_id);
+        $role->role     = $request->role;
+        $role->category = $request->category;
         if ($role->save()) {
             toast('User Role Updated Successfully', 'success');
             return back();
@@ -660,6 +665,7 @@ class SuperAdminController extends Controller
             'chassis_number'     => 'required|unique:company_vehicles',
             'engine_number'      => 'required|unique:company_vehicles',
             'passenger_capacity' => 'required',
+            'display_photo'      => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -679,6 +685,14 @@ class SuperAdminController extends Controller
         $vehicle->chassis_number = $request->chassis_number;
         $vehicle->engine_number  = $request->engine_number;
         $vehicle->seats          = $request->passenger_capacity;
+        if ($request->has('display_photo')) {
+            $image    = $request->file('display_photo');
+            $filename = "/images/fleet/" . time() . "." . $image->getClientOriginalName();
+            $path     = public_path('/images/fleet/');
+            $image->move($path, $filename);
+            $vehicle->display_photo = $filename;
+        }
+
         if ($vehicle->save()) {
             toast('Vechicle Information Stored Successfully', 'success');
             return back();
@@ -807,6 +821,14 @@ class SuperAdminController extends Controller
         $vehicle->chassis_number = $request->chassis_number;
         $vehicle->engine_number  = $request->engine_number;
         $vehicle->seats          = $request->passenger_capacity;
+        if ($request->has('display_photo')) {
+            $image    = $request->file('display_photo');
+            $filename = "/images/fleet/" . time() . "." . $image->getClientOriginalName();
+            $path     = public_path('/images/fleet/');
+            $image->move($path, $filename);
+            $vehicle->display_photo = $filename;
+        }
+
         if ($vehicle->save()) {
             toast('Vechicle Information Updated Successfully', 'success');
             return back();
@@ -857,7 +879,9 @@ class SuperAdminController extends Controller
     {
         $companyTravelRoutes = CompanyRoutes::all();
         $terminals           = CompanyTerminals::where("status", "active")->where("id", ">", 1)->get();
-        return view("superadmin.route_management", compact("companyTravelRoutes", "terminals"));
+        $departure           = null;
+        $destination         = null;
+        return view("superadmin.route_management", compact("companyTravelRoutes", "terminals", "departure", "destination"));
     }
 
     /**
@@ -982,14 +1006,109 @@ class SuperAdminController extends Controller
     }
 
     /**
+     * searchTravelRoutes
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function searchTravelRoutes(Request $request)
+    {
+        $departure   = $request->take_off_point;
+        $destination = $request->destination;
+
+        return redirect()->route("superadmin.filterTravelRoutes", [$departure, $destination]);
+    }
+
+    public function filterTravelRoutes($departure = null, $destination = null)
+    {
+        $departure   = $departure == "null" ? null : $departure;
+        $destination = $destination == "null" ? null : $destination;
+
+        if (isset($departure) && isset($destination)) {
+            $companyTravelRoutes = CompanyRoutes::where("departure", $departure)->where("destination", $destination)->get();
+        } else if (isset($departure) && ! isset($destination)) {
+            $companyTravelRoutes = CompanyRoutes::where("departure", $departure)->get();
+        } else if (! isset($departure) && isset($destination)) {
+            $companyTravelRoutes = CompanyRoutes::where("destination", $destination)->get();
+        } else {
+            $companyTravelRoutes = CompanyRoutes::all();
+        }
+
+        $terminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
+
+        return view("superadmin.route_management", compact("companyTravelRoutes", "terminals", "departure", "destination"));
+    }
+
+    /**
      * travelSchedule
      *
      * @return void
      */
     public function travelSchedule()
     {
+        $terminals       = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
+        $travelSchedules = TravelSchedule::all();
+
+        $departure   = null;
+        $destination = null;
+        $date        = null;
+
+        return view("superadmin.travel_schedule", compact("terminals", 'travelSchedules', "destination", "departure", "date"));
+    }
+
+    /**
+     * searchTravelSchedule
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function searchTravelSchedule(Request $request)
+    {
+        $departure   = $request->take_off_point;
+        $destination = $request->destination;
+        $date        = $request->scheduled_date;
+
+        return redirect()->route("superadmin.filterTravelSchedule", [$departure, $destination, $date]);
+    }
+
+    /**
+     * filterTravelSchedule
+     *
+     * @param mixed departure
+     * @param mixed destination
+     * @param mixed date
+     *
+     * @return void
+     */
+    public function filterTravelSchedule($departure = null, $destination = null, $date = null)
+    {
+        $departure   = $departure == "null" ? null : $departure;
+        $destination = $destination == "null" ? null : $destination;
+
+        if (isset($departure) && isset($destination) && isset($date)) {
+            $travelSchedules = TravelSchedule::where("departure", $departure)->where("destination", $destination)->whereDate("scheduled_date", $date)->get();
+        } else if (isset($departure) && isset($destination) && ! isset($date)) {
+            $travelSchedules = TravelSchedule::where("departure", $departure)->where("destination", $destination)->get();
+        } else if (isset($departure) && ! isset($destination) && isset($date)) {
+            $travelSchedules = TravelSchedule::where("departure", $departure)->whereDate("scheduled_date", $date)->get();
+        } else if (! isset($departure) && isset($destination) && isset($date)) {
+            $travelSchedules = TravelSchedule::where("destination", $destination)->whereDate("scheduled_date", $date)->get();
+        } else if (isset($departure) && ! isset($destination) && ! isset($date)) {
+            $travelSchedules = TravelSchedule::where("departure", $departure)->get();
+        } else if (! isset($departure) && isset($destination) && ! isset($date)) {
+            $travelSchedules = TravelSchedule::where("destination", $destination)->get();
+        } else if (! isset($departure) && ! isset($destination) && isset($date)) {
+            $travelSchedules = TravelSchedule::whereDate("scheduled_date", $date)->get();
+        } else {
+            $travelSchedules = TravelSchedule::all();
+        }
+
         $terminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
-        return view("superadmin.travel_schedule", compact("terminals"));
+
+        $companyVehicles = CompanyVehicles::where("status", "active")->get();
+        return view("superadmin.travel_schedule", compact("travelSchedules", "terminals", "companyVehicles", "departure", "destination", "date"));
     }
 
     /**

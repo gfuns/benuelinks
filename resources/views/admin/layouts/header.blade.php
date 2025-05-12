@@ -151,6 +151,10 @@
             padding-top: 35px;
         }
 
+        .cstFilter {
+            padding-top: 10px !important;
+        }
+
         legend {
             background-color: #758698;
             /* Bootstrap primary color */

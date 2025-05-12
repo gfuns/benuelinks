@@ -43,6 +43,13 @@
                                         <div class="col-md-3 filterButton">
                                             <button type="submit" class="btn btn-primary btn-md">Search For Record</button>
                                         </div>
+
+                                        <div class="col-md-1 filterButton">
+                                            <button type="button" class="btn btn-secondary btn-sm cstFilter"
+                                                style="border: 1px solid black;" data-bs-toggle="modal"
+                                                data-bs-target="#filterBookings"><i class="fas fa-filter"
+                                                    style="font-size:16px"></i></button>
+                                        </div>
                                     </div>
 
 
@@ -97,6 +104,105 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="filterBookings" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mb-0" id="newCatgoryLabel">
+                        Filter Passenger Bookings
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td class=""><strong>Take-off Point</strong></td>
+                                <td class=""><span id="vdeparture"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Destination:</strong></td>
+                                <td class=""><span id="vdestination"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Scheduled Date:</strong></td>
+                                <td class=""><span id="vdate"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Departure Time:</strong></td>
+                                <td class=""><span id="vtime"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Assigned Vehicle:</strong></td>
+                                <td class=""><span id="vvehicle"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Driver Details:</strong></td>
+                                <td class=""><span id="vdriver"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Status</strong></td>
+                                <td class=""><span id="vstatus"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" style="width: 600px;">
+        <div class="offcanvas-body" data-simplebar>
+            <div class="offcanvas-header px-2 pt-0">
+                <h3 class="offcanvas-title" id="offcanvasExampleLabel"> Adjust Departure Time</h3>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <!-- card body -->
+            <div class="container">
+                <!-- form -->
+                <form class="needs-validation" novalidate method="post"
+                    action="{{ route('admin.adjustDepartureTime') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row">
+                        <!-- form group -->
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Departure Time</strong> <span
+                                    class="text-danger">*</span></label>
+                            <input id="adepartureTime" type="text" name="departure_time" class="form-control"
+                                placeholder="Select Departure Time" required>
+                            <div class="invalid-feedback">Please select departure time.</div>
+                        </div>
+
+                        <input id="myid" type="hidden" name="schedule_id" class="form-control" required>
+
+                        <div class="col-md-12 border-bottom"></div>
+                        <!-- button -->
+                        <div class="col-12 mt-4">
+                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                            <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
+                                aria-label="Close">Close</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

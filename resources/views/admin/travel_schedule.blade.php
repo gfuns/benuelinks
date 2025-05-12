@@ -161,8 +161,10 @@
                                                                     data-status="{{ ucwords($schedule->status) }}"><i
                                                                         class="fe fe-eye dropdown-item-icon"></i>View
                                                                     Details</a>
+                                                            </li>
 
-                                                                @if ($schedule->departure == Auth::user()->station && $schedule->status == 'scheduled')
+                                                            @if ($schedule->departure == Auth::user()->station && $schedule->status == 'scheduled')
+                                                                <li>
                                                                     <a class="dropdown-item mb-2" href="#"
                                                                         data-bs-toggle="offcanvas"
                                                                         data-bs-target="#adjustDepartureTime"
@@ -172,6 +174,8 @@
                                                                             class="fe fe-eye dropdown-item-icon"></i>Adjust
                                                                         Departure
                                                                         Time</a>
+                                                                </li>
+                                                                <li>
 
                                                                     <a class="dropdown-item mb-2" href="#"
                                                                         data-bs-toggle="offcanvas"
@@ -181,13 +185,16 @@
                                                                         data-vehicle="{{ $schedule->vehicle }}"><i
                                                                             class="fe fe-eye dropdown-item-icon"></i>Assign
                                                                         Vehicle</a>
+                                                                </li>
+                                                                <li>
 
                                                                     <a class="dropdown-item"
                                                                         href="{{ route('admin.suspendTrip', [$schedule->id]) }}"
                                                                         onclick="return confirm('Are you sure you want to suspend this trip?');"><i
                                                                             class="fe fe-trash dropdown-item-icon"></i>Suspend
                                                                         Trip</a>
-                                                                @endif
+                                                                </li>
+                                                            @endif
                                                             </li>
                                                         </ul>
                                                     </div>
