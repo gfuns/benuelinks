@@ -11,16 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('travel_schedules', function (Blueprint $table) {
+        Schema::create('travel_bookings', function (Blueprint $table) {
             $table->increments("id");
+            $table->integer("schedule_id")->unsigned();
             $table->integer("departure")->unsigned();
             $table->integer("destination")->unsigned();
             $table->integer("vehicle")->unsigned()->nullable();
-            $table->date("scheduled_date");
-            $table->string("scheduled_time")->default("06:30 AM");
-            $table->string("arrival_time")->nullable();
-            $table->enum("status", ["scheduled", "trip suspended", "boarding in progress", "in transit", "trip successful"])->default("scheduled");
+            $table->string("vehicle_type");
+            $table->string("booking_number")->nullable();
+            $table->string("ticket_number")->nullable();
+            $table->string("full_name");
+            $table->string("phone_number");
+            $table->string("nok")->nullable();
+            $table->string("nok_phone")->nullable();
+            $table->string("seat");
+            $table->enum("classification", ["booking", "ticketing"]);
+            $table->enum("payment_status", ["paid", "pending"]);
             $table->timestamps();
+            $table->foreign('schedule_id')->references('id')->on('travel_schedules')->onDelete('cascade');
             $table->foreign('departure')->references('id')->on('company_terminals')->onDelete('cascade');
             $table->foreign('destination')->references('id')->on('company_terminals')->onDelete('cascade');
             $table->foreign('vehicle')->references('id')->on('company_vehicles')->onDelete('cascade');
@@ -32,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('travel_schedules');
+        Schema::dropIfExists('travel_bookings');
     }
 };

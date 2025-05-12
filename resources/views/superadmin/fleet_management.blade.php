@@ -76,6 +76,7 @@
                                                                     data-chassisnumber="{{ $vehicle->chassis_number }}"
                                                                     data-enginenumber="{{ $vehicle->engine_number }}"
                                                                     data-seats="{{ $vehicle->seats }}"
+                                                                    data-driver="{{ $vehicle->getdriver() }}"
                                                                     data-status="{{ ucwords($vehicle->status) }}"><i
                                                                         class="fe fe-eye dropdown-item-icon"></i>View
                                                                     Details</a>
@@ -85,8 +86,8 @@
                                                             <li>
                                                                 <a class="dropdown-item mb-2" href="#"
                                                                     data-bs-toggle="offcanvas" data-bs-target="#editVehicle"
-                                                                    data-backdrop="static"
-                                                                    data-backdrop="static" data-myid="{{ $vehicle->id }}"
+                                                                    data-backdrop="static" data-backdrop="static"
+                                                                    data-myid="{{ $vehicle->id }}"
                                                                     data-manufacturer="{{ $vehicle->manufacturer }}"
                                                                     data-model="{{ $vehicle->model }}"
                                                                     data-year="{{ $vehicle->year }}"
@@ -100,6 +101,12 @@
                                                                         class="fe fe-eye dropdown-item-icon"></i>Edit
                                                                     Details</a>
                                                             </li>
+                                                            <a class="dropdown-item mb-2" href="#"
+                                                                data-bs-toggle="offcanvas" data-bs-target="#assignDriver"
+                                                                data-backdrop="static" data-myid="{{ $vehicle->id }}"
+                                                                data-driver="{{ $vehicle->driver }}"><i
+                                                                    class="fe fe-eye dropdown-item-icon"></i>Assign
+                                                                Driver</a>
                                                             @if ($vehicle->status == 'active')
                                                                 <li>
                                                                     <a class="dropdown-item mb-2"
@@ -132,7 +139,8 @@
                                                                 <li>
                                                                     <a class="dropdown-item mb-2"
                                                                         href="{{ route('superadmin.vehicleSold', [$vehicle->id]) }}"><i
-                                                                            class="fe fe-eye dropdown-item-icon"></i>Mark As
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Mark
+                                                                        As
                                                                         Sold</a>
                                                                 </li>
                                                             @endif
@@ -160,7 +168,8 @@
         <div class="offcanvas-body" data-simplebar>
             <div class="offcanvas-header px-2 pt-0">
                 <h3 class="offcanvas-title" id="offcanvasExampleLabel">Add New Vehicle</h3>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
             </div>
             <!-- card body -->
             <div class="container">
@@ -316,6 +325,11 @@
                             </tr>
 
                             <tr>
+                                <td class=""><strong>Assigned Driver</strong></td>
+                                <td class=""><span id="vdriver"></span></td>
+                            </tr>
+
+                            <tr>
                                 <td class=""><strong>Status</strong></td>
                                 <td class=""><span id="vstatus"></span></td>
                             </tr>
@@ -414,6 +428,49 @@
                             <input id="seats" type="text" name="passenger_capacity" class="form-control"
                                 placeholder="Enter Passenger Capacity" required>
                             <div class="invalid-feedback">Please provide passenger capacity.</div>
+                        </div>
+
+                        <input id="myid" type="hidden" name="vehicle_id" class="form-control" required>
+
+                        <div class="col-md-12 border-bottom"></div>
+                        <!-- button -->
+                        <div class="col-12 mt-4">
+                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                            <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
+                                aria-label="Close">Close</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="assignDriver" style="width: 600px;">
+        <div class="offcanvas-body" data-simplebar>
+            <div class="offcanvas-header px-2 pt-0">
+                <h3 class="offcanvas-title" id="offcanvasExampleLabel"> Assign Driver</h3>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <!-- card body -->
+            <div class="container">
+                <!-- form -->
+                <form class="needs-validation" novalidate method="post" action="{{ route('superadmin.assignDriver') }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="row">
+                        <!-- form group -->
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Assign Driver</strong> <span
+                                    class="text-danger">*</span></label>
+                            <select id="driver" name="driver" class="form-select" data-width="100%" required>
+                                <option value="all">Select Driver</option>
+                                @foreach ($drivers as $driver)
+                                    <option value="{{ $driver->id }}">{{ $driver->last_name }}, {{ $driver->other_names }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback">Please select driver.</div>
                         </div>
 
                         <input id="myid" type="hidden" name="vehicle_id" class="form-control" required>

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('company_vehicles', function (Blueprint $table) {
             $table->increments("id");
+            $table->integer("driver")->unsigned()->nullable();
             $table->string("vehicle_number");
             $table->string("plate_number");
             $table->string("chassis_number");
@@ -22,8 +23,10 @@ return new class extends Migration
             $table->string("year");
             $table->string("color");
             $table->integer("seats");
+            $table->string("display_photo")->nullable();
             $table->enum("status", ["active", "under maintenance", "decommissioned", "sold"])->default("active");
             $table->timestamps();
+            $table->foreign('driver')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

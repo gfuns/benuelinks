@@ -85,6 +85,8 @@ Route::group([
 
     Route::post('/storeVehicleDetails', [SuperAdminController::class, 'storeVehicleDetails'])->name('superadmin.storeVehicleDetails');
 
+    Route::post('/assignDriver', [SuperAdminController::class, 'assignDriver'])->name('superadmin.assignDriver');
+
     Route::post('/updateVehicleDetails', [SuperAdminController::class, 'updateVehicleDetails'])->name('superadmin.updateVehicleDetails');
 
     Route::get('/vehicle/sold/{id}', [SuperAdminController::class, 'vehicleSold'])->name('superadmin.vehicleSold');

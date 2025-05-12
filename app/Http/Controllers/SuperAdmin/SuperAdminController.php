@@ -637,7 +637,8 @@ class SuperAdminController extends Controller
     public function fleetManagement()
     {
         $companyVehicles = CompanyVehicles::all();
-        return view("superadmin.fleet_management", compact("companyVehicles"));
+        $drivers         = User::where("role_id", 3)->where("status", "active")->get();
+        return view("superadmin.fleet_management", compact("companyVehicles", "drivers"));
     }
 
     /**
@@ -808,6 +809,38 @@ class SuperAdminController extends Controller
         $vehicle->seats          = $request->passenger_capacity;
         if ($vehicle->save()) {
             toast('Vechicle Information Updated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * assignDriver
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function assignDriver(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'vehicle_id' => 'required',
+            'driver'     => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $vehicle         = CompanyVehicles::find($request->vehicle_id);
+        $vehicle->driver = $request->driver;
+        if ($vehicle->save()) {
+            toast('Driver Assigned Successfully', 'success');
             return back();
         } else {
             toast('Something went wrong. Please try again', 'error');

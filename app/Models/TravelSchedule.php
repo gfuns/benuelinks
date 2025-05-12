@@ -18,6 +18,37 @@ class TravelSchedule extends Model implements Auditable
         ];
     }
 
+    public function getvehicle()
+    {
+        if (isset($this->vehicle)) {
+            $vehicle = $this->vehicledetail;
+            return $vehicle->vehicle_number . "<br/> (" . $vehicle->manufacturer . " " . $vehicle->model . ")";
+        } else {
+            return "Pending";
+        }
+    }
+
+    public function getdriver()
+    {
+        if (isset($this->vehicle)) {
+            $driver = User::find($this->vehicledetail->driver);
+            if (isset($driver)) {
+                return $driver->last_name . ", " . $driver->other_names . "<br/>" . $driver->phone_number;
+            } else {
+                return "A Driver is yet to be assigned to this Vehicle";
+            }
+
+        } else {
+            return "Awaiting Vehicle Assignment";
+        }
+    }
+
+    public function vehicledetail()
+    {
+        return $this->belongsTo('App\Models\CompanyVehicles', "vehicle");
+
+    }
+
     public function departurePoint()
     {
         return $this->belongsTo('App\Models\CompanyTerminals', "departure");

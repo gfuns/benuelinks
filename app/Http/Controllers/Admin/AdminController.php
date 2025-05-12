@@ -6,6 +6,8 @@ use App\Models\AuditTrails;
 use App\Models\AuthenticationLogs;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
+use App\Models\CompanyVehicles;
+use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
 use App\Models\UserRole;
@@ -239,9 +241,48 @@ class AdminController extends Controller
      */
     public function travelRoutes()
     {
+        $terminals           = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
         $terminal            = CompanyTerminals::find(Auth::user()->station);
         $companyTravelRoutes = CompanyRoutes::where("departure", $terminal->id)->orWhere("destination", $terminal->id)->get();
-        return view("admin.travel_routes", compact("companyTravelRoutes"));
+        $departure           = null;
+        $destination         = null;
+        return view("admin.travel_routes", compact("companyTravelRoutes", "terminals", 'destination', 'departure'));
+    }
+
+    /**
+     * searchTravelRoutes
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function searchTravelRoutes(Request $request)
+    {
+        $departure   = $request->take_off_point;
+        $destination = $request->destination;
+
+        return redirect()->route("admin.filterTravelRoutes", [$departure, $destination]);
+    }
+
+    public function filterTravelRoutes($departure = null, $destination = null)
+    {
+        $departure   = $departure == "null" ? null : $departure;
+        $destination = $destination == "null" ? null : $destination;
+        $station     = Auth::user()->station;
+
+        if (isset($departure) && isset($destination)) {
+            $companyTravelRoutes = CompanyRoutes::where("departure", $departure)->where("destination", $destination)->get();
+        } else if (isset($departure) && ! isset($destination)) {
+            $companyTravelRoutes = CompanyRoutes::where("departure", $departure)->get();
+        } else if (! isset($departure) && isset($destination)) {
+            $companyTravelRoutes = CompanyRoutes::where("destination", $destination)->get();
+        } else {
+            $companyTravelRoutes = CompanyRoutes::where("departure", $station)->orWhere("destination", $station)->get();
+        }
+
+        $terminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
+
+        return view("admin.travel_routes", compact("companyTravelRoutes", "terminals", "departure", "destination"));
     }
 
     /**
@@ -457,7 +498,12 @@ class AdminController extends Controller
 
         $terminals       = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
         $travelSchedules = TravelSchedule::where("departure", Auth::user()->station)->orWhere("destination", Auth::user()->station)->get();
-        return view("admin.travel_schedule", compact("travelSchedules", "terminals", "weekData", "weekDates"));
+        $companyVehicles = CompanyVehicles::where("status", "active")->get();
+
+        $departure   = null;
+        $destination = null;
+        $date        = null;
+        return view("admin.travel_schedule", compact("travelSchedules", "terminals", "weekData", "weekDates", "companyVehicles", "departure", "destination", "date"));
     }
 
     /**
@@ -536,6 +582,70 @@ class AdminController extends Controller
     }
 
     /**
+     * adjustDepartureTime
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function adjustDepartureTime(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'schedule_id'    => 'required',
+            'departure_time' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $schedule                 = TravelSchedule::find($request->schedule_id);
+        $schedule->scheduled_time = $request->departure_time;
+        if ($schedule->save()) {
+            toast('Departure Time Adjusted Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * assignVehicle
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function assignVehicle(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'schedule_id' => 'required',
+            'vehicle'     => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $schedule          = TravelSchedule::find($request->schedule_id);
+        $schedule->vehicle = $request->vehicle;
+        if ($schedule->save()) {
+            toast('Vehicle Assigned Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
      * suspendTrip
      *
      * @param mixed id
@@ -553,6 +663,73 @@ class AdminController extends Controller
             toast('Something went wrong. Please try again', 'error');
             return back();
         }
+    }
+
+    /**
+     * searchTravelSchedule
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function searchTravelSchedule(Request $request)
+    {
+        $departure   = $request->take_off_point;
+        $destination = $request->destination;
+        $date        = $request->scheduled_date;
+
+        return redirect()->route("admin.filterTravelSchedule", [$departure, $destination, $date]);
+    }
+
+    /**
+     * filterTravelSchedule
+     *
+     * @param mixed departure
+     * @param mixed destination
+     * @param mixed date
+     *
+     * @return void
+     */
+    public function filterTravelSchedule($departure = null, $destination = null, $date = null)
+    {
+        $departure   = $departure == "null" ? null : $departure;
+        $destination = $destination == "null" ? null : $destination;
+
+        if (isset($departure) && isset($destination) && isset($date)) {
+            $travelSchedules = TravelSchedule::where("departure", $departure)->where("destination", $destination)->whereDate("scheduled_date", $date)->get();
+        } else if (isset($departure) && isset($destination) && ! isset($date)) {
+            $travelSchedules = TravelSchedule::where("departure", $departure)->where("destination", $destination)->get();
+        } else if (isset($departure) && ! isset($destination) && isset($date)) {
+            $travelSchedules = TravelSchedule::where("departure", $departure)->whereDate("scheduled_date", $date)->get();
+        } else if (! isset($departure) && isset($destination) && isset($date)) {
+            $travelSchedules = TravelSchedule::where("destination", $destination)->whereDate("scheduled_date", $date)->get();
+        } else if (isset($departure) && ! isset($destination) && ! isset($date)) {
+            $travelSchedules = TravelSchedule::where("departure", $departure)->get();
+        } else if (! isset($departure) && isset($destination) && ! isset($date)) {
+            $travelSchedules = TravelSchedule::where("destination", $destination)->get();
+        } else if (! isset($departure) && ! isset($destination) && isset($date)) {
+            $travelSchedules = TravelSchedule::where(function ($query) {
+                $query->where("departure", Auth::user()->station)
+                    ->orWhere("destination", Auth::user()->station);
+            })->whereDate("scheduled_date", $date)->get();
+        } else {
+            $travelSchedules = TravelSchedule::where("departure", Auth::user()->station)->orWhere("destination", Auth::user()->station)->get();
+        }
+
+        $weekData  = $this->getWeekData();
+        $weekDates = $this->getWeekDates();
+
+        $terminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
+
+        $companyVehicles = CompanyVehicles::where("status", "active")->get();
+        return view("admin.travel_schedule", compact("travelSchedules", "terminals", "weekData", "weekDates", "companyVehicles", "departure", "destination", "date"));
+    }
+
+    public function bookPassengers()
+    {
+        $terminal = Auth::user()->station;
+        $bookings = TravelBooking::where("classification", "booking")->where("departure", $terminal)->get();
+        return view("admin.passenger_booking", compact("bookings"));
     }
 
     public function getWeekData()

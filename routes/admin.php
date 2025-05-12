@@ -26,6 +26,10 @@ Route::group([
 
     Route::get('/travel-routes', [AdminController::class, 'travelRoutes'])->name('admin.travelRoutes');
 
+    Route::post('/searchTravelRoutes', [AdminController::class, 'searchTravelRoutes'])->name('admin.searchTravelRoutes');
+
+    Route::get('/filterTravelRoutes/{depa?}/{dest?}', [AdminController::class, 'filterTravelRoutes'])->name('admin.filterTravelRoutes');
+
     Route::get('/auth', [AdminController::class, 'authenticationReport'])->name('admin.userAuths');
 
     Route::post('/searchUserAuths', [AdminController::class, 'searchUserAuths'])->name('admin.searchUserAuths');
@@ -44,8 +48,18 @@ Route::group([
 
     Route::post('/searchTravelSchedule', [AdminController::class, 'searchTravelSchedule'])->name('admin.searchTravelSchedule');
 
+    Route::get('/filterTravelSchedule/{depa?}/{dest?}/{date?}', [AdminController::class, 'filterTravelSchedule'])->name('admin.filterTravelSchedule');
+
     Route::post('/storeTravelSchedule', [AdminController::class, 'storeTravelSchedule'])->name('admin.storeTravelSchedule');
 
+    Route::post('/adjustDepartureTime', [AdminController::class, 'adjustDepartureTime'])->name('admin.adjustDepartureTime');
+
+    Route::post('/assignVehicle', [AdminController::class, 'assignVehicle'])->name('admin.assignVehicle');
+
     Route::get('/suspendTrip/{id}', [AdminController::class, 'suspendTrip'])->name('admin.suspendTrip');
+
+    Route::get('/book-passengers', [AdminController::class, 'bookPassengers'])->name('admin.bookPassengers');
+
+    Route::get('/issue-tickets', [AdminController::class, 'issueTickets'])->name('admin.issueTickets');
 
 });

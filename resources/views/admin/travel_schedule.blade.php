@@ -26,10 +26,11 @@
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Take-off Point</strong></label>
                                                 <select id="fdeparture" name="take_off_point" class="form-select"
-                                                    data-width="100%" required>
-                                                    <option value="all">All Terminals</option>
+                                                    data-width="100%">
+                                                    <option value="null">All Terminals</option>
                                                     @foreach ($terminals as $dp)
-                                                        <option value="{{ $dp->id }}">
+                                                        <option value="{{ $dp->id }}"
+                                                            @if ($dp->id == $departure) selected @endif>
                                                             {{ $dp->terminal }}</option>
                                                     @endforeach
                                                 </select>
@@ -47,10 +48,12 @@
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Destination</strong></label>
                                                 <select id="fdestination" name="destination" class="form-select"
-                                                    data-width="100%" required>
-                                                    <option value="all">All Terminals</option>
-                                                    @foreach ($terminals as $destination)
-                                                        <option value="{{ $destination->id }}">{{ $destination->terminal }}
+                                                    data-width="100%">
+                                                    <option value="null">All Terminals</option>
+                                                    @foreach ($terminals as $destin)
+                                                        <option value="{{ $destin->id }}"
+                                                            @if ($destin->id == $destination) selected @endif>
+                                                            {{ $destin->terminal }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -67,8 +70,8 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Scheduled Date</strong></label>
-                                                <input type="date" name="scheduled_date" class="form-control"
-                                                    placeholder="End Date">
+                                                <input type="date" name="scheduled_date" value="{{ $date }}"
+                                                    class="form-control" placeholder="End Date">
 
                                                 @error('scheduled_date')
                                                     <span class="" role="alert">
@@ -94,7 +97,7 @@
 
                             <div class="table-responsive">
 
-                                <table id="example" class="table mb-0 text-nowrap table-hover table-centered">
+                                <table id="pagedexample" class="table mb-0 text-nowrap table-hover table-centered">
                                     <thead>
                                         <tr>
                                             <th scope="col">S/No.</th>
@@ -113,9 +116,7 @@
                                                 <td class="align-middle"> {{ $loop->index + 1 }} </td>
                                                 <td class="align-middle"> {{ $schedule->departurePoint->terminal }} </td>
                                                 <td class="align-middle">{{ $schedule->destinationPoint->terminal }}</td>
-                                                <td class="align-middle">
-                                                    {{ isset($schedule->vehicle) ? $schedule->vehicle->vehicle_number : 'Pending' }}
-                                                </td>
+                                                <td class="align-middle">@php echo $schedule->getvehicle() @endphp</td>
                                                 <td class="align-middle">
                                                     {{ date_format(new DateTime($schedule->scheduled_date), 'l - jS M, Y') }}
                                                 </td>
@@ -148,25 +149,36 @@
                                                         <ul class="dropdown-menu" role="menu" style="">
                                                             <li>
                                                                 <a class="dropdown-item mb-2" href="#"
-                                                                    data-bs-toggle="offcanvas"
+                                                                    data-bs-toggle="modal"
                                                                     data-bs-target="#viewScheduleDetails"
                                                                     data-backdrop="static" data-myid="{{ $schedule->id }}"
-                                                                    data-departure="{{ $schedule->last_name }}"
-                                                                    data-destination="{{ $schedule->other_names }}"
-                                                                    data-date="{{ $schedule->email }}"
-                                                                    data-time="{{ $schedule->phone_number }}"
-                                                                    data-vehicle="{{ $schedule->station }}"
-                                                                    data-driver="{{ $schedule->role_id }}"
+                                                                    data-departure="{{ $schedule->departurePoint->terminal }}"
+                                                                    data-destination="{{ $schedule->destinationPoint->terminal }}"
+                                                                    data-date="{{ date_format(new DateTime($schedule->scheduled_date), 'l - jS M, Y') }}"
+                                                                    data-time="{{ $schedule->scheduled_time }}"
+                                                                    data-vehicle="{{ $schedule->getvehicle() }}"
+                                                                    data-driver="{{ $schedule->getdriver() }}"
                                                                     data-status="{{ ucwords($schedule->status) }}"><i
                                                                         class="fe fe-eye dropdown-item-icon"></i>View
                                                                     Details</a>
 
-                                                                @if ($schedule->status == 'scheduled')
+                                                                @if ($schedule->departure == Auth::user()->station && $schedule->status == 'scheduled')
+                                                                    <a class="dropdown-item mb-2" href="#"
+                                                                        data-bs-toggle="offcanvas"
+                                                                        data-bs-target="#adjustDepartureTime"
+                                                                        data-backdrop="static"
+                                                                        data-myid="{{ $schedule->id }}"
+                                                                        data-time="{{ $schedule->scheduled_time }}"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Adjust
+                                                                        Departure
+                                                                        Time</a>
+
                                                                     <a class="dropdown-item mb-2" href="#"
                                                                         data-bs-toggle="offcanvas"
                                                                         data-bs-target="#assignVehicle"
                                                                         data-backdrop="static"
-                                                                        data-myid="{{ $schedule->id }}"><i
+                                                                        data-myid="{{ $schedule->id }}"
+                                                                        data-vehicle="{{ $schedule->vehicle }}"><i
                                                                             class="fe fe-eye dropdown-item-icon"></i>Assign
                                                                         Vehicle</a>
 
@@ -296,6 +308,149 @@
     </div>
 
 
+    <div class="modal fade" id="viewScheduleDetails" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mb-0" id="newCatgoryLabel">
+                        Schedule Details
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td class=""><strong>Take-off Point</strong></td>
+                                <td class=""><span id="vdeparture"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Destination:</strong></td>
+                                <td class=""><span id="vdestination"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Scheduled Date:</strong></td>
+                                <td class=""><span id="vdate"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Departure Time:</strong></td>
+                                <td class=""><span id="vtime"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Assigned Vehicle:</strong></td>
+                                <td class=""><span id="vvehicle"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Driver Details:</strong></td>
+                                <td class=""><span id="vdriver"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Status</strong></td>
+                                <td class=""><span id="vstatus"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="adjustDepartureTime" style="width: 600px;">
+        <div class="offcanvas-body" data-simplebar>
+            <div class="offcanvas-header px-2 pt-0">
+                <h3 class="offcanvas-title" id="offcanvasExampleLabel"> Adjust Departure Time</h3>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <!-- card body -->
+            <div class="container">
+                <!-- form -->
+                <form class="needs-validation" novalidate method="post"
+                    action="{{ route('admin.adjustDepartureTime') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row">
+                        <!-- form group -->
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Departure Time</strong> <span
+                                    class="text-danger">*</span></label>
+                            <input id="adepartureTime" type="text" name="departure_time" class="form-control"
+                                placeholder="Select Departure Time" required>
+                            <div class="invalid-feedback">Please select departure time.</div>
+                        </div>
+
+                        <input id="myid" type="hidden" name="schedule_id" class="form-control" required>
+
+                        <div class="col-md-12 border-bottom"></div>
+                        <!-- button -->
+                        <div class="col-12 mt-4">
+                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                            <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
+                                aria-label="Close">Close</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="assignVehicle" style="width: 600px;">
+        <div class="offcanvas-body" data-simplebar>
+            <div class="offcanvas-header px-2 pt-0">
+                <h3 class="offcanvas-title" id="offcanvasExampleLabel"> Assign Vehicle</h3>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <!-- card body -->
+            <div class="container">
+                <!-- form -->
+                <form class="needs-validation" novalidate method="post" action="{{ route('admin.assignVehicle') }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="row">
+                        <!-- form group -->
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Assign Vehicle</strong> <span
+                                    class="text-danger">*</span></label>
+                            <select id="vehicle" name="vehicle" class="form-select" data-width="100%" required>
+                                <option value="all">Select Vehicle</option>
+                                @foreach ($companyVehicles as $cv)
+                                    <option value="{{ $cv->id }}">{{ $cv->vehicle_number }} -
+                                        {{ $cv->manufacturer }} ({{ $cv->model }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback">Please select vehicle.</div>
+                        </div>
+
+                        <input id="myid" type="hidden" name="schedule_id" class="form-control" required>
+
+                        <div class="col-md-12 border-bottom"></div>
+                        <!-- button -->
+                        <div class="col-12 mt-4">
+                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                            <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
+                                aria-label="Close">Close</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <script type="text/javascript">
         document.getElementById("schedules").classList.add('active');
     </script>
@@ -304,6 +459,15 @@
 @section('customjs')
     <script>
         flatpickr("#departureTime", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K", // "K" = AM/PM
+            time_24hr: false,
+            defaultHour: 6,
+            defaultMinute: 30
+        });
+
+        flatpickr("#adepartureTime", {
             enableTime: true,
             noCalendar: true,
             dateFormat: "h:i K", // "K" = AM/PM

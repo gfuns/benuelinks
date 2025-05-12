@@ -48,10 +48,25 @@
 
                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 7) == true)
                     <li id="ticketing" class="nav-item mb-3">
-                        <a href="{{ route('superadmin.travelSchedule') }}">
+                        <a data-bs-toggle="collapse" href="#bookticket" class="collapsed" aria-expanded="false">
                             <i class="fas fa-cash-register"></i>
                             <p>Booking/Ticketing</p>
+                            <span class="caret"></span>
                         </a>
+                        <div class="collapse" id="bookticket" style="">
+                            <ul class="nav nav-collapse">
+                                <li id="book">
+                                    <a href="{{ route('admin.bookPassengers') }}">
+                                        <span class="sub-item">Book Passengers</span>
+                                    </a>
+                                </li>
+                                <li id="ticket">
+                                    <a href="{{ route('admin.issueTickets') }}">
+                                        <span class="sub-item">Issue Travel Tickets</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                 @endif
 

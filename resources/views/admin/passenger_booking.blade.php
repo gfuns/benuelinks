@@ -7,7 +7,12 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center">
-                                <h4 class="card-title">Travel Routes</h4>
+                                <h4 class="card-title">Passenger Bookings</h4>
+                                <button class="btn btn-primary btn-round ms-auto btn-sm" data-bs-toggle="offcanvas"
+                                    data-bs-target="#offcanvasRight">
+                                    <i class="fa fa-plus"></i>
+                                    Book Passenger
+                                </button>
                             </div>
                         </div>
                         <div class="card-body">
@@ -18,20 +23,13 @@
 
                                     <div class="row">
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-8">
                                             <div class="form-group">
-                                                <label for="currentPassword"><strong>Take-off Point</strong></label>
-                                                <select id="fdeparture" name="take_off_point" class="form-select"
-                                                    data-width="100%">
-                                                    <option value="null">All Terminals</option>
-                                                    @foreach ($terminals as $dp)
-                                                        <option value="{{ $dp->id }}"
-                                                            @if ($dp->id == $departure) selected @endif>
-                                                            {{ $dp->terminal }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <label for="currentPassword"><strong>Booking Number</strong></label>
+                                                <input type="text" name="booking_number" class="form-control"
+                                                    placeholder="Enter Booking Number">
 
-                                                @error('take_off_point')
+                                                @error('booking_number')
                                                     <span class="" role="alert">
                                                         <strong
                                                             style="color: #b02a37; font-size:12px">{{ $message }}</strong>
@@ -40,33 +38,10 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="currentPassword"><strong>Destination</strong></label>
-                                                <select id="fdestination" name="destination" class="form-select"
-                                                    data-width="100%">
-                                                    <option value="null">All Terminals</option>
-                                                    @foreach ($terminals as $destin)
-                                                        <option value="{{ $destin->id }}"
-                                                            @if ($destin->id == $destination) selected @endif>
-                                                            {{ $destin->terminal }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
 
-                                                @error('destination')
-                                                    <span class="" role="alert">
-                                                        <strong
-                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-
-                                        </div>
 
                                         <div class="col-md-3 filterButton">
-                                            <button type="submit" class="btn btn-primary btn-md">Filter Travel
-                                                Routes</button>
+                                            <button type="submit" class="btn btn-primary btn-md">Search For Record</button>
                                         </div>
                                     </div>
 
@@ -83,20 +58,21 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">S/No.</th>
-                                            <th scope="col">Departure Point</th>
-                                            <th scope="col">Destination</th>
-                                            <th scope="col">Transport Fare</th>
+                                            <th scope="col">Passenger Details</th>
+                                            <th scope="col">Travel Route</th>
+                                            <th scope="col">Departure Date/Time</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Date Created</th>
+                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($companyTravelRoutes as $route)
+                                        @foreach ($bookings as $route)
                                             <tr>
                                                 <td class="align-middle"> {{ $loop->index + 1 }} </td>
                                                 <td class="align-middle"> {{ $route->departurePoint->terminal }} </td>
                                                 <td class="align-middle">{{ $route->destinationPoint->terminal }}</td>
-                                                <td class="align-middle">&#8358;{{ number_format($route->transport_fare, 2) }}</td>
+                                                <td class="align-middle">
+                                                    &#8358;{{ number_format($route->transport_fare, 2) }}</td>
                                                 <td>
                                                     @if ($route->status == 'active')
                                                         <span class="badge badge-success p-2"
@@ -127,6 +103,8 @@
 
 
     <script type="text/javascript">
-        document.getElementById("routes").classList.add('active');
+        document.getElementById("ticketing").classList.add('active');
+        document.getElementById("bookticket").classList.add('show');
+        document.getElementById("book").classList.add('active');
     </script>
 @endsection
