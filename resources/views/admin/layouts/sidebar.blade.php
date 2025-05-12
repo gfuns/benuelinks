@@ -57,7 +57,7 @@
 
                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 6) == true)
                     <li id="schedules" class="nav-item mb-3">
-                        <a href="{{ route('superadmin.travelSchedule') }}">
+                        <a href="{{ route('admin.travelSchedule') }}">
                             <i class="fas fa-calendar-alt"></i>
                             <p>Travel Schedule</p>
                         </a>

@@ -31,6 +31,7 @@
 
  <!-- Kaiadmin JS -->
  <script src="{{ asset('backend/assets/js/kaiadmin.min.js') }}"></script>
+ <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
  <!-- Kaiadmin DEMO methods, don't include it in your project! -->
 {{-- <script src="{{ asset('backend/assets/js/setting-demo.js') }}"></script>

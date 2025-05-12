@@ -40,4 +40,12 @@ Route::group([
 
     Route::get('/financial-report', [AdminController::class, 'financialReport'])->name('admin.financialReport');
 
+    Route::get('/travel-schedule', [AdminController::class, 'travelSchedule'])->name('admin.travelSchedule');
+
+    Route::post('/searchTravelSchedule', [AdminController::class, 'searchTravelSchedule'])->name('admin.searchTravelSchedule');
+
+    Route::post('/storeTravelSchedule', [AdminController::class, 'storeTravelSchedule'])->name('admin.storeTravelSchedule');
+
+    Route::get('/suspendTrip/{id}', [AdminController::class, 'suspendTrip'])->name('admin.suspendTrip');
+
 });

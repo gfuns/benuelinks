@@ -6,6 +6,7 @@ use App\Models\AuditTrails;
 use App\Models\AuthenticationLogs;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
+use App\Models\TravelSchedule;
 use App\Models\User;
 use App\Models\UserRole;
 use Auth;
@@ -442,6 +443,145 @@ class AdminController extends Controller
     public function financialReport()
     {
         return view("admin.financial_report");
+    }
+
+    /**
+     * travelSchedule
+     *
+     * @return void
+     */
+    public function travelSchedule()
+    {
+        $weekData  = $this->getWeekData();
+        $weekDates = $this->getWeekDates();
+
+        $terminals       = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
+        $travelSchedules = TravelSchedule::where("departure", Auth::user()->station)->orWhere("destination", Auth::user()->station)->get();
+        return view("admin.travel_schedule", compact("travelSchedules", "terminals", "weekData", "weekDates"));
+    }
+
+    /**
+     * storeTravelSchedule
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function storeTravelSchedule(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'take_off_point'         => 'required',
+            'destination'            => 'required',
+            'departure_time'         => 'required',
+            'schedule_configuration' => 'required',
+            'scheduled_date'         => 'required_if:schedule_configuration,specific',
+            'week_date'              => 'required_if:schedule_configuration,weekly',
+            'month_date'             => 'required_if:schedule_configuration,monthly',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        try {
+            if ($request->schedule_configuration == "specific") {
+                $alreadyExist = TravelSchedule::where("departure", $request->take_off_point)->where("destination", $request->destination)->whereDate("scheduled_date", $request->scheduled_date)->where("scheduled_time", $request->departure_time)->first();
+                if (! isset($alreadyExist)) {
+                    $schedule                 = new TravelSchedule;
+                    $schedule->departure      = $request->take_off_point;
+                    $schedule->destination    = $request->destination;
+                    $schedule->scheduled_time = $request->departure_time;
+                    $schedule->scheduled_date = $request->scheduled_date;
+                    $schedule->save();
+                }
+
+            } else if ($request->schedule_configuration == "weekly") {
+                $selectedDates = $request->input('week_date', []);
+                foreach ($selectedDates as $swd) {
+                    $alreadyExist = TravelSchedule::where("departure", $request->take_off_point)->where("destination", $request->destination)->whereDate("scheduled_date", $swd)->where("scheduled_time", $request->departure_time)->first();
+                    if (! isset($alreadyExist)) {
+                        $schedule                 = new TravelSchedule;
+                        $schedule->departure      = $request->take_off_point;
+                        $schedule->destination    = $request->destination;
+                        $schedule->scheduled_time = $request->departure_time;
+                        $schedule->scheduled_date = $swd;
+                        $schedule->save();
+                    }
+                }
+            } else {
+                $selectedDates = $request->input('month_date', []);
+                foreach ($selectedDates as $smd) {
+                    $alreadyExist = TravelSchedule::where("departure", $request->take_off_point)->where("destination", $request->destination)->whereDate("scheduled_date", $smd)->where("scheduled_time", $request->departure_time)->first();
+                    if (! isset($alreadyExist)) {
+                        $schedule                 = new TravelSchedule;
+                        $schedule->departure      = $request->take_off_point;
+                        $schedule->destination    = $request->destination;
+                        $schedule->scheduled_time = $request->departure_time;
+                        $schedule->scheduled_date = $smd;
+                        $schedule->save();
+                    }
+                }
+            }
+
+            toast('Travel Schedule Created Successfully', 'success');
+            return back();
+        } catch (\Exception $e) {
+            toast('Somethint went wrong. Please try again later.', 'error');
+            return back();
+        }
+
+    }
+
+    /**
+     * suspendTrip
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function suspendTrip($id)
+    {
+        $schedule         = TravelSchedule::find($id);
+        $schedule->status = "trip suspended";
+        if ($schedule->save()) {
+            toast('Trip Suspended Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    public function getWeekData()
+    {
+        $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
+        $endOfWeek   = Carbon::now()->endOfWeek(Carbon::SUNDAY);
+
+        $weekNumber = $startOfWeek->format('W'); // ISO-8601 week number
+
+        $formatted = "Week {$weekNumber}: " . $startOfWeek->format('jS F, Y') . " - " . $endOfWeek->format('jS F, Y');
+
+        return $formatted;
+    }
+
+    public function getWeekDates()
+    {
+
+        $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
+        $datesOfWeek = [];
+
+        for ($i = 0; $i < 7; $i++) {
+            $date          = $startOfWeek->copy()->addDays($i);
+            $datesOfWeek[] = [
+                'date'  => $date->toDateString(),          // e.g. "2025-05-12"
+                'label' => strtoupper($date->format('D')), // e.g. "MON"
+            ];
+        }
+
+        return $datesOfWeek;
     }
 
     /**

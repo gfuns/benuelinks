@@ -3,6 +3,7 @@
     <title>Peace Mass Transit (PMT)</title>
     <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
     <link rel="icon" href="{{ asset('backend/assets/img/kaiadmin/favicon.ico') }}" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <!-- Fonts and icons -->
     <script src="{{ asset('backend/assets/js/plugin/webfont/webfont.min.js') }}"></script>
@@ -29,7 +30,7 @@
     <!-- CSS Files -->
     <link rel="stylesheet" href="{{ asset('backend/assets/css/bootstrap.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('backend/assets/css/plugins.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('backend/assets/css/kaiadmin.min.css') }}?version={{ date("his") }}" />
+    <link rel="stylesheet" href="{{ asset('backend/assets/css/kaiadmin.min.css') }}?version={{ date('his') }}" />
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="{{ asset('backend/assets/css/demo.css') }}" />
@@ -38,7 +39,8 @@
 
     <link href="{{ asset('backend/assets/select2/css/select2.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('backend/assets/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
     <style type="text/css">
         .back-to-home-label {
@@ -134,18 +136,45 @@
             font-weight: bold;
         }
 
-        .th{
+        .th {
             font-weight: bolder;
             white-space: nowrap;
             padding-left: 22px !important;
         }
-        .thh{
+
+        .thh {
             font-weight: bolder;
             padding-left: 22px !important;
         }
 
-        .filterButton{
+        .filterButton {
             padding-top: 35px;
+        }
+
+        legend {
+            background-color: #758698;
+            /* Bootstrap primary color */
+            color: #fff;
+            /* Text color */
+            /* padding: 5px 15px; */
+            /* Padding around the text */
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            /* Slightly rounded corners */
+            display: inline-block;
+            /* Fit content width */
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            /* Optional shadow */
+        }
+
+        .gfuns {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 3px;
+            border: 1px solid rgba(0, 40, 100, .12);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
         }
     </style>
 </head>

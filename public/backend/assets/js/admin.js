@@ -21,6 +21,10 @@ function allowOnlyNumbersAndDecimal(event) {
     }
 }
 
+$('#scheduleConfig').select2({
+    dropdownParent: $('#offcanvasRight')
+});
+
 $('#accountType').select2({
     dropdownParent: $('#offcanvasRight')
 });
