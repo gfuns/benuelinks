@@ -127,7 +127,7 @@
                                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
                                     <li id="financial">
                                         <a href="{{ route('superadmin.financialReport') }}">
-                                            <span class="sub-item">Financial Report</span>
+                                            <span class="sub-item">Transactions</span>
                                         </a>
                                     </li>
                                 @endif

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer("destination")->unsigned();
             $table->integer("vehicle")->unsigned()->nullable();
             $table->string("vehicle_type");
+            $table->date("travel_date");
+            $table->string("departure_time");
             $table->string("booking_number")->nullable();
             $table->string("ticket_number")->nullable();
             $table->string("full_name");
@@ -25,8 +27,13 @@ return new class extends Migration
             $table->string("nok")->nullable();
             $table->string("nok_phone")->nullable();
             $table->string("seat");
+            $table->double("travel_fare", 12, 2);
+            $table->enum("payment_channel", ["cash", "card payment", "transfer"]);
             $table->enum("classification", ["booking", "ticketing"]);
             $table->enum("payment_status", ["paid", "pending"]);
+            $table->enum("booking_method", ["physical", "online"])->default("physical");
+            $table->enum("booking_status", ["booked", "validated"])->default("booked");
+            $table->enum("boarding_status", ["boarded", "pending"])->default("pending");
             $table->timestamps();
             $table->foreign('schedule_id')->references('id')->on('travel_schedules')->onDelete('cascade');
             $table->foreign('departure')->references('id')->on('company_terminals')->onDelete('cascade');

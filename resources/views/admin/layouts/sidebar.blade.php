@@ -48,25 +48,19 @@
 
                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 7) == true)
                     <li id="ticketing" class="nav-item mb-3">
-                        <a data-bs-toggle="collapse" href="#bookticket" class="collapsed" aria-expanded="false">
+                        <a href="{{ route('admin.bookPassengers') }}">
                             <i class="fas fa-cash-register"></i>
                             <p>Booking/Ticketing</p>
-                            <span class="caret"></span>
                         </a>
-                        <div class="collapse" id="bookticket" style="">
-                            <ul class="nav nav-collapse">
-                                <li id="book">
-                                    <a href="{{ route('admin.bookPassengers') }}">
-                                        <span class="sub-item">Book Passengers</span>
-                                    </a>
-                                </li>
-                                <li id="ticket">
-                                    <a href="{{ route('admin.issueTickets') }}">
-                                        <span class="sub-item">Issue Travel Tickets</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                    </li>
+                @endif
+
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 11) == true)
+                    <li id="schedules" class="nav-item mb-3">
+                        <a href="{{ route('admin.travelSchedule') }}">
+                            <i class="fas fa-calendar-alt"></i>
+                            <p>Board Passengers</p>
+                        </a>
                     </li>
                 @endif
 
@@ -101,7 +95,7 @@
                                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
                                     <li id="financial">
                                         <a href="{{ route('admin.financialReport') }}">
-                                            <span class="sub-item">Financial Report</span>
+                                            <span class="sub-item">Transactions</span>
                                         </a>
                                     </li>
                                 @endif

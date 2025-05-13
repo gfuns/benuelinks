@@ -45,6 +45,22 @@ $('#postTerminal').select2({
     dropdownParent: $('#assignTerminal')
 });
 
+$('#depTime').select2({
+    dropdownParent: $('#offcanvasRight')
+});
+
+$('#channel').select2({
+    dropdownParent: $('#offcanvasRight')
+});
+
+$('#vehChoice').select2({
+    dropdownParent: $('#offcanvasRight')
+});
+
+$('#seat').select2({
+    dropdownParent: $('#offcanvasRight')
+});
+
 
 $('#gender').select2({
     dropdownParent: $('#offcanvasRight')

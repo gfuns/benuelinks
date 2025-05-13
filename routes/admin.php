@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\AjaxController;
 use Illuminate\Support\Facades\Route;
 
 //Work Group Modules
@@ -60,6 +61,13 @@ Route::group([
 
     Route::get('/book-passengers', [AdminController::class, 'bookPassengers'])->name('admin.bookPassengers');
 
+    Route::post('/processBooking', [AdminController::class, 'processBooking'])->name('admin.processBooking');
+
+    Route::get('/searchBooking', [AdminController::class, 'searchBooking'])->name('admin.searchBooking');
+
     Route::get('/issue-tickets', [AdminController::class, 'issueTickets'])->name('admin.issueTickets');
 
 });
+
+Route::get('/ajax/get-schedules/{terminal}/{date}', [AjaxController::class, 'getSchedules'])->name('ajax.getSchedules');
+Route::get('/ajax/get-times/{terminal}/{destination}/{date}', [AjaxController::class, 'getDepatureTimes'])->name('ajax.getDepatureTimes');

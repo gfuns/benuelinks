@@ -725,13 +725,124 @@ class AdminController extends Controller
         return view("admin.travel_schedule", compact("travelSchedules", "terminals", "weekData", "weekDates", "companyVehicles", "departure", "destination", "date"));
     }
 
+    /**
+     * bookPassengers
+     *
+     * @return void
+     */
     public function bookPassengers()
     {
-        $terminal = Auth::user()->station;
-        $bookings = TravelBooking::where("classification", "booking")->where("departure", $terminal)->get();
-        return view("admin.passenger_booking", compact("bookings"));
+        $searchParam  = null;
+        $terminal     = Auth::user()->station;
+        $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
+        $bookings     = TravelBooking::where("classification", "booking")->where("departure", $terminal)->get();
+        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam'));
     }
 
+    /**
+     * searchBooking
+     *
+     * @return void
+     */
+    public function searchBooking(Request $request)
+    {
+        $searchParam  = $request->booking_number;
+        $terminal     = Auth::user()->station;
+        $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
+        $bookings     = TravelBooking::where("classification", "booking")->where("departure", $terminal)->where("booking_number", $searchParam)->get();
+        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam'));
+    }
+
+    /**
+     * processBooking
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function processBooking(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'travel_date'     => 'required',
+            'destination'     => 'required',
+            'departure_time'  => 'required',
+            'vehicle_choice'  => 'required',
+            'seat_number'     => 'required',
+            'passenger_name'  => 'required',
+            'phone_number'    => 'required',
+            'payment_channel' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $schedule = TravelSchedule::where("departure", Auth::user()->station)->where("destination", $request->destination)->whereDate("scheduled_date", $request->travel_date)->where("scheduled_time", $request->departure_time)->first();
+
+        $route = CompanyRoutes::where("departure", Auth::user()->station)->where("destination", $request->destination)->first();
+
+        if (isset($schedule) && isset($route)) {
+            $booking                  = new TravelBooking;
+            $booking->schedule_id     = $schedule->id;
+            $booking->departure       = Auth::user()->station;
+            $booking->destination     = $request->destination;
+            $booking->vehicle         = $schedule->vehicle;
+            $booking->vehicle_type    = $request->vehicle_choice;
+            $booking->travel_date     = $request->travel_date;
+            $booking->departure_time  = $request->departure_time;
+            $booking->full_name       = $request->passenger_name;
+            $booking->phone_number    = $request->phone_number;
+            $booking->seat            = $request->seat_number;
+            $booking->payment_channel = $request->payment_channel;
+            $booking->classification  = "booking";
+            $booking->payment_status  = "paid";
+            $booking->travel_fare     = $route->transport_fare;
+            $booking->booking_number  = $this->genBookingID();
+            if ($booking->save()) {
+                toast('Booking Successful', 'success');
+                return back();
+            } else {
+                toast('Something went wrong. Please try again', 'error');
+                return back();
+            }
+        } else {
+            dd("No Route or Schedule");
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+
+    }
+
+    /**
+     * genBookingID
+     *
+     * @return void
+     */
+    public function genBookingID()
+    {
+        // Get the current timestamp
+        $timestamp = (string) (strtotime('now') . microtime(true));
+
+        // Remove any non-numeric characters (like dots)
+        $cleanedTimestamp = preg_replace('/[^0-9]/', '', $timestamp);
+
+        // Shuffle the digits
+        $shuffled = str_shuffle($cleanedTimestamp);
+
+        // Extract the first 12 characters
+        $code = substr($shuffled, 0, 12);
+
+        return "PMT-BK-" . $code;
+    }
+
+    /**
+     * getWeekData
+     *
+     * @return void
+     */
     public function getWeekData()
     {
         $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
@@ -743,6 +854,12 @@ class AdminController extends Controller
 
         return $formatted;
     }
+
+    /**
+     * getWeekDates
+     *
+     * @return void
+     */
 
     public function getWeekDates()
     {
