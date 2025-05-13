@@ -81,13 +81,76 @@
                                                 <td class="align-middle"> {{ $bk->full_name }}<br /><span
                                                         style="font-size: 12px">{{ $bk->phone_number }}</span> </td>
                                                 <td class="align-middle">{{ $bk->travelRoute() }}</td>
-                                                <td class="align-middle">{{ date_format(new DateTime($bk->travel_date), "jS M, Y") }} {{ $bk->departure_time }}
+                                                <td class="align-middle">
+                                                    {{ date_format(new DateTime($bk->travel_date), 'jS M, Y') }}
+                                                    {{ $bk->departure_time }}
                                                 </td>
                                                 <td class="align-middle">
                                                     {{ date_format($bk->created_at, 'jS M, Y g:i a') }}
                                                 </td>
+                                                <td>
+                                                    @if ($bk->booking_status == 'validated')
+                                                        <span class="badge badge-success p-2"
+                                                            style="font-size: 10px">{{ ucwords($bk->booking_status) }}</span>
+                                                    @else
+                                                        <span class="badge badge-warning p-2"
+                                                            style="font-size: 10px">{{ ucwords($bk->booking_status) }}</span>
+                                                    @endif
+                                                </td>
                                                 <td class="align-middle">
-                                                    {{ ucwords($bk->booking_status) }}
+                                                    <div class="btn-group dropdown">
+                                                        <button class="btn btn-primary btn-sm dropdown-toggle"
+                                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            Action
+                                                        </button>
+                                                        <ul class="dropdown-menu" role="menu" style="">
+                                                            <li>
+                                                                <a class="dropdown-item mb-2" href="#"
+                                                                    data-bs-toggle="modal" data-bs-target="#bookingDetails"
+                                                                    data-backdrop="static" data-myid="{{ $bk->id }}"
+                                                                    data-bookingno="{{ $bk->booking_number }}"
+                                                                    data-passenger="{{ $bk->full_name }}"
+                                                                    data-phoneno="{{ $bk->phone_number }}"
+                                                                    data-route="{{ $bk->travelRoute() }}"
+                                                                    data-date="{{ $bk->travel_date }} {{ $bk->departure_time }}"
+                                                                    data-bookingstatus="{{ ucwords($bk->booking_status) }}"
+                                                                    data-vehicletype="{{ $bk->vehicle_type }}"
+                                                                    data-paymentchannel="{{ ucwords($bk->payment_channel) }}"
+                                                                    data-bookingmethod="{{ ucwords($bk->booking_method) }} Booking"
+                                                                    data-boarding="{{ ucwords($bk->boarding_status) }}"
+                                                                    data-amount="{{ number_format($bk->travel_fare, 2) }}"
+                                                                    data-seat="{{ $bk->seat }}"
+                                                                    data-nok="{{ $bk->nok }}"
+                                                                    data-nokphone="{{ $bk->nok_phone }}"
+                                                                    data-paystatus="{{ ucwords($bk->payment_status) }}"><i
+                                                                        class="fe fe-eye dropdown-item-icon"></i>View
+                                                                    Details</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item mb-2" href="#"
+                                                                    data-bs-toggle="offcanvas" data-bs-target="#editUser"
+                                                                    data-backdrop="static" data-myid="{{ $bk->id }}"
+                                                                    data-lastname="{{ $bk->last_name }}"
+                                                                    data-othernames="{{ $bk->other_names }}"
+                                                                    data-email="{{ $bk->email }}"
+                                                                    data-phone="{{ $bk->phone_number }}"
+                                                                    data-station="{{ $bk->station }}"
+                                                                    data-role="{{ $bk->role_id }}"
+                                                                    data-status="{{ ucwords($bk->status) }}"><i
+                                                                        class="fe fe-eye dropdown-item-icon"></i>Print
+                                                                    Receipt</a>
+                                                            </li>
+                                                            @if ($bk->booking_status == 'booked')
+                                                                <li>
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ route('admin.validateTicket', [$bk->id]) }}"
+                                                                        onclick="return confirm('Are you sure you want to validate this ticket?');"><i
+                                                                            class="fe fe-trash dropdown-item-icon"></i>Validate
+                                                                        Ticket</a>
+                                                                </li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -106,13 +169,13 @@
     </div>
 
 
-    <div class="modal fade" id="filterBookings" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+    <div class="modal fade" id="bookingDetails" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title mb-0" id="newCatgoryLabel">
-                        Filter Passenger Bookings
+                        View Booking Details
                     </h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
 
@@ -121,39 +184,80 @@
                 <div class="modal-body">
                     <table class="table table-bordered">
                         <tbody>
+
                             <tr>
-                                <td class=""><strong>Take-off Point</strong></td>
-                                <td class=""><span id="vdeparture"></span></td>
+                                <td class=""><strong>Booking Number</strong></td>
+                                <td class=""><span id="vbookingno"></span></td>
                             </tr>
 
                             <tr>
-                                <td class=""><strong>Destination:</strong></td>
-                                <td class=""><span id="vdestination"></span></td>
+                                <td class=""><strong>Travel Route:</strong></td>
+                                <td class=""><span id="vroute"></span></td>
                             </tr>
 
                             <tr>
-                                <td class=""><strong>Scheduled Date:</strong></td>
+                                <td class=""><strong>Selected Vehicle:</strong></td>
+                                <td class=""><span id="vvehicletype"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Departure Date/Time:</strong></td>
                                 <td class=""><span id="vdate"></span></td>
                             </tr>
 
                             <tr>
-                                <td class=""><strong>Departure Time:</strong></td>
-                                <td class=""><span id="vtime"></span></td>
+                                <td class=""><strong>Passenger Name:</strong></td>
+                                <td class=""><span id="vpassenger"></span></td>
                             </tr>
 
                             <tr>
-                                <td class=""><strong>Assigned Vehicle:</strong></td>
-                                <td class=""><span id="vvehicle"></span></td>
+                                <td class=""><strong>Passenger Phone Number:</strong></td>
+                                <td class=""><span id="vphoneno"></span></td>
                             </tr>
 
                             <tr>
-                                <td class=""><strong>Driver Details:</strong></td>
-                                <td class=""><span id="vdriver"></span></td>
+                                <td class=""><strong>Seat Number:</strong></td>
+                                <td class=""><span id="vseat"></span></td>
                             </tr>
 
                             <tr>
-                                <td class=""><strong>Status</strong></td>
-                                <td class=""><span id="vstatus"></span></td>
+                                <td class=""><strong>Next Of Kin:</strong></td>
+                                <td class=""><span id="vnok"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Next Of Kin Phone Number:</strong></td>
+                                <td class=""><span id="vnokphone"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Booking Status:</strong></td>
+                                <td class=""><span id="vbookingstatus"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Booking Method:</strong></td>
+                                <td class=""><span id="vbookingmethod"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Fare Paid:</strong></td>
+                                <td class="">&#8358;<span id="vamount"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Payment Channel</strong></td>
+                                <td class=""><span id="vpaymentchannel"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Payment Status</strong></td>
+                                <td class=""><span id="vpaystatus"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Boarding Status</strong></td>
+                                <td class=""><span id="vboarding"></span></td>
                             </tr>
                         </tbody>
                     </table>

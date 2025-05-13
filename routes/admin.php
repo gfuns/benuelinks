@@ -65,7 +65,7 @@ Route::group([
 
     Route::get('/searchBooking', [AdminController::class, 'searchBooking'])->name('admin.searchBooking');
 
-    Route::get('/issue-tickets', [AdminController::class, 'issueTickets'])->name('admin.issueTickets');
+    Route::get('/validate-ticket/{id}', [AdminController::class, 'validateTicket'])->name('admin.validateTicket');
 
 });
 

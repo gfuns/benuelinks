@@ -347,6 +347,45 @@ $('#vehicleDetails').on('show.bs.modal', function(event) {
     document.getElementById("vdp").src = dp;
 })
 
+$('#bookingDetails').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var bookingno = button.data('bookingno') // Extract info from data-* attributes
+    var passenger = button.data('passenger') // Extract info from data-* attributes
+    var phoneno = button.data('phoneno') // Extract info from data-* attributes
+    var route = button.data('route') // Extract info from data-* attributes
+    var date = button.data('date') // Extract info from data-* attributes
+    var vehicletype = button.data('vehicletype') // Extract info from data-* attributes
+    var bookingstatus = button.data('bookingstatus') // Extract info from data-* attributes
+    var paymentchannel = button.data('paymentchannel') // Extract info from data-* attributes
+    var bookingmethod = button.data('bookingmethod') // Extract info from data-* attributes
+    var boarding = button.data('boarding') // Extract info from data-* attributes
+    var amount = button.data('amount') // Extract info from data-* attributes
+    var seat = button.data('seat') // Extract info from data-* attributes
+    var nok = button.data('nok') // Extract info from data-* attributes
+    var nokphone = button.data('nokphone') // Extract info from data-* attributes
+    var paystatus = button.data('paystatus') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+    var modal = $(this)
+    document.getElementById("vbookingno").innerHTML = bookingno;
+    document.getElementById("vpassenger").innerHTML = passenger;
+    document.getElementById("vphoneno").innerHTML = phoneno;
+    document.getElementById("vroute").innerHTML = route;
+    document.getElementById("vdate").innerHTML = date;
+    document.getElementById("vvehicletype").innerHTML = vehicletype;
+    document.getElementById("vbookingstatus").innerHTML = bookingstatus;
+    document.getElementById("vpaymentchannel").innerHTML = paymentchannel;
+    document.getElementById("vbookingmethod").innerHTML = bookingmethod;
+    document.getElementById("vboarding").innerHTML = boarding;
+    document.getElementById("vamount").innerHTML = amount;
+    document.getElementById("vseat").innerHTML = seat;
+    document.getElementById("vnok").innerHTML = nok;
+    document.getElementById("vnokphone").innerHTML = nokphone;
+    document.getElementById("vpaystatus").innerHTML = paystatus;
+})
+
+
 $('#viewScheduleDetails').on('show.bs.modal', function(event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var departure = button.data('departure') // Extract info from data-* attributes

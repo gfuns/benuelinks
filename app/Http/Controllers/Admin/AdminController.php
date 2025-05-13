@@ -817,6 +817,26 @@ class AdminController extends Controller
     }
 
     /**
+     * validateTicket
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function validateTicket($id)
+    {
+        $booking                 = TravelBooking::find($id);
+        $booking->booking_status = "validated";
+        if ($booking->save()) {
+            toast('Ticket Validated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
      * genBookingID
      *
      * @return void
