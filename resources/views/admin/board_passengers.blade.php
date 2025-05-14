@@ -18,11 +18,9 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">S/No.</th>
-                                            <th scope="col">Take-off Point</th>
-                                            <th scope="col">Destination</th>
+                                            <th scope="col">Travel Route</th>
                                             <th scope="col">Assigned Vehicle</th>
-                                            <th scope="col">Scheduled Date</th>
-                                            <th scope="col">Time of Departure</th>
+                                            <th scope="col">Departure Date/Time</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -30,13 +28,12 @@
                                         @foreach ($travelSchedules as $schedule)
                                             <tr>
                                                 <td class="align-middle"> {{ $loop->index + 1 }} </td>
-                                                <td class="align-middle"> {{ $schedule->departurePoint->terminal }} </td>
-                                                <td class="align-middle">{{ $schedule->destinationPoint->terminal }}</td>
+                                                <td class="align-middle"> {{ $schedule->travelRoute() }} </td>
                                                 <td class="align-middle">@php echo $schedule->getvehicle() @endphp</td>
                                                 <td class="align-middle">
                                                     {{ date_format(new DateTime($schedule->scheduled_date), 'l - jS M, Y') }}
+                                                    {{ $schedule->scheduled_time }}
                                                 </td>
-                                                <td class="align-middle">{{ $schedule->scheduled_time }}</td>
                                                 <td class="align-middle">
 
                                                     <div class="btn-group dropdown">
@@ -62,11 +59,18 @@
                                                             </li>
 
                                                             <li>
-                                                                <a class="dropdown-item mb-2" href="{{ route("admin.viewPassengers", [$schedule->id]) }}"><i
-                                                                        class="fe fe-eye dropdown-item-icon"></i>View Passengers</a>
+                                                                <a class="dropdown-item mb-2"
+                                                                    href="{{ route('admin.viewPassengers', [$schedule->id]) }}"><i
+                                                                        class="fe fe-eye dropdown-item-icon"></i>View
+                                                                    Passengers</a>
                                                             </li>
 
-
+                                                            <li>
+                                                                <a class="dropdown-item mb-2"
+                                                                    href="{{ route('admin.printPassengerManifest', [$schedule->id]) }}" target="_blank"><i
+                                                                        class="fe fe-eye dropdown-item-icon"></i>Print Passenger
+                                                                    Manifest</a>
+                                                            </li>
 
                                                         </ul>
                                                     </div>
@@ -154,4 +158,3 @@
         document.getElementById("boarding").classList.add('active');
     </script>
 @endsection
-

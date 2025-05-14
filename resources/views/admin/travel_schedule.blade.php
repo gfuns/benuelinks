@@ -162,49 +162,62 @@
                                                                         class="fe fe-eye dropdown-item-icon"></i>View
                                                                     Details</a>
                                                             </li>
+                                                            @if ($schedule->departure == Auth::user()->station)
 
-                                                            <li>
-                                                                <a class="dropdown-item mb-2" href="#"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#updateTripStatus"
-                                                                    data-backdrop="static"
-                                                                    data-myid="{{ $schedule->id }}"
-                                                                    data-status="{{ $schedule->status }}"><i
-                                                                        class="fe fe-eye dropdown-item-icon"></i>Update
-                                                                    Trip Status</a>
-                                                            </li>
+                                                                @if ($schedule->status == 'in transit' || $schedule->status == 'trip successful')
+                                                                    <li>
+                                                                        <a class="dropdown-item mb-2"
+                                                                            href="{{ route('admin.printPassengerManifest', [$schedule->id]) }}" target="_blank"><i
+                                                                                class="fe fe-eye dropdown-item-icon"></i>View
+                                                                            Passenger Manifest</a>
+                                                                    </li>
+                                                                @endif
 
-                                                            @if ($schedule->departure == Auth::user()->station && $schedule->status == 'scheduled')
-                                                                <li>
-                                                                    <a class="dropdown-item mb-2" href="#"
-                                                                        data-bs-toggle="offcanvas"
-                                                                        data-bs-target="#adjustDepartureTime"
-                                                                        data-backdrop="static"
-                                                                        data-myid="{{ $schedule->id }}"
-                                                                        data-time="{{ $schedule->scheduled_time }}"><i
-                                                                            class="fe fe-eye dropdown-item-icon"></i>Adjust
-                                                                        Departure
-                                                                        Time</a>
-                                                                </li>
-                                                                <li>
+                                                                @if ($schedule->status != 'trip successful')
+                                                                    <li>
+                                                                        <a class="dropdown-item mb-2" href="#"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#updateTripStatus"
+                                                                            data-backdrop="static"
+                                                                            data-myid="{{ $schedule->id }}"
+                                                                            data-status="{{ $schedule->status }}"><i
+                                                                                class="fe fe-eye dropdown-item-icon"></i>Update
+                                                                            Trip Status</a>
+                                                                    </li>
+                                                                @endif
 
-                                                                    <a class="dropdown-item mb-2" href="#"
-                                                                        data-bs-toggle="offcanvas"
-                                                                        data-bs-target="#assignVehicle"
-                                                                        data-backdrop="static"
-                                                                        data-myid="{{ $schedule->id }}"
-                                                                        data-vehicle="{{ $schedule->vehicle }}"><i
-                                                                            class="fe fe-eye dropdown-item-icon"></i>Assign
-                                                                        Vehicle</a>
-                                                                </li>
-                                                                <li>
+                                                                @if ($schedule->status == 'scheduled')
+                                                                    <li>
+                                                                        <a class="dropdown-item mb-2" href="#"
+                                                                            data-bs-toggle="offcanvas"
+                                                                            data-bs-target="#adjustDepartureTime"
+                                                                            data-backdrop="static"
+                                                                            data-myid="{{ $schedule->id }}"
+                                                                            data-time="{{ $schedule->scheduled_time }}"><i
+                                                                                class="fe fe-eye dropdown-item-icon"></i>Adjust
+                                                                            Departure
+                                                                            Time</a>
+                                                                    </li>
+                                                                    <li>
 
-                                                                    <a class="dropdown-item"
-                                                                        href="{{ route('admin.suspendTrip', [$schedule->id]) }}"
-                                                                        onclick="return confirm('Are you sure you want to suspend this trip?');"><i
-                                                                            class="fe fe-trash dropdown-item-icon"></i>Suspend
-                                                                        Trip</a>
-                                                                </li>
+                                                                        <a class="dropdown-item mb-2" href="#"
+                                                                            data-bs-toggle="offcanvas"
+                                                                            data-bs-target="#assignVehicle"
+                                                                            data-backdrop="static"
+                                                                            data-myid="{{ $schedule->id }}"
+                                                                            data-vehicle="{{ $schedule->vehicle }}"><i
+                                                                                class="fe fe-eye dropdown-item-icon"></i>Assign
+                                                                            Vehicle</a>
+                                                                    </li>
+                                                                    <li>
+
+                                                                        <a class="dropdown-item"
+                                                                            href="{{ route('admin.suspendTrip', [$schedule->id]) }}"
+                                                                            onclick="return confirm('Are you sure you want to suspend this trip?');"><i
+                                                                                class="fe fe-trash dropdown-item-icon"></i>Suspend
+                                                                            Trip</a>
+                                                                    </li>
+                                                                @endif
                                                             @endif
                                                             </li>
                                                         </ul>

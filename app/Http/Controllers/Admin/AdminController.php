@@ -951,6 +951,56 @@ class AdminController extends Controller
     }
 
     /**
+     * viewPassengers
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function viewPassengers($id)
+    {
+        $travelSchedule = TravelSchedule::find($id);
+        $passengers     = TravelBooking::where("schedule_id", $id)->get();
+        return view("admin.passenger_list", compact("travelSchedule", "passengers"));
+    }
+
+    /**
+     * processPassengerBoarding
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function processPassengerBoarding(Request $request)
+    {
+        $selectedIds = $request->input('selected_items');
+
+        $passengers = TravelBooking::whereIn('id', $selectedIds)->update(["boarding_status" => "boarded"]);
+        if ($passengers) {
+            toast('Selected Passengers Boarded Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+
+        }
+    }
+
+    /**
+     * printPassengerManifest
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function printPassengerManifest($id)
+    {
+        $travelSchedule = TravelSchedule::find($id);
+        $passengers     = TravelBooking::orderBy("seat", "asc")->where("schedule_id", $id)->where("boarding_status", "boarded")->get();
+        return view("admin.passenger_manifest", compact("travelSchedule", "passengers"));
+    }
+
+    /**
      * genBookingID
      *
      * @return void

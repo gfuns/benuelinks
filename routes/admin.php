@@ -79,6 +79,10 @@ Route::group([
 
     Route::get('/boarding/view-passengers/{id}', [AdminController::class, 'viewPassengers'])->name('admin.viewPassengers');
 
+    Route::post('/processPassengerBoarding', [AdminController::class, 'processPassengerBoarding'])->name('admin.processPassengerBoarding');
+
+    Route::get('/print-manifest/{id}', [AdminController::class, 'printPassengerManifest'])->name('admin.printPassengerManifest');
+
 });
 
 Route::get('/ajax/get-schedules/{terminal}/{date}', [AjaxController::class, 'getSchedules'])->name('ajax.getSchedules');

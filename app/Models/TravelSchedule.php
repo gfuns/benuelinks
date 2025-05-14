@@ -33,7 +33,7 @@ class TravelSchedule extends Model implements Auditable
         if (isset($this->vehicle)) {
             $driver = User::find($this->vehicledetail->driver);
             if (isset($driver)) {
-                return $driver->last_name . ", " . $driver->other_names . "<br/>" . $driver->phone_number;
+                return $driver->last_name . ", " . $driver->other_names . "<br/> (" . $driver->phone_number . ")";
             } else {
                 return "A Driver is yet to be assigned to this Vehicle";
             }
@@ -47,6 +47,14 @@ class TravelSchedule extends Model implements Auditable
     {
         return $this->belongsTo('App\Models\CompanyVehicles', "vehicle");
 
+    }
+
+    public function travelRoute()
+    {
+        $terminal    = $this->departurePoint->terminal;
+        $destination = $this->destinationPoint->terminal;
+
+        return $terminal . " => " . $destination;
     }
 
     public function departurePoint()
