@@ -497,7 +497,7 @@ class AdminController extends Controller
         $weekDates = $this->getWeekDates();
 
         $terminals       = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
-        $travelSchedules = TravelSchedule::where("departure", Auth::user()->station)->orWhere("destination", Auth::user()->station)->get();
+        $travelSchedules = TravelSchedule::orderBy("id", "desc")->where("departure", Auth::user()->station)->orWhere("destination", Auth::user()->station)->get();
         $companyVehicles = CompanyVehicles::where("status", "active")->get();
 
         $departure   = null;
@@ -606,6 +606,38 @@ class AdminController extends Controller
         $schedule->scheduled_time = $request->departure_time;
         if ($schedule->save()) {
             toast('Departure Time Adjusted Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * updateTripStatus
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function updateTripStatus(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'schedule_id' => 'required',
+            'trip_status' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $schedule         = TravelSchedule::find($request->schedule_id);
+        $schedule->status = $request->trip_status;
+        if ($schedule->save()) {
+            toast('Trip Status Updated Successfully', 'success');
             return back();
         } else {
             toast('Something went wrong. Please try again', 'error');
@@ -904,6 +936,18 @@ class AdminController extends Controller
     {
         $booking = TravelBooking::find($id);
         return view("admin.print_ticket", compact("booking"));
+    }
+
+    /**
+     * boardPassengers
+     *
+     * @return void
+     */
+    public function boardPassengers()
+    {
+        $terminal        = Auth::user()->station;
+        $travelSchedules = TravelSchedule::where("departure", $terminal)->where("status", "boarding in progress")->get();
+        return view("admin.board_passengers", compact("travelSchedules"));
     }
 
     /**

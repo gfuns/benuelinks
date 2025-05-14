@@ -69,6 +69,9 @@ $('#bkStatus').select2({
     dropdownParent: $('#filterBookings')
 });
 
+$('#tripStatus').select2({
+    dropdownParent: $('#updateTripStatus')
+});
 
 $('#gender').select2({
     dropdownParent: $('#offcanvasRight')
@@ -496,6 +499,22 @@ $('#adjustDepartureTime').on('show.bs.offcanvas', function(event) {
     // modal.find('.modal-body #myid').val(myid)
     offcanvas.find('.offcanvas-body #myid').val(myid)
     offcanvas.find('.offcanvas-body #adepartureTime').val(time)
+})
+
+$('#updateTripStatus').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var myid = button.data('myid') // Extract info from data-* attributes
+    var status = button.data('status') // Extract info from data-* attributes
+
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+    var modal = $(this)
+    // modal.find('.modal-body #myid').val(myid)
+    modal.find('.modal-body #myid').val(myid)
+    $('#tripStatus').select2({
+        dropdownParent: $('#updateTripStatus'),
+    }).val(status).trigger('change');
 })
 
 $('#assignVehicle').on('show.bs.offcanvas', function(event) {

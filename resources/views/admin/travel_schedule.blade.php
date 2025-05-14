@@ -126,13 +126,13 @@
                                                         <span class="badge badge-warning p-2"
                                                             style="font-size: 10px">{{ ucwords($schedule->status) }}</span>
                                                     @elseif ($schedule->status == 'boarding in progress')
-                                                        <span class="badge badge-primary-light p-2"
+                                                        <span class="badge badge-info p-2"
                                                             style="font-size: 10px">{{ ucwords($schedule->status) }}</span>
                                                     @elseif ($schedule->status == 'trip suspended')
                                                         <span class="badge badge-danger p-2"
                                                             style="font-size: 10px">{{ ucwords($schedule->status) }}</span>
                                                     @elseif ($schedule->status == 'in transit')
-                                                        <span class="badge badge-success-light p-2"
+                                                        <span class="badge badge-info p-2"
                                                             style="font-size: 10px">{{ ucwords($schedule->status) }}</span>
                                                     @elseif ($schedule->status == 'trip successful')
                                                         <span class="badge badge-success p-2"
@@ -165,11 +165,13 @@
 
                                                             <li>
                                                                 <a class="dropdown-item mb-2" href="#"
-                                                                    data-bs-toggle="offcanvas"
+                                                                    data-bs-toggle="modal"
                                                                     data-bs-target="#updateTripStatus"
                                                                     data-backdrop="static"
-                                                                    data-myid="{{ $schedule->id }}"><i
-                                                                        class="fe fe-eye dropdown-item-icon"></i>Update Trip Status</a>
+                                                                    data-myid="{{ $schedule->id }}"
+                                                                    data-status="{{ $schedule->status }}"><i
+                                                                        class="fe fe-eye dropdown-item-icon"></i>Update
+                                                                    Trip Status</a>
                                                             </li>
 
                                                             @if ($schedule->departure == Auth::user()->station && $schedule->status == 'scheduled')
@@ -460,6 +462,50 @@
                             <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
                                 aria-label="Close">Close</button>
                         </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="updateTripStatus" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mb-0" id="newCatgoryLabel">
+                        Update Trip Status
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <form class="needs-validation" novalidate method="post" action="{{ route('admin.updateTripStatus') }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- form group -->
+                            <div class="mb-3 col-12">
+                                <label class="form-label"><strong>Trip Status</strong></label>
+                                <select id="tripStatus" name="trip_status" class="form-select" data-width="100%">
+                                    <option value="">Select Trip Status</option>
+                                    <option value="boarding in progress">Boarding In Progress</option>
+                                    <option value="in transit">Vehicle In Transit</option>
+                                    <option value="trip successful">Trip Successful</option>
+                                </select>
+                                <div class="invalid-feedback">Please select trip status.</div>
+                            </div>
+
+                            <input id="myid" type="hidden" name="schedule_id" class="form-control" required>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Update Trip Status</button>
+                        <button type="button" class="btn btn-outline-primary ms-2"
+                            data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>

@@ -55,6 +55,8 @@ Route::group([
 
     Route::post('/adjustDepartureTime', [AdminController::class, 'adjustDepartureTime'])->name('admin.adjustDepartureTime');
 
+    Route::post('/updateTripStatus', [AdminController::class, 'updateTripStatus'])->name('admin.updateTripStatus');
+
     Route::post('/assignVehicle', [AdminController::class, 'assignVehicle'])->name('admin.assignVehicle');
 
     Route::get('/suspendTrip/{id}', [AdminController::class, 'suspendTrip'])->name('admin.suspendTrip');
@@ -72,6 +74,10 @@ Route::group([
     Route::get('/validate-ticket/{id}', [AdminController::class, 'validateTicket'])->name('admin.validateTicket');
 
     Route::get('/print-ticket/{id}', [AdminController::class, 'printBookingTicket'])->name('admin.printBookingTicket');
+
+    Route::get('/board-passengers', [AdminController::class, 'boardPassengers'])->name('admin.boardPassengers');
+
+    Route::get('/boarding/view-passengers/{id}', [AdminController::class, 'viewPassengers'])->name('admin.viewPassengers');
 
 });
 

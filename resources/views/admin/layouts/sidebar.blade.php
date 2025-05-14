@@ -56,9 +56,9 @@
                 @endif
 
                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 11) == true)
-                    <li id="schedules" class="nav-item mb-3">
-                        <a href="{{ route('admin.travelSchedule') }}">
-                            <i class="fas fa-calendar-alt"></i>
+                    <li id="boarding" class="nav-item mb-3">
+                        <a href="{{ route('admin.boardPassengers') }}">
+                            <i class="fas fa-bus-alt"></i>
                             <p>Board Passengers</p>
                         </a>
                     </li>
