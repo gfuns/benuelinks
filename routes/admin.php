@@ -43,7 +43,11 @@ Route::group([
 
     Route::get('/audittrails/{et?}/{sd?}/{ed?}', [AdminController::class, 'fetchAuditTrails'])->name('admin.fetchAuditTrails');
 
-    Route::get('/financial-report', [AdminController::class, 'financialReport'])->name('admin.financialReport');
+    Route::get('/transactions-report', [AdminController::class, 'financialReport'])->name('admin.financialReport');
+
+    Route::post('/filterTransactions', [AdminController::class, 'filterTransactions'])->name('admin.filterTransactions');
+
+    Route::get('/transactions-report/{sd?}/{ed?}', [AdminController::class, 'processTransactionFilter'])->name('admin.processTransactionFilter');
 
     Route::get('/travel-schedule', [AdminController::class, 'travelSchedule'])->name('admin.travelSchedule');
 

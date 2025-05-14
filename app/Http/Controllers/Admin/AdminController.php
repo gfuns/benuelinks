@@ -483,7 +483,65 @@ class AdminController extends Controller
      */
     public function financialReport()
     {
-        return view("admin.financial_report");
+        $startDate    = Carbon::today()->startOfMonth();
+        $endDate      = Carbon::today()->endOfMonth();
+        $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
+        return view("admin.financial_report", compact("transactions", 'startDate', 'endDate'));
+    }
+
+    /**
+     * filterTransactions
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function filterTransactions(Request $request)
+    {
+        if (isset($request->start_date) || isset($request->end_date)) {
+            $validator = Validator::make($request->all(), [
+                'start_date' => 'required',
+                'end_date'   => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors()->all();
+                $errors = implode("<br>", $errors);
+                toast($errors, 'error');
+                return back();
+            }
+        }
+
+        $startDate = isset($request->start_date) ? $this->cleanDate($request->start_date) : $request->start_date;
+        $endDate   = isset($request->end_date) ? $this->cleanDate($request->end_date) : $request->end_date;
+
+        if ($startDate > $endDate) {
+            toast('End Date must be a date after Start Date.', 'error');
+            return back();
+        }
+
+        return redirect()->route("admin.processTransactionFilter", [$startDate, $endDate]);
+    }
+
+    /**
+     * processTransactionFilter
+     *
+     * @param mixed startDate
+     * @param mixed endDate
+     *
+     * @return void
+     */
+    public function processTransactionFilter($startDate = null, $endDate = null)
+    {
+        if (isset($startDate) && isset($endDate)) {
+            $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
+        } else {
+            $startDate    = Carbon::today()->startOfMonth();
+            $endDate      = Carbon::today()->endOfMonth();
+            $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
+        }
+
+        return view("admin.financial_report", compact("transactions", 'startDate', 'endDate'));
     }
 
     /**

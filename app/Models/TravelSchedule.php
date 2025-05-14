@@ -67,4 +67,24 @@ class TravelSchedule extends Model implements Auditable
     {
         return $this->belongsTo('App\Models\CompanyTerminals', "destination");
     }
+
+    public function passengers()
+    {
+        $boardedPassengers = TravelBooking::where("schedule_id", $this->id)->where("boarding_status", "boarded")->count();
+        $vehicle           = CompanyVehicles::find($this->vehicle);
+        $vehicleCapacity   = isset($vehicle) ? $vehicle->seats : "Undefined";
+        return $boardedPassengers . " / " . $vehicleCapacity;
+    }
+
+    public function travelFare()
+    {
+        $route = CompanyRoutes::where("departure", $this->departure)->where("destination", $this->destination)->first();
+        return number_format($route->transport_fare, 2);
+    }
+
+    public function generatedRevenue()
+    {
+        $revenue = TravelBooking::where("schedule_id", $this->id)->where("boarding_status", "boarded")->sum("travel_fare");
+        return number_format($revenue, 2);
+    }
 }
