@@ -4,7 +4,7 @@
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
             <div>
                 <h3 class="fw-bold mb-3">{{ Auth::user()->userRole->role }} Dashboard</h3>
-                <h6 class="op-7 mb-2">Peace Mass Transit (PMT)</h6>
+                <h6 class="op-7 mb-2">Peace Mass Transit (PMT) > {{ Auth::user()->terminal->terminal }}</h6>
             </div>
         </div>
         <div class="row">
@@ -20,7 +20,8 @@
                             <div class="col col-stats ms-3 ms-sm-0">
                                 <div class="numbers">
                                     <p class="card-category text-dark"><strong>Tickets Sold Today</strong></p>
-                                    <h4 class="card-title" style="font-size:18px">0</h4>
+                                    <h4 class="card-title" style="font-size:18px">{{ number_format($param['tickets'], 0) }}
+                                    </h4>
                                 </div>
                             </div>
                         </div>
@@ -39,7 +40,8 @@
                             <div class="col col-stats ms-3 ms-sm-0">
                                 <div class="numbers">
                                     <p class="card-category text-dark"><strong>Today's Revenue</strong></p>
-                                    <h4 class="card-title" style="font-size:18px">{{ number_format(0, 0) }}</h4>
+                                    <h4 class="card-title" style="font-size:16px">
+                                        &#8358;{{ number_format($param['revenue'], 2) }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +60,8 @@
                             <div class="col col-stats ms-3 ms-sm-0">
                                 <div class="numbers">
                                     <p class="card-category text-dark"><strong>Trips Completed</strong></p>
-                                    <h4 class="card-title" style="font-size:18px">{{ number_format(0, 0) }}</h4>
+                                    <h4 class="card-title" style="font-size:18px">{{ number_format($param['trips'], 0) }}
+                                    </h4>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +80,8 @@
                             <div class="col col-stats ms-3 ms-sm-0">
                                 <div class="numbers">
                                     <p class="card-category text-dark"><strong>Today's Passengers</strong></p>
-                                    <h4 class="card-title" style="font-size:18px">{{ number_format(0, 0) }}</h4>
+                                    <h4 class="card-title" style="font-size:18px">
+                                        {{ number_format($param['passengers'], 0) }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -125,16 +129,41 @@
                                 <thead>
                                     <tr style="font-size: 12px">
                                         <th scope="col">S/No.</th>
-                                        <th scope="col">Time</th>
-                                        <th scope="col">Route</th>
+                                        <th scope="col">Travel Route</th>
                                         <th scope="col">Vehicle No.</th>
                                         <th scope="col">Driver</th>
                                         <th scope="col">Passengers</th>
                                         <th scope="col">Status</th>
-                                        <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($scheduledTrips as $trip)
+                                        <tr style="font-size: 12px">
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $trip->travelRoute() }}</td>
+                                            <td>@php echo $trip->getvehicle() @endphp</td>
+                                            <td>@php echo $trip->getdriver() @endphp</td>
+                                            <td>{{ $trip->passengers() }}</td>
+                                            <td>
+                                                @if ($trip->status == 'scheduled')
+                                                    <span class="badge badge-warning p-2"
+                                                        style="font-size: 10px">{{ ucwords($trip->status) }}</span>
+                                                @elseif ($trip->status == 'boarding in progress')
+                                                    <span class="badge badge-info p-2"
+                                                        style="font-size: 10px">{{ ucwords($trip->status) }}</span>
+                                                @elseif ($trip->status == 'trip suspended')
+                                                    <span class="badge badge-danger p-2"
+                                                        style="font-size: 10px">{{ ucwords($trip->status) }}</span>
+                                                @elseif ($trip->status == 'in transit')
+                                                    <span class="badge badge-info p-2"
+                                                        style="font-size: 10px">{{ ucwords($trip->status) }}</span>
+                                                @elseif ($trip->status == 'trip successful')
+                                                    <span class="badge badge-success p-2"
+                                                        style="font-size: 10px">{{ ucwords($trip->status) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
 
                                 </tbody>
                             </table>
@@ -142,8 +171,6 @@
                     </div>
                 </div>
             </div>
-
-
 
         </div>
 
@@ -159,18 +186,11 @@
         var lineChart = document.getElementById("lineChart").getContext("2d"),
             barChart = document.getElementById("barChart").getContext("2d");
 
+        let lineLabels = @json($revennueStats["period"]);
         var myLineChart = new Chart(lineChart, {
             type: "line",
             data: {
-                labels: [
-                    "Day 1",
-                    "Day 2",
-                    "Day 3",
-                    "Day 4",
-                    "Day 5",
-                    "Day 6",
-                    "Day 7",
-                ],
+                labels: lineLabels,
                 datasets: [{
                     label: "Revenue Generated",
                     borderColor: "#1d7af3",
@@ -183,9 +203,7 @@
                     backgroundColor: "transparent",
                     fill: true,
                     borderWidth: 2,
-                    data: [
-                        542, 480, 430, 550, 530, 453, 380,
-                    ],
+                    data: [{{ $revennueStats["stats"] }}],
                 }, ],
             },
             options: {
@@ -218,21 +236,16 @@
             },
         });
 
+        let barLabels = @json($ticketsSold["topRoutes"]);
         var myBarChart = new Chart(barChart, {
             type: "bar",
             data: {
-                labels: [
-                    "Lagos - Abuja",
-                    "Abuja - Awka",
-                    "Lagos - Awka",
-                    "Abuja - Lagos",
-                    "Abuja - Owerri",
-                ],
+                labels: barLabels,
                 datasets: [{
                     label: "Tickets Sold",
                     backgroundColor: "rgb(23, 125, 255)",
                     borderColor: "rgb(23, 125, 255)",
-                    data: [3, 2, 9, 5, 4],
+                    data: [{{ $ticketsSold["ticketSales"] }}],
                 }, ],
             },
             options: {

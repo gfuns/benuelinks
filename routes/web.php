@@ -129,9 +129,13 @@ Route::group([
 
     Route::get('/audittrails/{station?}/{et?}/{sd?}/{ed?}', [SuperAdminController::class, 'fetchAuditTrails'])->name('superadmin.fetchAuditTrails');
 
-    Route::get('/financial-report', [SuperAdminController::class, 'financialReport'])->name('superadmin.financialReport');
-
     Route::get('/print-manifest/{id}', [SuperAdminController::class, 'printPassengerManifest'])->name('superadmin.printPassengerManifest');
+
+    Route::get('/transactions-report', [SuperAdminController::class, 'financialReport'])->name('superadmin.financialReport');
+
+    Route::post('/filterTransactions', [SuperAdminController::class, 'filterTransactions'])->name('superadmin.filterTransactions');
+
+    Route::get('/transactions-report/{sd?}/{ed?}', [SuperAdminController::class, 'processTransactionFilter'])->name('superadmin.processTransactionFilter');
 
 });
 

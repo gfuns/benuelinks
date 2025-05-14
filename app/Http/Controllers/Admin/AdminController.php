@@ -510,7 +510,7 @@ class AdminController extends Controller
     {
         $startDate    = Carbon::today()->startOfMonth();
         $endDate      = Carbon::today()->endOfMonth();
-        $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
+        $transactions = TravelSchedule::where("departure", Auth::user()->station)->whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
         return view("admin.financial_report", compact("transactions", 'startDate', 'endDate'));
     }
 
@@ -559,11 +559,11 @@ class AdminController extends Controller
     public function processTransactionFilter($startDate = null, $endDate = null)
     {
         if (isset($startDate) && isset($endDate)) {
-            $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
+            $transactions = TravelSchedule::where("departure", Auth::user()->station)->whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
         } else {
             $startDate    = Carbon::today()->startOfMonth();
             $endDate      = Carbon::today()->endOfMonth();
-            $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
+            $transactions = TravelSchedule::where("departure", Auth::user()->station)->whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
         }
 
         return view("admin.financial_report", compact("transactions", 'startDate', 'endDate'));
@@ -1114,6 +1114,7 @@ class AdminController extends Controller
     {
         $topTrips = TravelBooking::select('schedule_id', DB::raw('COUNT(*) as tickets_sold'))
             ->with(['schedule.departurePoint', 'schedule.destinationPoint'])
+            ->where("departure", Auth::user()->station)
             ->groupBy('schedule_id')
             ->orderByDesc('tickets_sold')
             ->limit(5)
@@ -1143,6 +1144,7 @@ class AdminController extends Controller
     {
         $topTrips = TravelBooking::select('schedule_id', DB::raw('COUNT(*) as tickets_sold'))
             ->with(['schedule.departurePoint', 'schedule.destinationPoint'])
+            ->where("departure", Auth::user()->station)
             ->groupBy('schedule_id')
             ->orderByDesc('tickets_sold')
             ->limit(5)

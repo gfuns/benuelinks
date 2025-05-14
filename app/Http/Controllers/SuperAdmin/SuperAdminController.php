@@ -17,6 +17,7 @@ use App\Models\UserRole;
 use Auth;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use \Carbon\Carbon;
@@ -41,7 +42,31 @@ class SuperAdminController extends Controller
      */
     public function dashboard()
     {
-        return view("superadmin.dashboard");
+        $terminal   = Auth::user()->station;
+        $tickets    = TravelBooking::whereDate("created_at", today())->count();
+        $revenue    = TravelBooking::where("boarding_status", "boarded")->whereDate("travel_date", today())->sum("travel_fare");
+        $trips      = TravelSchedule::where("status", "trip successful")->whereDate("scheduled_date", today())->count();
+        $passengers = TravelBooking::where("boarding_status", "boarded")->whereDate("travel_date", today())->count();
+
+        $param = [
+            "tickets"    => $tickets,
+            "revenue"    => $revenue,
+            "trips"      => $trips,
+            "passengers" => $passengers,
+        ];
+
+        $ticketsSold = [
+            "topRoutes"   => $this->getTopRoutes(),
+            "ticketSales" => $this->getTicketSales(),
+        ];
+
+        $revennueStats = [
+            "period" => $this->getRevenuePeriod(),
+            "stats"  => $this->getRevenueStats(),
+        ];
+
+        $scheduledTrips = TravelSchedule::whereDate("scheduled_date", today())->limit(5)->get();
+        return view("superadmin.dashboard", compact("param", "scheduledTrips", "ticketsSold", "revennueStats"));
     }
 
     /**
@@ -1341,10 +1366,72 @@ class SuperAdminController extends Controller
         return view("superadmin.passenger_manifest", compact("travelSchedule", "passengers"));
     }
 
+    /**
+     * financialReport
+     *
+     * @return void
+     */
     public function financialReport()
     {
-        $terminals = CompanyTerminals::where("status", "active")->get();
-        return view("superadmin.financial_report", compact("terminals"));
+        $startDate    = Carbon::today()->startOfMonth();
+        $endDate      = Carbon::today()->endOfMonth();
+        $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
+        return view("superadmin.financial_report", compact("transactions", 'startDate', 'endDate'));
+    }
+
+    /**
+     * filterTransactions
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function filterTransactions(Request $request)
+    {
+        if (isset($request->start_date) || isset($request->end_date)) {
+            $validator = Validator::make($request->all(), [
+                'start_date' => 'required',
+                'end_date'   => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors()->all();
+                $errors = implode("<br>", $errors);
+                toast($errors, 'error');
+                return back();
+            }
+        }
+
+        $startDate = isset($request->start_date) ? $this->cleanDate($request->start_date) : $request->start_date;
+        $endDate   = isset($request->end_date) ? $this->cleanDate($request->end_date) : $request->end_date;
+
+        if ($startDate > $endDate) {
+            toast('End Date must be a date after Start Date.', 'error');
+            return back();
+        }
+
+        return redirect()->route("superadmin.processTransactionFilter", [$startDate, $endDate]);
+    }
+
+    /**
+     * processTransactionFilter
+     *
+     * @param mixed startDate
+     * @param mixed endDate
+     *
+     * @return void
+     */
+    public function processTransactionFilter($startDate = null, $endDate = null)
+    {
+        if (isset($startDate) && isset($endDate)) {
+            $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
+        } else {
+            $startDate    = Carbon::today()->startOfMonth();
+            $endDate      = Carbon::today()->endOfMonth();
+            $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
+        }
+
+        return view("superadmin.financial_report", compact("transactions", 'startDate', 'endDate'));
     }
 
     /**
@@ -1387,5 +1474,101 @@ class SuperAdminController extends Controller
         $newDate       = date('Y-m-d', strtotime($date));
         $formattedDate = new DateTime($newDate);
         return $formattedDate;
+    }
+
+    /**
+     * getTopRoutes
+     *
+     * @return void
+     */
+    public function getTopRoutes()
+    {
+        $topTrips = TravelBooking::select('schedule_id', DB::raw('COUNT(*) as tickets_sold'))
+            ->with(['schedule.departurePoint', 'schedule.destinationPoint'])
+            ->groupBy('schedule_id')
+            ->orderByDesc('tickets_sold')
+            ->limit(5)
+            ->get();
+
+        $tripNames = [];
+
+        foreach ($topTrips as $booking) {
+            $trip = $booking->schedule;
+
+            if ($trip && $trip->departurePoint && $trip->destinationPoint) {
+                $departure   = preg_replace("/Terminal/", "", $trip->departurePoint->terminal);
+                $destination = preg_replace("/Terminal/", "", $trip->destinationPoint->terminal);
+                $tripNames[] = trim($departure) . ' - ' . trim($destination);
+            }
+        }
+
+        return $tripNames;
+    }
+
+    /**
+     * getTicketSales
+     *
+     * @return void
+     */
+    public function getTicketSales()
+    {
+        $topTrips = TravelBooking::select('schedule_id', DB::raw('COUNT(*) as tickets_sold'))
+            ->with(['schedule.departurePoint', 'schedule.destinationPoint'])
+            ->groupBy('schedule_id')
+            ->orderByDesc('tickets_sold')
+            ->limit(5)
+            ->get();
+
+        $ticketSoldArr = [];
+
+        foreach ($topTrips as $booking) {
+            $trip = $booking->schedule;
+
+            if ($trip && $trip->departurePoint && $trip->destinationPoint) {
+                $ticketSoldArr[] = $booking->tickets_sold;
+            }
+        }
+
+        $ticketSold = implode(', ', $ticketSoldArr);
+
+        return $ticketSold;
+    }
+
+    /**
+     * getRevenuePeriod
+     *
+     * @return void
+     */
+    public function getRevenuePeriod()
+    {
+        $dates = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date    = Carbon::today()->subDays($i);
+            $dates[] = $date->format('M jS'); // e.g., Mar 21st
+        }
+
+        return $dates;
+    }
+
+    /**
+     * getRevenueStats
+     *
+     * @return void
+     */
+    public function getRevenueStats()
+    {
+        $stats = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date       = Carbon::today()->subDays($i);
+            $dailySales = TravelBooking::whereDate('created_at', $date)
+                ->sum('travel_fare');
+            $stats[] = $dailySales;
+        }
+
+        $revenue = implode(', ', $stats);
+
+        return $revenue;
     }
 }

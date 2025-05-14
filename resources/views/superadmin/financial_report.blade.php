@@ -4,45 +4,22 @@
         <div class="page-inner">
             <div class="row">
                 <div class="col-md-12">
-                     <div class="card">
+                    <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Financial Report</div>
+                            <div class="card-title">Transactions Report</div>
                         </div>
 
                         <div class="card-body">
                             <div class="col-md-12">
-                                <form method="POST" action="{{ route('superadmin.searchAuditTrails') }}">
+                                <form method="POST" action="{{ route('superadmin.filterTransactions') }}">
                                     @csrf
 
                                     <div class="row">
-
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="currentPassword"><strong>Terminal</strong></label>
-                                                <select id="fterminal" name="terminal" class="form-select"
-                                                    data-width="100%" required>
-                                                    <option value="all">All Terminals</option>
-                                                    @foreach ($terminals as $dp)
-                                                        <option value="{{ $dp->id }}">
-                                                            {{ $dp->terminal }}</option>
-                                                    @endforeach
-                                                </select>
-
-                                                @error('terminal')
-                                                    <span class="" role="alert">
-                                                        <strong
-                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-
-                                        </div>
-
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Start Date</strong></label>
                                                 <input type="date" name="start_date" class="form-control"
-                                                    placeholder="Start Date">
+                                                    placeholder="Start Date" value="{{ $startDate }}">
 
                                                 @error('start_date')
                                                     <span class="" role="alert">
@@ -57,7 +34,7 @@
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>End Date</strong></label>
                                                 <input type="date" name="end_date" class="form-control"
-                                                    placeholder="End Date">
+                                                    placeholder="End Date" value="{{ $endDate }}">
 
                                                 @error('end_date')
                                                     <span class="" role="alert">
@@ -68,7 +45,7 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-2 filterButton">
+                                        <div class="col-md-3 filterButton">
                                             <button type="submit" class="btn btn-primary btn-md">Filter Report</button>
                                         </div>
                                     </div>
@@ -80,12 +57,11 @@
 
                             <hr />
                             <h6 class="mt-4 mb-4 ms-4"><strong>
-                                    Financial Report For
-                                    <u>{{ ucwords(isset($terminal) ? $eventType.' Terminal'  : 'All Terminals') }}</u>
+
                                     @if (isset($startDate) && isset($endDate))
-                                        - Between
-                                        {{ date_format($startDate, 'jS M, Y') }} And
-                                        {{ date_format($endDate, 'jS M, Y') }}
+                                        Filtered Transactions Report For The Period:
+                                        {{ date_format(new DateTime($startDate), 'jS M, Y') }} And
+                                        {{ date_format(new DateTime($endDate), 'jS M, Y') }}
                                     @endif
                                 </strong></h6>
                             <div class="table-responsive mb-5" style="padding-bottom: 100px">
@@ -93,45 +69,28 @@
                                     <thead>
                                         <tr>
                                             <td class="th">S/No.</td>
-                                            <td class="th">Terminal</td>
                                             <td class="th">Transaction Date</td>
+                                            <td class="th">Route</td>
+                                            <td class="th">Travel Fare</td>
+                                            <td class="th">Passengers</td>
                                             <td class="th">Revenue Generated</td>
-                                            <td class="th">Action</td>
                                         </tr>
                                     </thead>
-                                    @if (isset($activities))
-                                        <tbody>
 
-                                            @foreach ($activities as $act)
-                                                <tr>
-                                                    <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $act->user->lastName }}</td>
-                                                    <td>{{ $act->user->firstName }}</td>
-                                                    <td>{{ $act->user->otherNames ?? 'Nil' }}</td>
-                                                    <td>{{ $act->user->userRole->role }}</td>
-                                                    <td>{{ $act->event() }}</td>
-                                                    <td>{{ date_format($act->created_at, 'jS M, Y g:ia') }}</td>
-                                                    <td class="align-middle">
-                                                        <button class="btn btn-primary btn-xs" type="button"
-                                                            data-bs-toggle="modal" data-bs-target="#viewAuditDetails"
-                                                            data-backdrop="static" data-myid="{{ $act->id }}"
-                                                            data-surname="{{ $act->user->lastName }}"
-                                                            data-firstname="{{ $act->user->firstName }}"
-                                                            data-othernames="{{ $act->user->otherNames ?? 'Nil' }}"
-                                                            data-role="{{ $act->user->userRole->role }}"
-                                                            data-event="{{ $act->event() }}"
-                                                            data-table="{{ preg_replace('/App\\\\Models\\\\/', '', $act->auditable_type) }}"
-                                                            data-oldrecord="{{ $act->oldValues() }}"
-                                                            data-newrecord="{{ $act->newValues() }}"
-                                                            data-ip="{{ $act->ip_address }}"
-                                                            data-agent="{{ $act->user_agent }}"
-                                                            data-datecreated="{{ date_format($act->created_at, 'jS F, Y g:ia') }}">View
-                                                            Details</button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    @endif
+                                    <tbody>
+
+                                        @foreach ($transactions as $trx)
+                                            <tr>
+                                                <td>{{ $loop->index + 1 }}</td>
+                                                <td>{{  date_format(new DateTime($trx->scheduled_date), 'l - jS M, Y') }}</td>
+                                                <td>{{ $trx->travelRoute() }}</td>
+                                                <td>&#8358;{{ $trx->travelFare() }}</td>
+                                                <td>{{ $trx->passengers() }}</td>
+                                                <td>&#8358;{{ $trx->generatedRevenue() }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+
                                 </table>
                             </div>
 
