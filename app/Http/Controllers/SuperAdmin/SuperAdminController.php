@@ -9,6 +9,7 @@ use App\Models\CompanyTerminals;
 use App\Models\CompanyVehicles;
 use App\Models\PlatformFeature;
 use App\Models\States;
+use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
 use App\Models\UserPermission;
@@ -1324,6 +1325,20 @@ class SuperAdminController extends Controller
 
         $terminals = CompanyTerminals::where("status", "active")->get();
         return view("superadmin.audit_trails", compact("terminals", "activities", "terminal", "event", "eventType", "startDate", "endDate"));
+    }
+
+    /**
+     * printPassengerManifest
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function printPassengerManifest($id)
+    {
+        $travelSchedule = TravelSchedule::find($id);
+        $passengers     = TravelBooking::orderBy("seat", "asc")->where("schedule_id", $id)->where("boarding_status", "boarded")->get();
+        return view("superadmin.passenger_manifest", compact("travelSchedule", "passengers"));
     }
 
     public function financialReport()

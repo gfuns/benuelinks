@@ -131,6 +131,8 @@ Route::group([
 
     Route::get('/financial-report', [SuperAdminController::class, 'financialReport'])->name('superadmin.financialReport');
 
+    Route::get('/print-manifest/{id}', [SuperAdminController::class, 'printPassengerManifest'])->name('superadmin.printPassengerManifest');
+
 });
 
 require __DIR__ . '/admin.php';

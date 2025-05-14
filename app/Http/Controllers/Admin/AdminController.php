@@ -14,6 +14,7 @@ use App\Models\UserRole;
 use Auth;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use \Carbon\Carbon;
@@ -37,7 +38,82 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        return view("admin.dashboard");
+        $terminal   = Auth::user()->station;
+        $tickets    = TravelBooking::where("departure", $terminal)->whereDate("created_at", today())->count();
+        $revenue    = TravelBooking::where("departure", $terminal)->where("boarding_status", "boarded")->whereDate("travel_date", today())->sum("travel_fare");
+        $trips      = TravelSchedule::where("departure", $terminal)->where("status", "trip successful")->whereDate("scheduled_date", today())->count();
+        $passengers = TravelBooking::where("departure", $terminal)->where("boarding_status", "boarded")->whereDate("travel_date", today())->count();
+
+        $param = [
+            "tickets"    => $tickets,
+            "revenue"    => $revenue,
+            "trips"      => $trips,
+            "passengers" => $passengers,
+        ];
+
+        $ticketsSold = [
+            "topRoutes"   => $this->getTopRoutes(),
+            "ticketSales" => $this->getTicketSales(),
+        ];
+
+        $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->limit(5)->get();
+        return view("admin.dashboard", compact("param", "scheduledTrips", "ticketsSold"));
+    }
+
+    /**
+     * getTopRoutes
+     *
+     * @return void
+     */
+    public function getTopRoutes()
+    {
+        $topTrips = TravelBooking::select('schedule_id', DB::raw('COUNT(*) as tickets_sold'))
+            ->with(['schedule.departurePoint', 'schedule.destinationPoint'])
+            ->groupBy('schedule_id')
+            ->orderByDesc('tickets_sold')
+            ->limit(5)
+            ->get();
+
+        $tripNamesArr = [];
+
+        foreach ($topTrips as $booking) {
+            $trip = $booking->schedule;
+
+            if ($trip && $trip->departurePoint && $trip->destinationPoint) {
+                $departure      = preg_replace("/Terminal/", "", $trip->departurePoint->terminal);
+                $destination    = preg_replace("/Terminal/", "", $trip->destinationPoint->terminal);
+                $tripNamesArr[] = trim($departure) . ' - ' . trim($destination);
+            }
+        }
+
+        $tripNames = implode(', ', $tripNamesArr);
+        // dd($tripNames);
+
+        return $tripNames;
+    }
+
+    public function getTicketSales()
+    {
+        $topTrips = TravelBooking::select('schedule_id', DB::raw('COUNT(*) as tickets_sold'))
+            ->with(['schedule.departurePoint', 'schedule.destinationPoint'])
+            ->groupBy('schedule_id')
+            ->orderByDesc('tickets_sold')
+            ->limit(5)
+            ->get();
+
+        $ticketSoldArr = [];
+
+        foreach ($topTrips as $booking) {
+            $trip = $booking->schedule;
+
+            if ($trip && $trip->departurePoint && $trip->destinationPoint) {
+                $ticketSoldArr[] = $booking->tickets_sold;
+            }
+        }
+
+        $ticketSold = implode(', ', $ticketSoldArr);
+
+        return $ticketSold;
     }
 
     /**

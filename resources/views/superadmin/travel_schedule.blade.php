@@ -122,13 +122,13 @@
                                                         <span class="badge badge-warning p-2"
                                                             style="font-size: 10px">{{ ucwords($schedule->status) }}</span>
                                                     @elseif ($schedule->status == 'boarding in progress')
-                                                        <span class="badge badge-primary-light p-2"
+                                                        <span class="badge badge-info p-2"
                                                             style="font-size: 10px">{{ ucwords($schedule->status) }}</span>
                                                     @elseif ($schedule->status == 'trip suspended')
                                                         <span class="badge badge-danger p-2"
                                                             style="font-size: 10px">{{ ucwords($schedule->status) }}</span>
                                                     @elseif ($schedule->status == 'in transit')
-                                                        <span class="badge badge-success-light p-2"
+                                                        <span class="badge badge-info p-2"
                                                             style="font-size: 10px">{{ ucwords($schedule->status) }}</span>
                                                     @elseif ($schedule->status == 'trip successful')
                                                         <span class="badge badge-success p-2"
@@ -158,7 +158,19 @@
                                                                     data-status="{{ ucwords($schedule->status) }}"><i
                                                                         class="fe fe-eye dropdown-item-icon"></i>View
                                                                     Details</a>
+
                                                             </li>
+
+                                                            @if ($schedule->status == 'in transit' || $schedule->status == 'trip successful')
+                                                                <li>
+                                                                    <a class="dropdown-item mb-2"
+                                                                        href="{{ route('superadmin.printPassengerManifest', [$schedule->id]) }}"
+                                                                        target="_blank"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>View
+                                                                        Passenger Manifest</a>
+                                                                </li>
+                                                            @endif
+
                                                         </ul>
                                                     </div>
                                                 </td>

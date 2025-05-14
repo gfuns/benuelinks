@@ -8,6 +8,12 @@ class TravelBooking extends Model
 {
     use HasFactory;
 
+    public function schedule()
+    {
+        return $this->belongsTo('App\Models\TravelSchedule', "schedule_id");
+
+    }
+
     public function departurePoint()
     {
         return $this->belongsTo('App\Models\CompanyTerminals', "departure");
