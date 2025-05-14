@@ -186,18 +186,11 @@
         var lineChart = document.getElementById("lineChart").getContext("2d"),
             barChart = document.getElementById("barChart").getContext("2d");
 
+        let lineLabels = @json($revennueStats["period"]);
         var myLineChart = new Chart(lineChart, {
             type: "line",
             data: {
-                labels: [
-                    "Day 1",
-                    "Day 2",
-                    "Day 3",
-                    "Day 4",
-                    "Day 5",
-                    "Day 6",
-                    "Day 7",
-                ],
+                labels: lineLabels,
                 datasets: [{
                     label: "Revenue Generated",
                     borderColor: "#1d7af3",
@@ -210,9 +203,7 @@
                     backgroundColor: "transparent",
                     fill: true,
                     borderWidth: 2,
-                    data: [
-                        542, 480, 430, 550, 530, 453, 380,
-                    ],
+                    data: [{{ $revennueStats["stats"] }}],
                 }, ],
             },
             options: {
@@ -246,11 +237,10 @@
         });
 
         let barLabels = @json($ticketsSold["topRoutes"]);
-        console.log(barLabels);
         var myBarChart = new Chart(barChart, {
             type: "bar",
             data: {
-                labels: [barLabels],
+                labels: barLabels,
                 datasets: [{
                     label: "Tickets Sold",
                     backgroundColor: "rgb(23, 125, 255)",
