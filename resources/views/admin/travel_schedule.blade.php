@@ -163,6 +163,15 @@
                                                                     Details</a>
                                                             </li>
 
+                                                            <li>
+                                                                <a class="dropdown-item mb-2" href="#"
+                                                                    data-bs-toggle="offcanvas"
+                                                                    data-bs-target="#updateTripStatus"
+                                                                    data-backdrop="static"
+                                                                    data-myid="{{ $schedule->id }}"><i
+                                                                        class="fe fe-eye dropdown-item-icon"></i>Update Trip Status</a>
+                                                            </li>
+
                                                             @if ($schedule->departure == Auth::user()->station && $schedule->status == 'scheduled')
                                                                 <li>
                                                                     <a class="dropdown-item mb-2" href="#"

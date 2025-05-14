@@ -112,7 +112,7 @@
                                                                     data-passenger="{{ $bk->full_name }}"
                                                                     data-phoneno="{{ $bk->phone_number }}"
                                                                     data-route="{{ $bk->travelRoute() }}"
-                                                                    data-date="{{ $bk->travel_date }} {{ $bk->departure_time }}"
+                                                                    data-date="{{ date_format(new DateTime($bk->travel_date), 'l jS M, Y') }} {{ $bk->departure_time }}"
                                                                     data-bookingstatus="{{ ucwords($bk->booking_status) }}"
                                                                     data-vehicletype="{{ $bk->vehicle_type }}"
                                                                     data-paymentchannel="{{ ucwords($bk->payment_channel) }}"
@@ -127,16 +127,9 @@
                                                                     Details</a>
                                                             </li>
                                                             <li>
-                                                                <a class="dropdown-item mb-2" href="#"
-                                                                    data-bs-toggle="offcanvas" data-bs-target="#editUser"
-                                                                    data-backdrop="static" data-myid="{{ $bk->id }}"
-                                                                    data-lastname="{{ $bk->last_name }}"
-                                                                    data-othernames="{{ $bk->other_names }}"
-                                                                    data-email="{{ $bk->email }}"
-                                                                    data-phone="{{ $bk->phone_number }}"
-                                                                    data-station="{{ $bk->station }}"
-                                                                    data-role="{{ $bk->role_id }}"
-                                                                    data-status="{{ ucwords($bk->status) }}"><i
+                                                                <a class="dropdown-item mb-2"
+                                                                    href="{{ route('admin.printBookingTicket', [$bk->id]) }}"
+                                                                    target="_blank"><i
                                                                         class="fe fe-eye dropdown-item-icon"></i>Print
                                                                     Receipt</a>
                                                             </li>
@@ -293,7 +286,7 @@
                             <div class="invalid-feedback">Please select travel date.</div>
                         </div>
 
-                        <div class="mb-3 col-12">
+                        <div class="mb-3 col-md-6 col-12">
                             <label class="form-label"><strong>Destination</strong> <span
                                     class="text-danger">*</span></label>
                             <select id="destination" name="destination" class="form-select" data-width="100%" required>
@@ -302,7 +295,7 @@
                             <div class="invalid-feedback">Please select destination.</div>
                         </div>
 
-                        <div class="mb-3 col-12">
+                        <div class="mb-3 col-md-6 col-12">
                             <label class="form-label"><strong>Preferred Departure Time</strong> <span
                                     class="text-danger">*</span></label>
                             <select id="depTime" name="departure_time" class="form-select" data-width="100%" required>
@@ -311,7 +304,7 @@
                             <div class="invalid-feedback">Please select departure time.</div>
                         </div>
 
-                        <div class="mb-3 col-12">
+                        <div class="mb-3 col-md-6 col-12">
                             <label class="form-label"><strong>Choice of Vehicle</strong> <span
                                     class="text-danger">*</span></label>
                             <select id="vehChoice" name="vehicle_choice" class="form-select" data-width="100%" required>
@@ -323,7 +316,7 @@
                             <div class="invalid-feedback">Please select choice of vehicle.</div>
                         </div>
 
-                        <div class="mb-3 col-12">
+                        <div class="mb-3 col-md-6 col-12">
                             <label class="form-label"><strong>Seat Number</strong> <span
                                     class="text-danger">*</span></label>
                             <select id="seat" name="seat_number" class="form-select" data-width="100%" required>
@@ -382,6 +375,69 @@
                             <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
                                 aria-label="Close">Close</button>
                         </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="filterBookings" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mb-0" id="newCatgoryLabel">
+                        Filter Booking Records
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <form class="needs-validation" novalidate method="post" action="{{ route('admin.filterBookings') }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- form group -->
+
+                            <div class="mb-3 col-12">
+                                <label class="form-label"><strong>Travel Route</strong></label>
+                                <select id="trvRoute" name="travel_route" class="form-select" data-width="100%"
+                                    required>
+                                    <option value="null">Select Travel Route</option>
+                                    @foreach ($travelRoutes as $troute)
+                                        <option value="{{ $troute->destination }}" @if ($route == $troute->destination) selected @endif>{{ $troute->travelRoute() }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback">Please select travel route.</div>
+                            </div>
+
+                            <div class="mb-3 col-12">
+                                <label class="form-label"><strong>Booking Status</strong></label>
+                                <select id="bkStatus" name="booking_status" class="form-select" data-width="100%">
+                                    <option value="null">Select Booking Status</option>
+                                    <option value="booked" @if ($status == 'booked') selected @endif>Booked
+                                    </option>
+                                    <option value="validated" @if ($status == 'validated') selected @endif>Validated
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">Please select booking status.</div>
+                            </div>
+
+                            <div class="mb-3 col-12">
+                                <label class="form-label"><strong>Travel Date</strong></label>
+                                <input type="date" name="travel_date" value="{{ $date }}"
+                                    class="form-control" placeholder="Select Travel Date">
+                                <div class="invalid-feedback">Please select travel date.</div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Filter Records</button>
+                        <button type="button" class="btn btn-outline-primary ms-2"
+                            data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>

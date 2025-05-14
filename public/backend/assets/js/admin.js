@@ -61,6 +61,14 @@ $('#seat').select2({
     dropdownParent: $('#offcanvasRight')
 });
 
+$('#trvRoute').select2({
+    dropdownParent: $('#filterBookings')
+});
+
+$('#bkStatus').select2({
+    dropdownParent: $('#filterBookings')
+});
+
 
 $('#gender').select2({
     dropdownParent: $('#offcanvasRight')

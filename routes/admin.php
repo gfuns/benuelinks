@@ -65,7 +65,13 @@ Route::group([
 
     Route::get('/searchBooking', [AdminController::class, 'searchBooking'])->name('admin.searchBooking');
 
+    Route::post('/filterBookings', [AdminController::class, 'filterBookings'])->name('admin.filterBookings');
+
+    Route::get('/processBookingFiltering/{schedule?}/{bkstatus?}/{date?}', [AdminController::class, 'processBookingFiltering'])->name('admin.processBookingFiltering');
+
     Route::get('/validate-ticket/{id}', [AdminController::class, 'validateTicket'])->name('admin.validateTicket');
+
+    Route::get('/print-ticket/{id}', [AdminController::class, 'printBookingTicket'])->name('admin.printBookingTicket');
 
 });
 

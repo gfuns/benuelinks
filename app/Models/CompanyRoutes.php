@@ -18,6 +18,14 @@ class CompanyRoutes extends Model implements Auditable
         ];
     }
 
+    public function travelRoute()
+    {
+        $terminal    = $this->departurePoint->terminal;
+        $destination = $this->destinationPoint->terminal;
+
+        return $terminal . " => " . $destination;
+    }
+
     public function departurePoint()
     {
         return $this->belongsTo('App\Models\CompanyTerminals', "departure");

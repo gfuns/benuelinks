@@ -736,7 +736,11 @@ class AdminController extends Controller
         $terminal     = Auth::user()->station;
         $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
         $bookings     = TravelBooking::where("classification", "booking")->where("departure", $terminal)->get();
-        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam'));
+        $status       = null;
+        $date         = null;
+        $route        = null;
+        $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
+        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam', "status", "date", "travelRoutes", "route"));
     }
 
     /**
@@ -750,7 +754,11 @@ class AdminController extends Controller
         $terminal     = Auth::user()->station;
         $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
         $bookings     = TravelBooking::where("classification", "booking")->where("departure", $terminal)->where("booking_number", $searchParam)->get();
-        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam'));
+        $status       = null;
+        $date         = null;
+        $route        = null;
+        $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
+        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam', "status", "date", "travelRoutes", "route"));
     }
 
     /**
@@ -817,6 +825,55 @@ class AdminController extends Controller
     }
 
     /**
+     * filterBookings
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function filterBookings(Request $request)
+    {
+        $route  = $request->travel_route;
+        $status = $request->booking_status;
+        $date   = $request->travel_date;
+
+        return redirect()->route("admin.processBookingFiltering", [$route, $status, $date]);
+    }
+
+    public function processBookingFiltering($route = null, $status = null, $date = null)
+    {
+        $route    = $route == "null" ? null : $route;
+        $status   = $status == "null" ? null : $status;
+        $date     = $date == "null" ? null : $date;
+        $terminal = Auth::user()->station;
+
+        if (isset($route) && isset($status) && isset($date)) {
+            $bookings = TravelBooking::where("classification", "booking")->where("departure", $terminal)->where("destination", $route)->where("booking_status", $status)->whereDate("travel_date", $date)->get();
+        } else if (isset($route) && isset($status) && ! isset($date)) {
+            $bookings = TravelBooking::where("classification", "booking")->where("departure", $terminal)->where("destination", $route)->where("booking_status", $status)->get();
+        } else if (isset($route) && ! isset($status) && isset($date)) {
+            $bookings = TravelBooking::where("classification", "booking")->where("departure", $terminal)->where("destination", $route)->whereDate("travel_date", $date)->get();
+        } else if (! isset($route) && isset($status) && isset($date)) {
+            $bookings = TravelBooking::where("classification", "booking")->where("departure", $terminal)->where("booking_status", $status)->whereDate("travel_date", $date)->get();
+        } else if (isset($route) && ! isset($status) && ! isset($date)) {
+            $bookings = TravelBooking::where("classification", "booking")->where("departure", $terminal)->where("destination", $route)->get();
+        } else if (! isset($route) && isset($status) && ! isset($date)) {
+            $bookings = TravelBooking::where("classification", "booking")->where("departure", $terminal)->where("booking_status", $status)->get();
+        } else if (! isset($route) && ! isset($status) && isset($date)) {
+            $bookings = TravelBooking::where("classification", "booking")->where("departure", $terminal)->whereDate("travel_date", $date)->get();
+        } else {
+            $bookings = TravelBooking::where("classification", "booking")->where("departure", $terminal)->get();
+        }
+
+        $searchParam  = null;
+        $terminal     = Auth::user()->station;
+        $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
+        $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
+        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam', "date", "status", "route", 'travelRoutes'));
+
+    }
+
+    /**
      * validateTicket
      *
      * @param mixed id
@@ -834,6 +891,19 @@ class AdminController extends Controller
             toast('Something went wrong. Please try again', 'error');
             return back();
         }
+    }
+
+    /**
+     * printBookingTicket
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function printBookingTicket($id)
+    {
+        $booking = TravelBooking::find($id);
+        return view("admin.print_ticket", compact("booking"));
     }
 
     /**
