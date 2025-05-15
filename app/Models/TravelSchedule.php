@@ -57,6 +57,20 @@ class TravelSchedule extends Model implements Auditable
         return $terminal . " => " . $destination;
     }
 
+    public function transportFare()
+    {
+        $route = CompanyRoutes::where("departure", $this->departure)->where("destination", $this->destination)->first();
+
+        return $route->transport_fare;
+    }
+
+    public function availableSeats()
+    {
+        $bookings = TravelBooking::where("departure", $this->departure)->where("destination", $this->destination)->whereDate("travel_date", $this->scheduled_date)->count();
+
+        return (14 - $bookings);
+    }
+
     public function departurePoint()
     {
         return $this->belongsTo('App\Models\CompanyTerminals', "departure");

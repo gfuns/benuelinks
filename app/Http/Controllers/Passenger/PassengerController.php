@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Passenger;
 use App\Http\Controllers\Controller;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
+use App\Models\TravelSchedule;
 use App\Models\User;
 use App\Models\WalletTransactions;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -30,7 +32,15 @@ class PassengerController extends Controller
      */
     public function dashboard()
     {
-        return view("passenger.dashboard");
+        $companyTerminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
+
+        if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
+            $schedules = TravelSchedule::where("status", "scheduled")->whereDate("scheduled_date", Carbon::tomorrow())->limit(5)->get();
+        } else {
+            $schedules = TravelSchedule::where("status", "scheduled")->whereDate("scheduled_date", Carbon::today())->limit(5)->get();
+        }
+
+        return view("passenger.dashboard", compact("companyTerminals", "schedules"));
     }
 
     /**
