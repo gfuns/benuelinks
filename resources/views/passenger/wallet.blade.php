@@ -38,7 +38,7 @@
                                 <div class="tab-content">
                                     <div class="tab-pane fade show active" id="view-crypto">
                                         <div class="token-balance token-balance-s2">
-                                            <ul class="token-balance-list">
+                                            <ul class="token-balance-list d-flex justify-content-between">
                                                 <li class="token-balance-sub">
                                                     <span class="sub"
                                                         style="font-size: 12px; font-weight:bold;">Customer
@@ -59,7 +59,8 @@
                             </div>
                         </div>
                         <div style="margin-bottom: 35px;">
-                            <center><button class="btn btn-primary btn-sm w-100">Top Up Wallet</button></center>
+                            <center><button class="btn btn-primary btn-sm w-100" data-toggle="modal"
+                                    data-target="#initiateTopup">Top Up Wallet</button></center>
                         </div>
                     </div>
 
@@ -83,19 +84,31 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($transactions as $route)
+                                            @foreach ($transactions as $trx)
                                                 <tr class="data-item">
                                                     <td class="data-col">
                                                         <span
-                                                            class="sub sub-s2 sub-email">{{ date_format($route->created_at, 'jS M, Y g:i a') }}</span>
+                                                            class="sub sub-s2 sub-email">{{ date_format($trx->created_at, 'jS M, Y g:i a') }}</span>
                                                     </td>
                                                     <td class="data-col">
                                                         <span
-                                                            class="sub sub-s2 sub-email">{{ $route->description }}</span>
+                                                            class="sub sub-s2 sub-email">{{ $trx->description }}</span>
                                                     </td>
                                                     <td class="data-col">
                                                         <span
-                                                            class="sub sub-s2 sub-email">&#8358;{{ number_format($route->amount, 2) }}</span>
+                                                            class="sub sub-s2 sub-email">&#8358;{{ number_format($trx->amount, 2) }}</span>
+                                                    </td>
+                                                    <td class="data-col">
+                                                        @if ($trx->status == 'pending')
+                                                            <span
+                                                                class="dt-status-md badge badge-outline badge-md badge-warning"><strong>{{ ucwords($trx->status) }}</strong></span>
+                                                        @elseif ($trx->status == 'failed')
+                                                            <span
+                                                                class="dt-status-md badge badge-outline badge-md badge-danger text-danger"><strong>{{ ucwords($trx->status) }}</strong></span>
+                                                        @else
+                                                            <span
+                                                                class="dt-status-md badge badge-outline badge-md badge-success text-success"><strong>{{ ucwords($trx->status) }}</strong></span>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -151,9 +164,11 @@
                                     <ul>
                                         <li><i class="far fa-dot-circle" style="font-size: 12px"></i> Activate your
                                             wallet.</li>
-                                        <li><i class="far fa-dot-circle" style="font-size: 12px"></i> Top up your wallet
+                                        <li><i class="far fa-dot-circle" style="font-size: 12px"></i> Top up your
+                                            wallet
                                             using your preferred payment method.</li>
-                                        <li><i class="far fa-dot-circle" style="font-size: 12px"></i> Book trips and pay
+                                        <li><i class="far fa-dot-circle" style="font-size: 12px"></i> Book trips and
+                                            pay
                                             directly from your wallet.</li>
                                         <li><i class="far fa-dot-circle" style="font-size: 12px"></i> Receive refunds
                                             or bonuses directly into your wallet.</li>
@@ -244,6 +259,38 @@
 
 
     <div id="ajax-modal"></div>
+
+    <div class="modal fade" id="initiateTopup" tabindex="-1">
+        <div class="modal-dialog modal-dialog-md" style="margin-top:150px">
+            <div class="modal-content">
+                <a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em
+                        class="ti ti-close"></em></a>
+                <div class="popup-body">
+                    <h3 class="popup-title">Initiate Topup</h3>
+                    <form class="validate-modern lang-form-submit _reload"
+                        action="{{ route('passenger.initiateWalletTopup') }}" method="POST" id="lang-add-new">
+                        @csrf
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="input-item input-with-label">
+                                    <label class="input-item-label">Topup Amount</label>
+                                    <div class="input-wrap">
+                                        <input class="input-bordered" type="text" name="topup_amount"
+                                            oninput="validateInput(event)" placeholder="Topup Amount" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">Proceed To Payment</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="page-overlay">
         <div class="spinner">
             <span class="sp sp1"></span>

@@ -9,6 +9,7 @@
         "barryvdh/laravel-dompdf": "^2.1",
         "cloudinary-labs/cloudinary-laravel": "^2.0",
         "coderatio/simple-backup": "^1.0",
+        "coderatio/paystack-mirror": "^0.1.0@beta",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",

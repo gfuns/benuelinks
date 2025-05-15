@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Passenger\PassengerController;
+use App\Http\Controllers\PaystackController;
 use Illuminate\Support\Facades\Route;
 
 //Work Group Modules
@@ -20,6 +21,8 @@ Route::group([
 
     Route::post('/updateWalletPin', [PassengerController::class, 'updateWalletPin'])->name('passenger.updateWalletPin');
 
+    Route::post('/initiateWalletTopup', [PaystackController::class, 'initiateWalletTopup'])->name('passenger.initiateWalletTopup');
+
     Route::get('/wallet', [PassengerController::class, 'wallet'])->name('passenger.wallet');
 
     Route::get('/booking-history', [PassengerController::class, 'bookingHistory'])->name('passenger.bookingHistory');
@@ -28,3 +31,5 @@ Route::group([
 
     Route::get('/pricing', [PassengerController::class, 'pricing'])->name('passenger.pricing');
 });
+
+Route::get('/paystack/callback', [PaystackController::class, 'handlePaystackCallback']);

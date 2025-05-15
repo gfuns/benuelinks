@@ -145,7 +145,7 @@
                                         <td class="data-col dt-status data-col-wd-md text-right">
                                             <a href="">
                                                 <span
-                                                    class="dt-status-md badge badge-outline badge-md badge-primary"><strong>Book
+                                                    class="dt-status-md badge badge-outline badge-md badge-primary text-primary"><strong>Book
                                                     Trip</strong></span>
                                             </a>
                                         </td>
