@@ -16,9 +16,11 @@ Route::group([
 
     Route::post('/updatePassword', [PassengerController::class, 'updatePassword'])->name('passenger.updatePassword');
 
+    Route::post('/walletPinSetup', [PassengerController::class, 'walletPinSetup'])->name('passenger.walletPinSetup');
+
     Route::post('/updateWalletPin', [PassengerController::class, 'updateWalletPin'])->name('passenger.updateWalletPin');
 
-    Route::get('/wallet', [PassengerController::class, 'dashboard'])->name('passenger.wallet');
+    Route::get('/wallet', [PassengerController::class, 'wallet'])->name('passenger.wallet');
 
     Route::get('/booking-history', [PassengerController::class, 'bookingHistory'])->name('passenger.bookingHistory');
 

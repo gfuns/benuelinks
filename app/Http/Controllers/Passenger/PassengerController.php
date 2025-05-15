@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
 use App\Models\User;
+use App\Models\WalletTransactions;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -172,5 +173,100 @@ class PassengerController extends Controller
             $companyRoutes = CompanyRoutes::where("status", "active")->get();
         }
         return view("passenger.route_prices", compact("companyTerminals", "companyRoutes", "filter", "keyword", "takeoff", "destination"));
+    }
+
+    /**
+     * wallet
+     *
+     * @return void
+     */
+    public function wallet()
+    {
+        $transactions = WalletTransactions::orderBy("id", "desc")->where("user_id", Auth::user()->id)->get();
+        return view("passenger.wallet", compact("transactions"));
+    }
+
+    /**
+     * walletPinSetup
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function walletPinSetup(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'wallet_pin'       => 'required',
+            'pin_confirmation' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        if ($request->wallet_pin != $request->pin_confirmation) {
+            alert()->error('', 'Wallet PIN and Wallet PIN Confirmation Do Not Match!');
+            return back();
+        }
+
+        $user             = Auth::user();
+        $user->wallet_pin = Hash::make($request->wallet_pin);
+        $user->save();
+        if ($user->save()) {
+            alert()->success('', 'Wallet PIN Setup Successfully.');
+            return back();
+        } else {
+            alert()->error('', 'Something Went Wrong!');
+            return back();
+        }
+    }
+
+    /**
+     * updateWalletPin
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function updateWalletPin(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'current_pin'      => 'required',
+            'new_pin'          => 'required',
+            'pin_confirmation' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $user = Auth::user();
+
+        if (! Hash::check($request->current_pin, $user->wallet_pin)) {
+            alert()->error('', 'Invalid Current PIN Provided!');
+            return back();
+        } else {
+            if ($request->new_pin != $request->pin_confirmation) {
+                alert()->error('', 'New PIN and New PIN Confirmation Do Not Match!');
+                return back();
+            } else {
+                $user->wallet_pin = Hash::make($request->new_pin);
+                $user->save();
+            }
+        }
+
+        if ($user->save()) {
+            alert()->success('', 'Wallet PIN Updated Successfully.');
+            return back();
+        } else {
+            alert()->error('', 'Something Went Wrong!');
+            return back();
+        }
     }
 }

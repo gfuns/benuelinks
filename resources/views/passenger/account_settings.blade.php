@@ -131,7 +131,7 @@
                                     <div class="w-xl-16x">
                                         @if (isset(Auth::user()->wallet_pin))
                                             <form class="validate-modern"
-                                                action="{{ route('passenger.updatePassword') }}" method="POST">
+                                                action="{{ route('passenger.updateWalletPin') }}" method="POST">
                                                 @csrf
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -141,7 +141,7 @@
                                                             <div class="input-wrap">
                                                                 <input class="input-bordered" type="password"
                                                                     placeholder="Current PIN" name="current_pin"
-                                                                    id="old-pin" required="required">
+                                                                    id="old-pin" required="required" minlength="4" maxlength="4">
                                                             </div>
                                                         </div>
                                                     </div>
