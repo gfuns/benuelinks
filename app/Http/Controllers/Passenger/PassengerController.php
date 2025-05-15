@@ -138,10 +138,39 @@ class PassengerController extends Controller
     public function pricing()
     {
         $companyTerminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
-        $companyRoutes    = CompanyRoutes::where("status", "active")->get();
         $filter           = null;
         $takeoff          = null;
+        $keyword          = null;
         $destination      = null;
-        return view("passenger.route_prices", compact("companyTerminals", "companyRoutes", "filter", "takeoff", "destination"));
+        if (request()->filter == "quick" && request()->search != null) {
+            $filter    = "quick";
+            $keyword   = request()->search;
+            $terminals = CompanyTerminals::query()->where("status", "active")
+                ->whereLike(['terminal'], request()->search)->pluck("id");
+
+            $companyRoutes = CompanyRoutes::where(function ($query) use ($terminals) {
+                $query->whereIn("departure", $terminals)
+                    ->orWhereIn("destination", $terminals);
+            })->whereDate("status", "active")->get();
+        } else if (request()->filter == "advanced") {
+            $filter  = "advanced";
+            $keyword = request()->search;
+            if (isset(request()->takeoff) && isset(request()->destination)) {
+                $takeoff       = request()->takeoff;
+                $destination   = request()->destination;
+                $companyRoutes = CompanyRoutes::where("departure", $takeoff)->where("destination", $destination)->where("status", "active")->get();
+            } else if (isset(request()->takeoff) && ! isset(request()->destination)) {
+                $takeoff       = request()->takeoff;
+                $companyRoutes = CompanyRoutes::where("departure", $takeoff)->where("status", "active")->get();
+            } else if (isset(request()->takeoff) && ! isset(request()->destination)) {
+                $destination   = request()->destination;
+                $companyRoutes = CompanyRoutes::where("destination", $destination)->where("status")->get();
+            } else {
+                $companyRoutes = CompanyRoutes::where("status", "active")->get();
+            }
+        } else {
+            $companyRoutes = CompanyRoutes::where("status", "active")->get();
+        }
+        return view("passenger.route_prices", compact("companyTerminals", "companyRoutes", "filter", "keyword", "takeoff", "destination"));
     }
 }

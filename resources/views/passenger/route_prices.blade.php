@@ -52,7 +52,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="search-adv-wrap hide">
+                        <div class="search-adv-wrap @if($filter != "advanced") hide @endif">
                             <form class="adv-search" id="adv-search" action="" method="GET" autocomplete="off">
                                 <div class="adv-search">
                                     <div class="row align-items-end guttar-20px guttar-vr-15px">
@@ -105,32 +105,8 @@
                         @if ($filter != null)
                             <div class="search-adv-result">
                                 <div class="search-info">Found <span
-                                        class="search-count">{{ number_format(count($users), 0) }}</span> Users.
+                                        class="search-count">{{ number_format(count($companyRoutes), 0) }}</span> Record(s) using your query.
                                 </div>
-                                <ul class="search-opt">
-                                    @if ($keyword != null)
-                                        <li><a
-                                                href="/portal/user-management?status={{ $status }}&amp;role={{ $role }}&amp;filter={{ $filter }}">Search
-                                                Keyword:
-                                                <span>{{ $keyword }}</span></a>
-                                        </li>
-                                    @endif
-                                    @if ($status != null)
-                                        <li><a
-                                                href="/portal/user-management?search={{ $keyword }}&amp;role={{ $role }}&amp;filter={{ $filter }}">Status:
-                                                <span>{{ ucwords($status) }}</span></a>
-                                        </li>
-                                    @endif
-                                    @if ($role != null)
-                                        <li><a
-                                                href="/portal/user-management?search={{ $keyword }}&amp;status={{ $status }}&amp;filter={{ $filter }}">Role
-                                                Type: <span>{{ \App\Models\UserRole::find($role)->role }}</span></a>
-                                        </li>
-                                    @endif
-                                    <li><a href="{{ route('super.usermgt') }}" class="link link-underline">Clear
-                                            All</a>
-                                    </li>
-                                </ul>
                             </div>
                         @endif
                     </div>
@@ -155,36 +131,24 @@
                                         <td class="data-col">
                                             <span
                                                 class="sub sub-s2 sub-email">{{ $route->departurePoint->terminal }}</span>
-                                                <span class="sub user-id">{{ $route->departurePoint->address }}</span>
+                                            <span class="sub user-id">{{ $route->departurePoint->address }}</span>
                                         </td>
                                         <td class="data-col">
                                             <span
                                                 class="sub sub-s2 sub-email">{{ $route->destinationPoint->terminal }}</span>
-                                                <span class="sub user-id">{{ $route->destinationPoint->address }}</span>
+                                            <span class="sub user-id">{{ $route->destinationPoint->address }}</span>
                                         </td>
                                         <td class="data-col">
                                             <span
                                                 class="sub sub-s2 sub-email">&#8358;{{ number_format($route->transport_fare, 2) }}</span>
                                         </td>
-
-                                        <td class="data-col data-col-wd-md text-right">
-                                            <div class="relative d-inline-block">
-                                                <a href="#"
-                                                    class="btn btn-light-alt btn-xs btn-icon toggle-tigger"><em
-                                                        class="ti ti-more-alt"></em></a>
-                                                <div class="toggle-class dropdown-content dropdown-content-top-left">
-                                                    <ul class="dropdown-list more-menu-3511">
-
-                                                        <li><a href="#" data-userid=""
-                                                                class="front suspendUser"><em
-                                                                    class="fas fa-ban"></em>Suspend</a></li>
-
-
-                                                    </ul>
-                                                </div>
-                                            </div>
+                                        <td class="data-col dt-status data-col-wd-md text-right">
+                                            <a href="">
+                                                <span
+                                                    class="dt-status-md badge badge-outline badge-md badge-primary"><strong>Book
+                                                    Trip</strong></span>
+                                            </a>
                                         </td>
-
                                     </tr>
                                 @endforeach
                                 @if (count($companyRoutes) < 1)
