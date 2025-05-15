@@ -9,4 +9,20 @@ Route::group([
 ], function ($router) {
 
     Route::get('/dashboard', [PassengerController::class, 'dashboard'])->name('passenger.dashboard');
+
+    Route::get('/account-settings', [PassengerController::class, 'accountSettings'])->name('passenger.accountSettings');
+
+    Route::post('/updateProfile', [PassengerController::class, 'updateProfile'])->name('passenger.updateProfile');
+
+    Route::post('/updatePassword', [PassengerController::class, 'updatePassword'])->name('passenger.updatePassword');
+
+    Route::post('/updateWalletPin', [PassengerController::class, 'updateWalletPin'])->name('passenger.updateWalletPin');
+
+    Route::get('/wallet', [PassengerController::class, 'dashboard'])->name('passenger.wallet');
+
+    Route::get('/booking-history', [PassengerController::class, 'bookingHistory'])->name('passenger.bookingHistory');
+
+    Route::get('/referrals', [PassengerController::class, 'referrals'])->name('passenger.referrals');
+
+    Route::get('/pricing', [PassengerController::class, 'pricing'])->name('passenger.pricing');
 });
