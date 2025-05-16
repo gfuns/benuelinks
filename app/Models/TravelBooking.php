@@ -32,4 +32,10 @@ class TravelBooking extends Model
 
         return $terminal . " => " . $destination;
     }
+
+    public function tripStatus()
+    {
+        $schedule = TravelSchedule::find($this->schedule_id);
+        return $schedule->status;
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Passenger;
 use App\Http\Controllers\Controller;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
+use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
 use App\Models\WalletTransactions;
@@ -278,5 +279,69 @@ class PassengerController extends Controller
             alert()->error('', 'Something Went Wrong!');
             return back();
         }
+    }
+
+    /**
+     * searchSchedule
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function searchSchedule(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'takeoff'        => 'required',
+            'destination'    => 'required',
+            'departure_date' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $departure   = $request->takeoff;
+        $destination = $request->destination;
+        $date        = $request->departure_date;
+        return redirect()->route("passenger.availableBuses", [$departure, $destination, $date]);
+    }
+
+    /**
+     * availableBuses
+     *
+     * @param mixed departure
+     * @param mixed destination
+     * @param mixed date
+     *
+     * @return void
+     */
+    public function availableBuses($departure, $destination, $date)
+    {
+        $schedules = TravelSchedule::where("departure", $departure)->where("destination", $destination)->whereDate("scheduled_date", $date)->where("status", "scheduled")->get();
+
+        return view("passenger.available_buses", compact("schedules"));
+    }
+
+    /**
+     * bookingHistory
+     *
+     * @return void
+     */
+    public function bookingHistory()
+    {
+        $filter    = request()->filter;
+        $startDate = request()->start_date;
+        $endDate   = request()->end_date;
+
+        if ($filter == "advanced" && isset($startDate) && isset($endDate)) {
+            $bookingHistory = TravelBooking::whereBetween("travel_date", [$startDate, $endDate])->get();
+
+        } else if (request()->filter == "advanced") {
+            $bookingHistory = TravelBooking::all();
+        }
+        return view("passenger.booking_history", compact("filter", "bookingHistory", "startDate", "endDate"));
     }
 }
