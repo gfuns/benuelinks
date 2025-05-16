@@ -74,9 +74,18 @@ class TravelSchedule extends Model implements Auditable
         return $route->transport_fare;
     }
 
+    public function bookedSeats()
+    {
+        $bookedSeats = TravelBooking::where("schedule_id", $this->id)->where("payment_status", "paid")->pluck("seat")->map(fn($seat) => (int) $seat) // ensure they are integers
+            ->values()
+            ->toArray();
+
+        return $bookedSeats;
+    }
+
     public function availableSeats()
     {
-        $bookings = TravelBooking::where("schedule_id", $this->id)->where("departure", $this->departure)->where("destination", $this->destination)->whereDate("travel_date", $this->scheduled_date)->where("payment_status", "paid")->count();
+        $bookings = TravelBooking::where("schedule_id", $this->id)->where("payment_status", "paid")->count();
 
         return (12 - $bookings);
     }

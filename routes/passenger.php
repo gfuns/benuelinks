@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\Passenger\PassengerController;
 use App\Http\Controllers\PaystackController;
 use Illuminate\Support\Facades\Route;
@@ -51,3 +52,5 @@ Route::group([
 });
 
 Route::get('/paystack/callback', [PaystackController::class, 'handlePaystackCallback']);
+
+Route::get('/ajax/get-bookedSeats/{scheduleid}', [AjaxController::class, 'getBookedSeats'])->name('ajax.bookedSeats');

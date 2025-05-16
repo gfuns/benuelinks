@@ -157,8 +157,7 @@
                                     <br />
                                     <div class="row">
                                         <div class="col-3">
-                                            <input id="seat-2" name="seatnumber[]" type="checkbox"
-                                                disabled="" /><label for="seat-2" class="disable-seat">
+                                            <input id="seat-2" name="seatnumber[]" type="checkbox" /><label for="seat-2" class="seat-two">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}" alt="" />
                                                     <h1 class="number">2</h1>
@@ -178,8 +177,7 @@
                                     <br />
                                     <div class="row">
                                         <div class="col-3">
-                                            <input id="seat-4" name="seatnumber[]" type="checkbox"
-                                                disabled="" /><label for="seat-4" class="disable-seat">
+                                            <input id="seat-4" name="seatnumber[]" type="checkbox"/><label for="seat-4" class="seat-four">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}" alt="" />
                                                     <h1 class="number">4</h1>
@@ -187,8 +185,7 @@
                                             </label>
                                         </div>
                                         <div class="col-3">
-                                            <input id="seat-5" name="seatnumber[]" type="checkbox"
-                                                disabled="" /><label for="seat-5" class="disable-seat">
+                                            <input id="seat-5" name="seatnumber[]" type="checkbox" /><label for="seat-5" class="seat-five">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}" alt="" />
                                                     <h1 class="number">5</h1>
@@ -197,8 +194,7 @@
                                         </div>
                                         <div class="col-3"></div>
                                         <div class="col-3">
-                                            <input id="seat-6" name="seatnumber[]" type="checkbox"
-                                                disabled="" /><label for="seat-6" class="disable-seat">
+                                            <input id="seat-6" name="seatnumber[]" type="checkbox" /><label for="seat-6" class="seat-six">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}" alt="" />
                                                     <h1 class="number">6</h1>
