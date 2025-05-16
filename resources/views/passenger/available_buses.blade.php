@@ -148,7 +148,8 @@
                                             <input id="seat-1" name="seatnumber[]" type="checkbox"
                                                 value="1" /><label for="seat-1" class="seat-one">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">1</h1>
                                                 </div>
                                             </label>
@@ -157,9 +158,11 @@
                                     <br />
                                     <div class="row">
                                         <div class="col-3">
-                                            <input id="seat-2" name="seatnumber[]" type="checkbox" /><label for="seat-2" class="seat-two">
+                                            <input id="seat-2" name="seatnumber[]" type="checkbox" /><label
+                                                for="seat-2" class="seat-two">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}"
+                                                        alt=""style="max-width: 40px !important" />
                                                     <h1 class="number">2</h1>
                                                 </div>
                                             </label>
@@ -168,7 +171,8 @@
                                             <input id="seat-3" name="seatnumber[]" type="checkbox"
                                                 value="3" /><label for="seat-3" class="seat-three">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">3</h1>
                                                 </div>
                                             </label>
@@ -177,26 +181,32 @@
                                     <br />
                                     <div class="row">
                                         <div class="col-3">
-                                            <input id="seat-4" name="seatnumber[]" type="checkbox"/><label for="seat-4" class="seat-four">
+                                            <input id="seat-4" name="seatnumber[]" type="checkbox" /><label
+                                                for="seat-4" class="seat-four">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">4</h1>
                                                 </div>
                                             </label>
                                         </div>
                                         <div class="col-3">
-                                            <input id="seat-5" name="seatnumber[]" type="checkbox" /><label for="seat-5" class="seat-five">
+                                            <input id="seat-5" name="seatnumber[]" type="checkbox" /><label
+                                                for="seat-5" class="seat-five">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">5</h1>
                                                 </div>
                                             </label>
                                         </div>
                                         <div class="col-3"></div>
                                         <div class="col-3">
-                                            <input id="seat-6" name="seatnumber[]" type="checkbox" /><label for="seat-6" class="seat-six">
+                                            <input id="seat-6" name="seatnumber[]" type="checkbox" /><label
+                                                for="seat-6" class="seat-six">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">6</h1>
                                                 </div>
                                             </label>
@@ -208,7 +218,8 @@
                                             <input id="seat-7" name="seatnumber[]" type="checkbox"
                                                 value="7" /><label for="seat-7" class="seat-seven">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">7</h1>
                                                 </div>
                                             </label>
@@ -217,7 +228,8 @@
                                             <input id="seat-8" name="seatnumber[]" type="checkbox"
                                                 value="8" /><label for="seat-8" class="seat-eight">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">8</h1>
                                                 </div>
                                             </label>
@@ -227,7 +239,8 @@
                                             <input id="seat-9" name="seatnumber[]" type="checkbox"
                                                 value="9" /><label for="seat-9" class="seat-nine">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">9</h1>
                                                 </div>
                                             </label>
@@ -239,7 +252,8 @@
                                             <input id="seat-10" name="seatnumber[]" type="checkbox"
                                                 value="10" /><label for="seat-10" class="seat-ten">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">10</h1>
                                                 </div>
                                             </label>
@@ -248,7 +262,8 @@
                                             <input id="seat-11" name="seatnumber[]" type="checkbox"
                                                 value="11" /><label for="seat-11" class="seat-eleven">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">11</h1>
                                                 </div>
                                             </label>
@@ -258,7 +273,8 @@
                                             <input id="seat-12" name="seatnumber[]" type="checkbox"
                                                 value="12" /><label for="seat-12" class="seat-twelve">
                                                 <div class="seat-numbers">
-                                                    <img src="{{ asset('images/seat.svg') }}" alt="" />
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
                                                     <h1 class="number">12</h1>
                                                 </div>
                                             </label>

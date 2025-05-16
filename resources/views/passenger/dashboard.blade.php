@@ -10,6 +10,7 @@
     <title>Peace Mass Transit (PMT) | {{ env('APP_NAME') }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/vendor.bundle.css') }}?ver={{ date('his') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style-blue.css') }}?ver={{ date('his') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/seats.css') }}?ver={{ date('his') }}">
 
     <style type="text/css">
         .nobreak {
@@ -30,7 +31,8 @@
                 <div class="page-nav-wrap">
 
                     <div class="search-adv-wrap" style="background: #fff; border: 1px solid #fff">
-                        <form class="adv-search" id="adv-search" action="{{ route("passenger.searchSchedule") }}" method="POST" autocomplete="off">
+                        <form class="adv-search" id="adv-search" action="{{ route('passenger.searchSchedule') }}"
+                            method="POST" autocomplete="off">
                             @csrf
                             <div class="adv-search">
                                 <div class="row align-items-end guttar-20px guttar-vr-15px">
@@ -132,11 +134,12 @@
                                                     Available Seats</span>
                                             </td>
                                             <td class="data-col dt-status data-col-wd-md text-right">
-                                                <a href="">
-                                                    <span
-                                                        class="dt-status-md badge badge-outline badge-md badge-primary text-primary"><strong>Book
-                                                            Trip</strong></span>
-                                                </a>
+                                                <span
+                                                    class="dt-status-md badge badge-outline badge-md badge-primary text-primary"
+                                                    data-toggle="modal" data-target="#viewSeats" data-backdrop="static"
+                                                    data-myid="{{ $schedule->id }}"
+                                                    data-vehicletype="{{ $schedule->getvehicleType() }}"
+                                                    style="cursor: pointer"><strong>Book Trip</strong></span>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -167,6 +170,193 @@
 
 
     <div id="ajax-modal"></div>
+
+
+    <div class="modal fade" id="viewSeats" tabindex="-1">
+        <div class="modal-dialog modal-dialog-sm" style="margin-top:150px">
+            <div class="modal-content">
+                <a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em
+                        class="ti ti-close"></em></a>
+                <div class="popup-body">
+                    <h3 class="popup-title">Select Seat</h3>
+                    <form method="POST" action="{{ route('passenger.seatSelection') }}">
+                        @csrf
+                        <div class="seats-select pt-2 pb-2">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <h1 class="titles-seat">
+                                        <img src="{{ asset('images/selected.svg') }}" alt="" /><br />
+                                        Selected Seat
+                                    </h1>
+                                </div>
+                                <div class="col-4">
+                                    <h1 class="titles-seat">
+                                        <img src="{{ asset('images/available.svg') }}" alt="" />
+                                        <br />Available Seat
+                                    </h1>
+                                </div>
+                                <div class="col-4">
+                                    <h1 class="titles-seat">
+                                        <img src="{{ asset('images/booked.svg') }}" alt="" /> <br />Booked
+                                        Seat
+                                    </h1>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-12 col-md-10 offset-md-1">
+                                    <div class="row">
+                                        <div class="col-9">
+                                            <img src="{{ asset('images/steering-wheel.svg') }}" alt=""
+                                                style="width: 40px" />
+                                        </div>
+                                        <div class="col-3 align-self-center">
+                                            <input id="seat-1" name="seatnumber[]" type="checkbox"
+                                                value="1" /><label for="seat-1" class="seat-one">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">1</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <input id="seat-2" name="seatnumber[]" type="checkbox" /><label
+                                                for="seat-2" class="seat-two">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">2</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-3">
+                                            <input id="seat-3" name="seatnumber[]" type="checkbox"
+                                                value="3" /><label for="seat-3" class="seat-three">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">3</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <input id="seat-4" name="seatnumber[]" type="checkbox" /><label
+                                                for="seat-4" class="seat-four">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">4</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-3">
+                                            <input id="seat-5" name="seatnumber[]" type="checkbox" /><label
+                                                for="seat-5" class="seat-five">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">5</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-3"></div>
+                                        <div class="col-3">
+                                            <input id="seat-6" name="seatnumber[]" type="checkbox" /><label
+                                                for="seat-6" class="seat-six">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">6</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <input id="seat-7" name="seatnumber[]" type="checkbox"
+                                                value="7" /><label for="seat-7" class="seat-seven">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">7</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-3">
+                                            <input id="seat-8" name="seatnumber[]" type="checkbox"
+                                                value="8" /><label for="seat-8" class="seat-eight">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">8</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-3"></div>
+                                        <div class="col-3">
+                                            <input id="seat-9" name="seatnumber[]" type="checkbox"
+                                                value="9" /><label for="seat-9" class="seat-nine">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">9</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <input id="seat-10" name="seatnumber[]" type="checkbox"
+                                                value="10" /><label for="seat-10" class="seat-ten">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">10</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-3">
+                                            <input id="seat-11" name="seatnumber[]" type="checkbox"
+                                                value="11" /><label for="seat-11" class="seat-eleven">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">11</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-3"></div>
+                                        <div class="col-3">
+                                            <input id="seat-12" name="seatnumber[]" type="checkbox"
+                                                value="12" /><label for="seat-12" class="seat-twelve">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt="" style="max-width: 40px !important"/>
+                                                    <h1 class="number">12</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <input id="myid" type="hidden" name="schedule_id" class="form-control"
+                                            required>
+                                        <input id="vehicletype" type="hidden" name="vehicle_type"
+                                            class="form-control" required>
+                                        <div class="col-md-12">
+                                            <button id="submitBtn" type="submit"
+                                                class="btn btn-primary btn-sm w-100" disabled="">
+                                                Continue
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="page-overlay">
         <div class="spinner">
             <span class="sp sp1"></span>
@@ -186,7 +376,22 @@
 
     <script type="text/javascript">
         document.getElementById("dashboard").classList.add('active');
-        </script>
+
+           // Wait for the DOM to load
+           document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[name="seatnumber[]"]');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Add change event to each checkbox
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    // Check if at least one checkbox is checked
+                    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                    submitBtn.disabled = !anyChecked;
+                });
+            });
+        });
+    </script>
 
 </body>
 
