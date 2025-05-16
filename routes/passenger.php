@@ -45,6 +45,8 @@ Route::group([
 
     Route::post('/bookingPayment', [PassengerController::class, 'bookingPayment'])->name('passenger.bookingPayment');
 
+    Route::post('/payWithCard', [PaystackController::class, 'payWithCard'])->name('passenger.payWithCard');
+
     Route::get('/payWithWallet/{id}', [PassengerController::class, 'payWithWallet'])->name('passenger.payWithWallet');
 });
 

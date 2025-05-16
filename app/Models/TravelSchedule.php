@@ -76,7 +76,7 @@ class TravelSchedule extends Model implements Auditable
 
     public function availableSeats()
     {
-        $bookings = TravelBooking::where("departure", $this->departure)->where("destination", $this->destination)->whereDate("travel_date", $this->scheduled_date)->count();
+        $bookings = TravelBooking::where("schedule_id", $this->id)->where("departure", $this->departure)->where("destination", $this->destination)->whereDate("travel_date", $this->scheduled_date)->where("payment_status", "paid")->count();
 
         return (12 - $bookings);
     }

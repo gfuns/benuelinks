@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Mail\TopupSuccessful as TopupSuccessful;
 use App\Models\PaystackTrx;
+use App\Models\TravelBooking;
 use App\Models\WalletTransactions;
 use Auth;
 use Coderatio\PaystackMirror\Actions\Transactions\VerifyTransaction;
@@ -84,6 +85,58 @@ class PaystackController extends Controller
             }
         } catch (\Exception $e) {
             report($e);
+            alert()->error('', "Failed to initialize wallet topup");
+            return back();
+        }
+    }
+
+    /**
+     * payWithCard
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function payWithCard(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'booking_id' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            alert()->error('', $errors);
+            return back();
+        }
+
+        $booking = TravelBooking::find($request->booking_id);
+
+        $paystack                 = new PaystackTrx;
+        $paystack->transaction_id = $booking->id;
+        $paystack->reference      = "pm_rf" . Str::random(11);
+        $paystack->amount         = $booking->travel_fare;
+        $paystack->trx_type       = "booking";
+        if ($paystack->save()) {
+            $response = Http::accept('application/json')->withHeaders([
+                'authorization' => "Bearer " . env('PAYSTACK_SECRET_KEY'),
+                'content_type'  => "Content-Type: application/json",
+            ])->post("https://api.paystack.co/transaction/initialize", [
+                "email"     => Auth::user()->email,
+                "amount"    => ($paystack->amount * 100),
+                "reference" => $paystack->reference,
+            ]);
+
+            $responseData = $response->collect("data");
+
+            if (isset($responseData['authorization_url'])) {
+                return redirect($responseData['authorization_url']);
+            }
+
+            alert()->error('', "Paystack gateway service took too long to respond");
+            return back();
+
+        } else {
             alert()->error('', "Failed to initialize wallet topup");
             return back();
         }
@@ -179,6 +232,32 @@ class PaystackController extends Controller
 
             alert()->error('', "Something Went Wrong!");
             return redirect()->route("passenger.wallet");
+        }
+    }
+
+    /**
+     * updateBookingTransaction
+     *
+     * @param mixed trxId
+     * @param mixed status
+     *
+     * @return void
+     */
+    public function updateBookingTransaction($trxId, $status)
+    {
+        $booking = TravelBooking::find($trxId);
+        if ($status == "successful") {
+            $booking->payment_status  = "paid";
+            $booking->payment_channel = "wallet";
+            $booking->booking_status  = "booked";
+            $booking->save();
+
+            alert()->success('', 'Trip Booked Successfully!');
+            return redirect()->route("passenger.bookingHistory");
+        } else {
+            alert()->success('', 'Your card was declined. Please contact your card provider!');
+            return redirect()->route("passenger.bookingPreview", [$trxId]);
+
         }
     }
 

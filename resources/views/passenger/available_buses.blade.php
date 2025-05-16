@@ -24,7 +24,8 @@
         <div class="container">
             <h4><strong>Online Vehicle Booking: </strong></h4>
             <div style="color: #253992; font-weight:bold; font-size: 15px; margin-top: 20px; margin-bottom: 20px">
-                {{ $title }} &nbsp;<img src="{{ asset('images/separator.png') }}" style="height: 5px" /> &nbsp;{{ $date }} </div>
+                {{ $title }} &nbsp;<img src="{{ asset('images/separator.png') }}" style="height: 5px" />
+                &nbsp;{{ $date }} </div>
 
             @foreach ($schedules as $schedule)
                 <div class="card content-area">
@@ -38,13 +39,16 @@
                                     <strong>Toyota (Hummer Bumper Bus)</strong>
                                 </div>
                                 <div class="mt-1" style="color: #000; font-size: 13px;"><strong><u>Departure:</u>
-                                        {{ $schedule->departurePoint->terminal }} &nbsp;<img src="{{ asset('images/separator.png') }}"
-                                            style="height: 5px" /> &nbsp;<u>Destination:</u>
-                                            {{ $schedule->destinationPoint->terminal }} </strong></div>
+                                        {{ $schedule->departurePoint->terminal }} &nbsp;<img
+                                            src="{{ asset('images/separator.png') }}" style="height: 5px" />
+                                        &nbsp;<u>Destination:</u>
+                                        {{ $schedule->destinationPoint->terminal }} </strong></div>
                                 <div class="mt-1" style="color: #000; font-weight:bold; font-size: 14px;"><img
-                                        src="{{ asset('images/carseat.svg') }}" style="height: 10px" /> {{ $schedule->availableSeats() }} Seats
+                                        src="{{ asset('images/carseat.svg') }}" style="height: 10px" />
+                                    {{ $schedule->availableSeats() }} Seats
                                     (Available)
-                                    <span style="margin-left: 20px"><i class="far fa-clock"></i> {{ $schedule->scheduled_time }}</span>
+                                    <span style="margin-left: 20px"><i class="far fa-clock"></i>
+                                        {{ $schedule->scheduled_time }}</span>
                                 </div>
                             </div>
                             <div class="col-md-2 text-center">
@@ -54,7 +58,8 @@
                                 <div style="color: #253992; font-weight:bold; font-size: 12px;">Cash Back:
                                     &#8358;{{ number_format(0, 2) }}</div>
                                 <div><button class="btn btn-primary btn-sm w-100" data-toggle="modal"
-                                        data-target="#viewSeats" data-backdrop="static"  data-myid="{{ $schedule->id }}" data-vehicletype="{{ $schedule->getvehicleType() }}">View Seats</button></div>
+                                        data-target="#viewSeats" data-backdrop="static" data-myid="{{ $schedule->id }}"
+                                        data-vehicletype="{{ $schedule->getvehicleType() }}">View Seats</button></div>
                             </div>
                         </div>
 
@@ -63,6 +68,23 @@
 
                 </div>
             @endforeach
+
+            @if (count($schedules) < 1)
+                <div class="card content-area">
+                    <div class="card-innr">
+                        <tr>
+                            <td colspan="6">
+                                <div class="col-xl-12 col-12 job-items job-empty">
+                                    <div class="text-center mt-4"><i class="far fa-sad-tear"
+                                            style="font-size: 48px"></i>
+                                        <h5 class="mt-2">No Trip Schedule Found For Your Query</h5>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -248,8 +270,10 @@
                                     </div>
                                     <br />
                                     <div class="row">
-                                        <input id="myid" type="hidden" name="schedule_id" class="form-control" required>
-                                        <input id="vehicletype" type="hidden" name="vehicle_type" class="form-control" required>
+                                        <input id="myid" type="hidden" name="schedule_id" class="form-control"
+                                            required>
+                                        <input id="vehicletype" type="hidden" name="vehicle_type"
+                                            class="form-control" required>
                                         <div class="col-md-12">
                                             <button id="submitBtn" type="submit"
                                                 class="btn btn-primary btn-sm w-100" disabled="">

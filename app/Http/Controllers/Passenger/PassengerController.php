@@ -478,7 +478,8 @@ class PassengerController extends Controller
             $walletTrx->amount         = $booking->travel_fare;
             $walletTrx->balance_before = Auth::user()->wallet_balance;
             $walletTrx->balance_after  = (Auth::user()->wallet_balance - $booking->travel_fare);
-            $walletTrx->description    = "Payment for Trip with Booking Number: {$booking->booking_number}";
+            $walletTrx->description    = "Payment for Trip with Booking No: {$booking->booking_number}";
+            $walletTrx->status         = "successful";
             $walletTrx->save();
 
             $user                 = Auth::user();
