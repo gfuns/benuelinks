@@ -37,7 +37,15 @@ Route::group([
 
     Route::post('/seatSelection', [PassengerController::class, 'seatSelection'])->name('passenger.seatSelection');
 
-    Route::get('/booking-preview/{id?}', [PassengerController::class, 'bookingPreview'])->name('passenger.bookingPreview');
+    Route::get('/passenger-details/{id}', [PassengerController::class, 'passengerDetails'])->name('passenger.passengerDetails');
+
+    Route::post('/updatePassengerDetails', [PassengerController::class, 'updatePassengerDetails'])->name('passenger.updatePassengerDetails');
+
+    Route::get('/booking-preview/{id}', [PassengerController::class, 'bookingPreview'])->name('passenger.bookingPreview');
+
+    Route::post('/bookingPayment', [PassengerController::class, 'bookingPayment'])->name('passenger.bookingPayment');
+
+    Route::get('/payWithWallet/{id}', [PassengerController::class, 'payWithWallet'])->name('passenger.payWithWallet');
 });
 
 Route::get('/paystack/callback', [PaystackController::class, 'handlePaystackCallback']);

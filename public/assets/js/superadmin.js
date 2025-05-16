@@ -4,6 +4,20 @@ $("#userrole").select2({
 
 $("#bank").select2({});
 
+$('#viewSeats').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var myid = button.data('myid') // Extract info from data-* attributes
+    var vehicletype = button.data('vehicletype') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+    var offcanvas = $(this)
+    // modal.find('.modal-body #myid').val(myid)
+    offcanvas.find('.popup-body #myid').val(myid)
+    offcanvas.find('.popup-body #vehicletype').val(vehicletype)
+
+})
+
 
 $("#uploadComment").on("show.bs.modal", function (event) {
     var button = $(event.relatedTarget); // Button that triggered the modal

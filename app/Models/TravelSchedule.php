@@ -28,6 +28,16 @@ class TravelSchedule extends Model implements Auditable
         }
     }
 
+    public function getvehicleType()
+    {
+        if (isset($this->vehicle)) {
+            $vehicle = $this->vehicledetail;
+            return $vehicle->manufacturer . " " . $vehicle->model;
+        } else {
+            return "Hummer Bumper Bus";
+        }
+    }
+
     public function getdriver()
     {
         if (isset($this->vehicle)) {

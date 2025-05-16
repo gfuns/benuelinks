@@ -12,6 +12,7 @@ use Auth;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -68,12 +69,14 @@ class PassengerController extends Controller
             'last_name'    => 'required',
             'other_names'  => 'required',
             'phone_number' => 'required',
+            'gender'       => 'required',
         ]);
 
         $user               = Auth::user();
         $user->last_name    = $request->last_name;
         $user->other_names  = $request->other_names;
         $user->phone_number = $request->phone_number;
+        $user->gender       = $request->gender;
         $user->nok          = $request->nok_name;
         $user->nok_phone    = $request->nok_phone;
         if ($user->save()) {
@@ -338,42 +341,53 @@ class PassengerController extends Controller
      *
      * @return void
      */
-    public function seatSelection(Request $reques)
+    public function seatSelection(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'schedule_id' => 'required',
-            'seatnumber'  => 'required',
+            'schedule_id'  => 'required',
+            'seatnumber'   => 'required',
+            'vehicle_type' => 'required',
         ]);
 
         if ($validator->fails()) {
             $errors = $validator->errors()->all();
             $errors = implode("<br>", $errors);
-            toast($errors, 'error');
+            alert()->error('', $errors);
             return back();
         }
 
-        $schedule = TravelSchedule::find($request->schedule_id);
+        $schedule      = TravelSchedule::find($request->schedule_id);
+        $selectedSeats = $request->input('seatnumber', []);
+        $seatNumber    = $selectedSeats[0] ?? null; // Returns null if array is empty
+
+        if (! isset($seatNumber)) {
+            alert()->error('', 'Please Select Your Preferred Seat Number!');
+            return back();
+        }
 
         if (isset($schedule)) {
-
             $booking                  = new TravelBooking;
             $booking->schedule_id     = $schedule->id;
-            $booking->departure       = Auth::user()->station;
-            $booking->destination     = $request->destination;
+            $booking->departure       = $schedule->departure;
+            $booking->destination     = $schedule->destination;
             $booking->vehicle         = $schedule->vehicle;
-            $booking->vehicle_type    = $request->vehicle_choice;
-            $booking->travel_date     = $request->travel_date;
-            $booking->departure_time  = $request->departure_time;
-            $booking->full_name       = $request->passenger_name;
-            $booking->phone_number    = $request->phone_number;
-            $booking->seat            = $request->seat_number;
-            $booking->payment_channel = $request->payment_channel;
+            $booking->vehicle_type    = $request->vehicle_type;
+            $booking->travel_date     = $schedule->scheduled_date;
+            $booking->departure_time  = $schedule->scheduled_time;
+            $booking->full_name       = Auth::user()->last_name . ", " . Auth::user()->other_names;
+            $booking->phone_number    = Auth::user()->phone_number;
+            $booking->nok             = Auth::user()->nok;
+            $booking->nok_phone       = Auth::user()->nok_phone;
+            $booking->seat            = $seatNumber;
+            $booking->payment_channel = "pending";
             $booking->classification  = "booking";
-            $booking->payment_status  = "paid";
-            $booking->travel_fare     = $route->transport_fare;
+            $booking->payment_status  = "pending";
+            $booking->travel_fare     = $schedule->transportFare();
             $booking->booking_number  = $this->genBookingID();
+            $booking->booking_method  = "online";
+            $booking->booking_status  = "pending";
             if ($booking->save()) {
-                return redirect()->route("passenger.bookingPreview");
+                return redirect()->route("passenger.passengerDetails", [$booking->id]);
             } else {
                 alert()->error('', 'Something went wrong. Please try again');
                 return back();
@@ -386,6 +400,52 @@ class PassengerController extends Controller
     }
 
     /**
+     * passengerDetails
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function passengerDetails($id)
+    {
+        $booking = TravelBooking::find($id);
+        return view("passenger.passenger_details", compact("booking"));
+    }
+
+    /**
+     * updatePassengerDetails
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function updatePassengerDetails(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'booking_id'   => 'required',
+            'last_name'    => 'required',
+            'other_names'  => 'required',
+            'phone_number' => 'required',
+            'gender'       => 'required',
+            'nok'          => 'required',
+            'nok_phone'    => 'required',
+        ]);
+
+        $booking               = TravelBooking::find($request->booking_id);
+        $booking->full_name    = $request->last_name . ", " . $request->other_names;
+        $booking->phone_number = $request->phone_number;
+        $booking->gender       = $request->gender;
+        $booking->nok          = $request->nok_name;
+        $booking->nok_phone    = $request->nok_phone;
+        if ($booking->save()) {
+            return redirect()->route("passenger.bookingPreview", [$booking->id]);
+        } else {
+            alert()->error('', 'Something Went Wrong!');
+            return back();
+        }
+    }
+
+    /**
      * bookingPreview
      *
      * @param mixed id
@@ -394,6 +454,53 @@ class PassengerController extends Controller
      */
     public function bookingPreview($id)
     {
+        $booking = TravelBooking::find($id);
+        return view("passenger.booking_preview", compact("booking"));
+    }
+
+    /**
+     * payWithWallet
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function payWithWallet($id)
+    {
+        try {
+            $booking = TravelBooking::find($id);
+
+            DB::beginTransaction();
+            $walletTrx                 = new WalletTransactions;
+            $walletTrx->user_id        = Auth::user()->id;
+            $walletTrx->trx_type       = "debit";
+            $walletTrx->reference      = $this->genTrxId();
+            $walletTrx->amount         = $booking->travel_fare;
+            $walletTrx->balance_before = Auth::user()->wallet_balance;
+            $walletTrx->balance_after  = (Auth::user()->wallet_balance - $booking->travel_fare);
+            $walletTrx->description    = "Payment for Trip with Booking Number: {$booking->booking_number}";
+            $walletTrx->save();
+
+            $user                 = Auth::user();
+            $user->wallet_balance = (double) ($user->wallet_balance - $booking->travel_fare);
+            $user->save();
+
+            $booking->payment_status  = "paid";
+            $booking->payment_channel = "wallet";
+            $booking->booking_status  = "booked";
+            $booking->save();
+
+            DB::commit();
+
+            alert()->success('', 'Trip Booked Successfully!');
+            return redirect()->route("passenger.bookingHistory");
+        } catch (\Exception $e) {
+            DB::rollback();
+            report($e);
+
+            alert()->error('', 'Something Went Wrong!');
+            return back();
+        }
 
     }
 
@@ -409,10 +516,49 @@ class PassengerController extends Controller
         $endDate   = request()->end_date;
 
         if ($filter == "advanced" && isset($startDate) && isset($endDate)) {
-            $bookingHistory = TravelBooking::whereBetween("travel_date", [$startDate, $endDate])->get();
+            $bookingHistory = TravelBooking::orderBy("id", "desc")->where("payment_status", "paid")->whereBetween("travel_date", [$startDate, $endDate])->get();
         } else {
-            $bookingHistory = TravelBooking::all();
+            $bookingHistory = TravelBooking::orderBy("id", "desc")->where("payment_status", "paid")->get();
         }
         return view("passenger.booking_history", compact("filter", "bookingHistory", "startDate", "endDate"));
+    }
+
+    /**
+     * genBookingID
+     *
+     * @return void
+     */
+    public function genBookingID()
+    {
+        // Get the current timestamp
+        $timestamp = (string) (strtotime('now') . microtime(true));
+
+        // Remove any non-numeric characters (like dots)
+        $cleanedTimestamp = preg_replace('/[^0-9]/', '', $timestamp);
+
+        // Shuffle the digits
+        $shuffled = str_shuffle($cleanedTimestamp);
+
+        // Extract the first 12 characters
+        $code = substr($shuffled, 0, 12);
+
+        return "PMT-BK-" . $code;
+    }
+
+    /**
+     * genTrxId
+     *
+     * @return void
+     */
+    public function genTrxId()
+    {
+        $pin  = range(0, 12);
+        $set  = shuffle($pin);
+        $code = "";
+        for ($i = 0; $i < 12; $i++) {
+            $code = $code . "" . $pin[$i];
+        }
+
+        return "PMT" . $code;
     }
 }

@@ -44,6 +44,9 @@
                                             method="POST">
                                             @csrf
                                             <div class="row">
+                                                <div class="col-12 mb-3">
+                                                    <h5>Personal Details</h5>
+                                                </div>
                                                 <div class="col-md-6">
                                                     <div class="input-item input-with-label">
                                                         <label for="last-name" class="input-item-label">Last
@@ -68,7 +71,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="input-item input-with-label">
                                                         <label for="email-address" class="input-item-label">Email
                                                             Address</label>
@@ -79,7 +82,7 @@
                                                                 value="{{ Auth::user()->email }}" readonly>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                                 <div class="col-md-6">
                                                     <div class="input-item input-with-label">
                                                         <label for="mobile-number" class="input-item-label">Mobile
@@ -93,6 +96,31 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="col-md-6">
+                                                    <div class="input-item input-with-label">
+                                                        <label for="mobile-number" class="input-item-label">Gender</label>
+                                                        <div class="input-wrap">
+                                                            <select class="select-bordered select-block" name="gender" required
+                                                            id="gender" required="required">
+                                                            <option value="">Select Gender</option>
+                                                            <option value="male"
+                                                                @if (Auth::user()->gender == 'male') selected @endif>
+                                                                Male
+                                                            </option>
+                                                            <option value="remale"
+                                                                @if (Auth::user()->gender == 'female') selected @endif>
+                                                                Female
+                                                            </option>
+
+                                                        </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- <div class="gaps-2x"></div> --}}
+                                                <div class="col-12 mb-3">
+                                                    <hr />
+                                                    <h5>Next of Kin's Information</h5>
+                                                </div>
                                                 <div class="col-md-6">
                                                     <div class="input-item input-with-label">
                                                         <label for="nok-name" class="input-item-label">Next Of Kin's
@@ -141,7 +169,8 @@
                                                             <div class="input-wrap">
                                                                 <input class="input-bordered" type="password"
                                                                     placeholder="Current PIN" name="current_pin"
-                                                                    id="old-pin" required="required" minlength="4" maxlength="4">
+                                                                    id="old-pin" required="required" minlength="4"
+                                                                    maxlength="4">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -193,7 +222,8 @@
                                                 <div class="text-center mt-4"><i class="far fa-sad-tear"
                                                         style="font-size: 48px"></i>
                                                     <h5 class="mt-3 mb-3">No Active Wallet Found</h5>
-                                                    <a href="{{ route('passenger.wallet') }}"><button class="btn btn-info btn-sm">Activate Wallet</button></a>
+                                                    <a href="{{ route('passenger.wallet') }}"><button
+                                                            class="btn btn-info btn-sm">Activate Wallet</button></a>
                                                 </div>
                                             </div>
                                         @endif

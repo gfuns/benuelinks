@@ -13,6 +13,76 @@
     <link rel="stylesheet" href="{{ asset('assets/css/seats.css') }}?ver={{ date('his') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+    <style style="text/css">
+        .stepper .step {
+            width: 33%;
+            text-align: center;
+            position: relative;
+        }
+
+        .stepper .step::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1.5px;
+            background: #e0e0e0;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+
+        /* Green when step is completed */
+        .stepper .step.completed::before {
+            background: #007bff;
+            /* Green */
+        }
+
+        /* Green when step is completed */
+        .stepper .step.active::before {
+            background: #007bff;
+            /* Green */
+        }
+
+        .stepper .step:first-child::before {
+            width: 50%;
+            left: 50%;
+        }
+
+        .stepper .step:last-child::before {
+            width: 50%;
+        }
+
+        .stepper .step .circle {
+            position: relative;
+            z-index: 2;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #6c757d;
+            margin: 0 auto 10px;
+        }
+
+        .stepper .step.active .circle,
+        .stepper .step.completed .circle {
+            background: #007bff;
+            color: white;
+        }
+
+        .stepper .step.active .text,
+        .stepper .step.completed .text {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .text {
+            font-size: 12px;
+        }
+    </style>
 </head>
 
 <body class="admin-dashboard page-user">
@@ -22,47 +92,126 @@
 
     <div class="page-content">
         <div class="container">
-            <h4><strong>Online Vehicle Booking: </strong></h4>
-            <div style="color: #253992; font-weight:bold; font-size: 15px; margin-top: 20px; margin-bottom: 20px">
-                {{ $title }} &nbsp;<img src="{{ asset('images/separator.png') }}" style="height: 5px" /> &nbsp;{{ $date }} </div>
+            <h4><strong>Hi {{ Auth::user()->other_names }}, we just need few more details about you </strong></h4>
 
-            @foreach ($schedules as $schedule)
-                <div class="card content-area">
-                    <div class="card-innr">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <img src="{{ asset('images/fleet/1747067627.image 1.png') }}" class="" />
-                            </div>
-                            <div class="col-md-7">
-                                <div style="color: #000; font-weight:bold; font-size: 24px;">
-                                    <strong>Toyota (Hummer Bumper Bus)</strong>
-                                </div>
-                                <div class="mt-1" style="color: #000; font-size: 13px;"><strong><u>Departure:</u>
-                                        {{ $schedule->departurePoint->terminal }} &nbsp;<img src="{{ asset('images/separator.png') }}"
-                                            style="height: 5px" /> &nbsp;<u>Destination:</u>
-                                            {{ $schedule->destinationPoint->terminal }} </strong></div>
-                                <div class="mt-1" style="color: #000; font-weight:bold; font-size: 14px;"><img
-                                        src="{{ asset('images/carseat.svg') }}" style="height: 10px" /> {{ $schedule->availableSeats() }} Seats
-                                    (Available)
-                                    <span style="margin-left: 20px"><i class="far fa-clock"></i> {{ $schedule->scheduled_time }}</span>
-                                </div>
-                            </div>
-                            <div class="col-md-2 text-center">
-                                <div style="color: #253992; font-weight:bold; font-size: 24px;">
-                                    <strong>&#8358;{{ number_format($schedule->transportFare(), 2) }}</strong>
-                                </div>
-                                <div style="color: #253992; font-weight:bold; font-size: 12px;">Cash Back:
-                                    &#8358;{{ number_format(0, 2) }}</div>
-                                <div><button class="btn btn-primary btn-sm w-100" data-toggle="modal"
-                                        data-target="#viewSeats" data-backdrop="static"  data-myid="{{ $schedule->id }}" data-vehicletype="{{ $schedule->getvehicleType() }}">View Seats</button></div>
-                            </div>
+            <div class="card content-area">
+                <div class="card-innr">
+                    <div class="col-12 stepper d-flex " style="margin-bottom: 40px">
+                        <div class="step completed">
+                            <div class="circle">1</div>
+                            <div class="text">Step 1</div>
+                            <div class="text">Trip Selection</div>
                         </div>
-
-
+                        <div class="step active">
+                            <div class="circle">2</div>
+                            <div class="text">Step 2</div>
+                            <div class="text">Passenger Details</div>
+                        </div>
+                        <div class="step ">
+                            <div class="circle">3</div>
+                            <div class="text">Step 3</div>
+                            <div class="text">Booking Summary</div>
+                        </div>
                     </div>
 
+                    <div class="row m-4">
+                        <form class="validate-modern" action="{{ route('passenger.updatePassengerDetails') }}"
+                            method="POST">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-item input-with-label">
+                                        <label for="last-name" class="input-item-label">Last
+                                            Name</label>
+                                        <div class="input-wrap">
+                                            <input class="input-bordered" type="text" id="last-name" name="last_name"
+                                                required="required" placeholder="Enter Last Name" minlength="3"
+                                                value="{{ Auth::user()->last_name }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-item input-with-label">
+                                        <label for="other-names" class="input-item-label">Other
+                                            Names</label>
+                                        <div class="input-wrap">
+                                            <input class="input-bordered" type="text" id="other-names"
+                                                name="other_names" placeholder="Enter Other Names" minlength="3"
+                                                value="{{ Auth::user()->other_names }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-item input-with-label">
+                                        <label for="mobile-number" class="input-item-label">Mobile
+                                            Number</label>
+                                        <div class="input-wrap">
+                                            <input class="input-bordered" type="text" id="mobile-number"
+                                                name="phone_number" placeholder="Enter Mobile Number"
+                                                value="{{ Auth::user()->phone_number }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="input-item input-with-label">
+                                        <label for="mobile-number" class="input-item-label">Gender</label>
+                                        <div class="input-wrap">
+                                            <select class="select-bordered select-block" name="gender" required
+                                                id="gender" required="required">
+                                                <option value="">Select Gender</option>
+                                                <option value="male"
+                                                    @if (Auth::user()->gender == 'male') selected @endif>
+                                                    Male
+                                                </option>
+                                                <option value="remale"
+                                                    @if (Auth::user()->gender == 'female') selected @endif>
+                                                    Female
+                                                </option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="input-item input-with-label">
+                                        <label for="nok-name" class="input-item-label">Next Of Kin's
+                                            Name</label>
+                                        <div class="input-wrap">
+                                            <input class="input-bordered" type="text" id="nok-name"
+                                                name="nok_name" placeholder="Enter Next Of Kin's Name"
+                                                value="{{ Auth::user()->nok }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="input-item input-with-label">
+                                        <label for="nok-phone" class="input-item-label">Next Of Kin's
+                                            Phone Number</label>
+                                        <div class="input-wrap">
+                                            <input class="input-bordered" type="text" id="nok-phone"
+                                                name="nok_phone" placeholder="Enter Next Of Kin's Phone Number"
+                                                value="{{ Auth::user()->nok_phone }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="gaps-1x"></div>
+                            <div class="">
+                                <input id="myid" type="hidden" name="booking_id" value="{{ $booking->id }}"
+                                    class="form-control" required>
+                                <center>
+                                    <button type="submit" class="btn btn-primary profile-update">Proceed &nbsp;<i
+                                            class="fas fa-angle-right"></i></button>
+                                </center>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            @endforeach
+
+            </div>
         </div>
     </div>
 
@@ -248,8 +397,10 @@
                                     </div>
                                     <br />
                                     <div class="row">
-                                        <input id="myid" type="hidden" name="schedule_id" class="form-control" required>
-                                        <input id="vehicletype" type="hidden" name="vehicle_type" class="form-control" required>
+                                        <input id="myid" type="hidden" name="schedule_id" class="form-control"
+                                            required>
+                                        <input id="vehicletype" type="hidden" name="vehicle_type"
+                                            class="form-control" required>
                                         <div class="col-md-12">
                                             <button id="submitBtn" type="submit"
                                                 class="btn btn-primary btn-sm w-100" disabled="">

@@ -550,6 +550,8 @@ $('#assignDriver').on('show.bs.offcanvas', function(event) {
 })
 
 
+
+
 $('#viewAuthDetails').on('show.bs.modal', function(event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var surname = button.data('surname') // Extract info from data-* attributes
