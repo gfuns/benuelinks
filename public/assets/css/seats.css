@@ -1,0 +1,538 @@
+.bus-select {
+    background-color: #F5F5F5;
+}
+
+.bus-select hr {
+    border-bottom: 0px solid rgba(0, 0, 0, 0.3);
+    height: 0px;
+    max-width: 428px;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.palliative-ban {
+    background: black;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.palliative-ban img {
+    width: 50px;
+    margin-right: 10px;
+}
+
+.map-p {
+    font-style: normal;
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: normal;
+    color: rgba(51, 51, 51, 0.8);
+}
+
+.map-p img {
+    width: 13px;
+}
+
+.seat-select {
+    border: solid;
+}
+/* .seats-select {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) -16.18%, rgba(191, 239, 255, 0) 124.78%);
+    background-image: url("../../assets/img/Vector 18.png");
+} */
+
+#seat-1 {
+    display: none;
+}
+
+.seat-one .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-1:checked+.seat-one .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-2 {
+    display: none;
+}
+
+.seat-two .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-2:checked+.seat-two .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-3 {
+    display: none;
+}
+
+.seat-three .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-3:checked+.seat-three .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-4 {
+    display: none;
+}
+
+.seat-four .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-4:checked+.seat-four .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-5 {
+    display: none;
+}
+
+.seat-five .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-5:checked+.seat-five .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-6 {
+    display: none;
+}
+
+.seat-six .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-6:checked+.seat-six .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-7 {
+    display: none;
+}
+
+.seat-seven .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-7:checked+.seat-seven .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-8 {
+    display: none;
+}
+
+.seat-eight .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-8:checked+.seat-eight .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-9 {
+    display: none;
+}
+
+.seat-nine .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-9:checked+.seat-nine .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-10 {
+    display: none;
+}
+
+.seat-ten .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-10:checked+.seat-ten .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-11 {
+    display: none;
+}
+
+.seat-eleven .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-11:checked+.seat-eleven .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-12 {
+    display: none;
+}
+
+.seat-twelve .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-12:checked+.seat-twelve .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-13 {
+    display: none;
+}
+
+.seat-thirteen .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-13:checked+.seat-thirteen .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-14 {
+    display: none;
+}
+
+.seat-fourteen .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-14:checked+.seat-fourteen .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+.seat-one:hover,
+.seat-two:hover,
+.seat-three:hover,
+.seat-four:hover,
+.seat-five:hover,
+.seat-six:hover,
+.seat-seven:hover,
+.seat-eight:hover,
+.seat-nine:hover,
+.seat-ten:hover,
+.seat-eleven:hover,
+.seat-twelve:hover,
+.seat-thirteen:hover,
+.seat-fourteen:hover {
+    cursor: pointer;
+}
+
+.disable-seat img {
+    filter: invert(50%) sepia(7%) saturate(8%) hue-rotate(341deg) brightness(96%) contrast(85%);
+    /* disabled color */
+}
+
+.seat-numbers {
+    position: relative;
+}
+
+.seat-numbers .number {
+    position: absolute;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 26px;
+    color: #FFFFFF;
+    left: 16px;
+    top: -1px;
+}
+
+.titles-seat {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 20px;
+    color: #000000;
+}
+
+.titles-seat img {
+    width: 25px;
+}
+
+#seat-15 {
+    display: none;
+}
+
+.seat-fifteen .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-15:checked+.seat-fifteen .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-16 {
+    display: none;
+}
+
+.seat-sixteen .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-16:checked+.seat-sixteen .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-17 {
+    display: none;
+}
+
+.seat-seventeen .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-17:checked+.seat-seventeen .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-18 {
+    display: none;
+}
+
+.seat-eighteen .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-18:checked+.seat-eighteen .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-19 {
+    display: none;
+}
+
+.seat-nineteen .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-19:checked+.seat-nineteen .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-20 {
+    display: none;
+}
+
+.seat-twenty .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-20:checked+.seat-twenty .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-21 {
+    display: none;
+}
+
+.seat-twentyone .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-21:checked+.seat-twentyone .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-22 {
+    display: none;
+}
+
+.seat-twentytwo .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-22:checked+.seat-twentytwo .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-23 {
+    display: none;
+}
+
+.seat-twentythree .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-23:checked+.seat-twentythree .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-24 {
+    display: none;
+}
+
+.seat-twentyfour .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-24:checked+.seat-twentyfour .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-25 {
+    display: none;
+}
+
+.seat-twentyfive .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-25:checked+.seat-twentyfive .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-26 {
+    display: none;
+}
+
+.seat-twentysix .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-26:checked+.seat-twentysix .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-27 {
+    display: none;
+}
+
+.seat-twentyseven .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-27:checked+.seat-twentyseven .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+#seat-28 {
+    display: none;
+}
+
+.seat-twentyeight .seat-numbers>img {
+    filter: invert(78%) sepia(90%) saturate(3087%) hue-rotate(164deg) brightness(91%) contrast(110%);
+    width: 40px;
+    /* available color */
+}
+
+#seat-28:checked+.seat-twentyeight .seat-numbers>img {
+    filter: invert(73%) sepia(17%) saturate(6196%) hue-rotate(98deg) brightness(94%) contrast(84%);
+    /* selected color */
+}
+
+.seat-fifteen:hover,
+.seat-sixteen:hover,
+.seat-seventeen:hover,
+.seat-eighteen:hover,
+.seat-nineteen:hover,
+.seat-twenty:hover,
+.seat-twentyone:hover,
+.seat-twentytwo:hover,
+.seat-twentythree:hover,
+.seat-twentyfour:hover,
+.seat-twentyfive:hover,
+.seat-twentysix:hover,
+.seat-twentyseven:hover,
+.seat-twentyeight:hover {
+    cursor: pointer;
+}
+

@@ -68,7 +68,7 @@ class TravelSchedule extends Model implements Auditable
     {
         $bookings = TravelBooking::where("departure", $this->departure)->where("destination", $this->destination)->whereDate("travel_date", $this->scheduled_date)->count();
 
-        return (14 - $bookings);
+        return (12 - $bookings);
     }
 
     public function departurePoint()

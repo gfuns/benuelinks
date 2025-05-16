@@ -332,14 +332,15 @@ class PassengerController extends Controller
      */
     public function bookingHistory()
     {
+        return view("passenger.available_buses");
+
         $filter    = request()->filter;
         $startDate = request()->start_date;
         $endDate   = request()->end_date;
 
         if ($filter == "advanced" && isset($startDate) && isset($endDate)) {
             $bookingHistory = TravelBooking::whereBetween("travel_date", [$startDate, $endDate])->get();
-
-        } else if (request()->filter == "advanced") {
+        } else {
             $bookingHistory = TravelBooking::all();
         }
         return view("passenger.booking_history", compact("filter", "bookingHistory", "startDate", "endDate"));

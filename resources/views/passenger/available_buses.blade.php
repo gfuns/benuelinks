@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" class="js">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="apps" content="{{ env('APP_NAME') }}">
+    <meta name="author" content="{{ env('APP_NAME') }} - No. 1 P2P Platform">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}?version={{ date('his') }}">
+    <title>Peace Mass Transit (PMT) | Booking</title>
+    <link rel="stylesheet" href="{{ asset('assets/css/vendor.bundle.css') }}?ver={{ date('his') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-blue.css') }}?ver={{ date('his') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/seats.css') }}?ver={{ date('his') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+</head>
+
+<body class="admin-dashboard page-user">
+    @include('passenger.includes.nav')
+
+
+
+    <div class="page-content">
+        <div class="container">
+            <h4><strong>Online Vehicle Booking: </strong></h4>
+            <div style="color: #253992; font-weight:bold; font-size: 15px; margin-top: 20px; margin-bottom: 20px">Lagos
+                Terminal => Abia Terminal May 13th, 2025 </div>
+
+            <div class="card content-area">
+                <div class="card-innr">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <img src="{{ asset('images/fleet/1747067627.image 1.png') }}" class="" />
+                        </div>
+                        <div class="col-md-7">
+                            <div style="color: #000; font-weight:bold; font-size: 24px;">
+                                <strong>Toyota (Hummer Bumper Bus)</strong>
+                            </div>
+                            <div class="mt-1" style="color: #000; font-size: 13px;"><strong><u>Departure:</u>
+                                    Abia Terminal &nbsp;<img src="{{ asset('images/separator.png') }}"
+                                        style="height: 5px" /> &nbsp;<u>Destination:</u>
+                                    Lugbe Terminal </strong></div>
+                            <div class="mt-1" style="color: #000; font-weight:bold; font-size: 14px;"><img
+                                    src="{{ asset('images/carseat.svg') }}" style="height: 10px" /> 6 Seats (Available)
+                                <span style="margin-left: 20px"><i class="far fa-clock"></i> 6:30 AM</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <div style="color: #253992; font-weight:bold; font-size: 24px;">
+                                <strong>&#8358;{{ number_format(48000, 2) }}</strong>
+                            </div>
+                            <div style="color: #253992; font-weight:bold; font-size: 12px;">Cash Back:
+                                &#8358;{{ number_format(0, 2) }}</div>
+                            <div><button class="btn btn-primary btn-sm w-100" data-toggle="modal"
+                                    data-target="#viewSeats" data-backdrop="static">View Seats</button></div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="footer-bar">
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-12">
+                    <div class="copyright-text text-center pb-3">&copy; {{ date('Y') }} {{ env('APP_NAME') }}.
+                        All
+                        Rights Reserved. <br>Application Developed by <a href="{{ env('DEVELOPER_WEBSITE') }}"
+                            target="_blank">{{ env('APP_DEVELOPER') }}</a>.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="ajax-modal"></div>
+
+
+    <div class="modal fade" id="viewSeats" tabindex="-1">
+        <div class="modal-dialog modal-dialog-sm" style="margin-top:150px">
+            <div class="modal-content">
+                <a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em
+                        class="ti ti-close"></em></a>
+                <div class="popup-body">
+                    <h3 class="popup-title">Select Seat</h3>
+                    <div class="seats-select pt-2 pb-2">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <h1 class="titles-seat">
+                                    <img src="{{ asset("images/selected.svg") }}" alt="" /><br />
+                                    Selected Seat
+                                </h1>
+                            </div>
+                            <div class="col-4">
+                                <h1 class="titles-seat">
+                                    <img src="{{ asset("images/available.svg") }}" alt="" />
+                                    <br />Available Seat
+                                </h1>
+                            </div>
+                            <div class="col-4">
+                                <h1 class="titles-seat">
+                                    <img src="{{ asset("images/booked.svg") }}" alt="" /> <br />Booked
+                                    Seat
+                                </h1>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-12 col-md-10 offset-md-1">
+                                <div class="row">
+                                    <div class="col-9">
+                                        <img src="{{ asset("images/steering-wheel.svg") }}" alt=""
+                                            style="width: 40px" />
+                                    </div>
+                                    <div class="col-3 align-self-center">
+                                        <input id="seat-1" type="checkbox" value="1" /><label for="seat-1"
+                                            class="seat-one">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">1</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-3">
+                                        <input id="seat-2" type="checkbox" disabled="" /><label for="seat-2"
+                                            class="disable-seat">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">2</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-3">
+                                        <input id="seat-3" type="checkbox" value="3" /><label for="seat-3"
+                                            class="seat-three">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">3</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-3">
+                                        <input id="seat-4" type="checkbox" disabled="" /><label for="seat-4"
+                                            class="disable-seat">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">4</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-3">
+                                        <input id="seat-5" type="checkbox" disabled="" /><label for="seat-5"
+                                            class="disable-seat">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">5</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-3"></div>
+                                    <div class="col-3">
+                                        <input id="seat-6" type="checkbox" disabled="" /><label for="seat-6"
+                                            class="disable-seat">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">6</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-3">
+                                        <input id="seat-7" type="checkbox" value="7" /><label for="seat-7"
+                                            class="seat-seven">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">7</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-3">
+                                        <input id="seat-8" type="checkbox" value="8" /><label for="seat-8"
+                                            class="seat-eight">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">8</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-3"></div>
+                                    <div class="col-3">
+                                        <input id="seat-9" type="checkbox" value="9" /><label for="seat-9"
+                                            class="seat-nine">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">9</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-3">
+                                        <input id="seat-10" type="checkbox" value="10" /><label for="seat-10"
+                                            class="seat-ten">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">10</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-3">
+                                        <input id="seat-11" type="checkbox" value="11" /><label for="seat-11"
+                                            class="seat-eleven">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">11</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-3"></div>
+                                    <div class="col-3">
+                                        <input id="seat-12" type="checkbox" value="12" /><label for="seat-12"
+                                            class="seat-twelve">
+                                            <div class="seat-numbers">
+                                                <img src="{{ asset("images/seat.svg") }}" alt="" />
+                                                <h1 class="number">12</h1>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="Button_Wrap" disabled="">
+                                            Continue
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="page-overlay">
+        <div class="spinner"><span class="sp sp1"></span><span class="sp sp2"></span><span class="sp sp3"></span>
+        </div>
+    </div>
+
+    <script src="{{ asset('assets/js/jquery.bundle.js') }}?ver={{ date('his') }}"></script>
+    <script src="{{ asset('assets/js/script.js') }}?ver={{ date('his') }}"></script>
+    <script src="{{ asset('assets/js/admin.app.js') }}?ver={{ date('his') }}"></script>
+    <script src="{{ asset('assets/js/vendors/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/js/superadmin.js') }}?ver={{ date('his') }}"></script>
+
+    @include('sweetalert::alert')
+
+    <script type="text/javascript">
+        document.getElementById("history").classList.add('active');
+    </script>
+
+</body>
+
+</html>
