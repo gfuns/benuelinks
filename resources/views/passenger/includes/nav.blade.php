@@ -60,7 +60,7 @@
         <div class="container">
             <div class="navbar-innr">
                 <ul class="navbar-menu" id="main-nav">
-                    <li style="margin-right:20px">
+                    <li id="dashboard" style="margin-right:20px">
                         <a href="{{ route('passenger.dashboard') }}"><em class="ikon ikon-dashboard"></em> Home</a>
                     </li>
 

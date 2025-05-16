@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\WalletTransactions;
 use Auth;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -322,7 +323,78 @@ class PassengerController extends Controller
     {
         $schedules = TravelSchedule::where("departure", $departure)->where("destination", $destination)->whereDate("scheduled_date", $date)->where("status", "scheduled")->get();
 
-        return view("passenger.available_buses", compact("schedules"));
+        $departure   = CompanyTerminals::find($departure)->terminal;
+        $destination = CompanyTerminals::find($destination)->terminal;
+        $title       = $departure . " => " . $destination;
+        $date        = date_format(new DateTime($date), 'l - jS M, Y');
+
+        return view("passenger.available_buses", compact("schedules", "title", "date"));
+    }
+
+    /**
+     * seatSelection
+     *
+     * @param Request reques
+     *
+     * @return void
+     */
+    public function seatSelection(Request $reques)
+    {
+        $validator = Validator::make($request->all(), [
+            'schedule_id' => 'required',
+            'seatnumber'  => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $schedule = TravelSchedule::find($request->schedule_id);
+
+        if (isset($schedule)) {
+
+            $booking                  = new TravelBooking;
+            $booking->schedule_id     = $schedule->id;
+            $booking->departure       = Auth::user()->station;
+            $booking->destination     = $request->destination;
+            $booking->vehicle         = $schedule->vehicle;
+            $booking->vehicle_type    = $request->vehicle_choice;
+            $booking->travel_date     = $request->travel_date;
+            $booking->departure_time  = $request->departure_time;
+            $booking->full_name       = $request->passenger_name;
+            $booking->phone_number    = $request->phone_number;
+            $booking->seat            = $request->seat_number;
+            $booking->payment_channel = $request->payment_channel;
+            $booking->classification  = "booking";
+            $booking->payment_status  = "paid";
+            $booking->travel_fare     = $route->transport_fare;
+            $booking->booking_number  = $this->genBookingID();
+            if ($booking->save()) {
+                return redirect()->route("passenger.bookingPreview");
+            } else {
+                alert()->error('', 'Something went wrong. Please try again');
+                return back();
+            }
+        } else {
+            alert()->error('', 'Something went wrong. Please try again');
+            return back();
+        }
+
+    }
+
+    /**
+     * bookingPreview
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function bookingPreview($id)
+    {
+
     }
 
     /**
@@ -332,8 +404,6 @@ class PassengerController extends Controller
      */
     public function bookingHistory()
     {
-        return view("passenger.available_buses");
-
         $filter    = request()->filter;
         $startDate = request()->start_date;
         $endDate   = request()->end_date;

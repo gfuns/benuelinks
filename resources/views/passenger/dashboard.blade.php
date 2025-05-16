@@ -31,6 +31,7 @@
 
                     <div class="search-adv-wrap" style="background: #fff; border: 1px solid #fff">
                         <form class="adv-search" id="adv-search" action="{{ route("passenger.searchSchedule") }}" method="POST" autocomplete="off">
+                            @csrf
                             <div class="adv-search">
                                 <div class="row align-items-end guttar-20px guttar-vr-15px">
                                     <div class="col-sm-4 col-lg-3 col-mb-6">
@@ -183,7 +184,9 @@
 
     @include('sweetalert::alert')
 
-
+    <script type="text/javascript">
+        document.getElementById("dashboard").classList.add('active');
+        </script>
 
 </body>
 

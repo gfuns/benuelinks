@@ -34,6 +34,10 @@ Route::group([
     Route::post('/searchSchedule', [PassengerController::class, 'searchSchedule'])->name('passenger.searchSchedule');
 
     Route::get('/trip/search/{dep?}/{des?}/{date?}', [PassengerController::class, 'availableBuses'])->name('passenger.availableBuses');
+
+    Route::post('/seatSelection', [PassengerController::class, 'seatSelection'])->name('passenger.seatSelection');
+
+    Route::get('/booking-preview/{id?}', [PassengerController::class, 'bookingPreview'])->name('passenger.bookingPreview');
 });
 
 Route::get('/paystack/callback', [PaystackController::class, 'handlePaystackCallback']);
