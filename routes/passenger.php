@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 //Work Group Modules
 Route::group([
-    'prefix' => 'portal/passenger',
+    'prefix'     => 'portal/passenger',
+    'middleware' => ['emailverified'],
 ], function ($router) {
 
     Route::get('/dashboard', [PassengerController::class, 'dashboard'])->name('passenger.dashboard');

@@ -23,6 +23,10 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'dashboard'])->name('home');
 
+Route::post('/verify-email', [HomeController::class, 'verifyEmail'])->name("verifyEmail");
+
+Route::get('/send-verification-mail', [HomeController::class, 'sendVerificationMail'])->name("sendVerificationMail");
+
 Route::group([
     'prefix' => 'portal/superadmin',
 ], function ($router) {

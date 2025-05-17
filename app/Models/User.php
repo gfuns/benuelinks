@@ -2,7 +2,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Jobs\SendEmailVerificationCode;
+use App\Models\CustomerOtp;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -19,9 +22,13 @@ class User extends Authenticatable implements Auditable
      */
     public function generateTags(): array
     {
-        return [
-            Auth::user()->station,
-        ];
+        if (Auth::user()) {
+            return [
+                Auth::user()->station,
+            ];
+        } else {
+            return [];
+        }
     }
 
     /**
@@ -36,7 +43,9 @@ class User extends Authenticatable implements Auditable
         'phone_number',
         'password',
         'referral_channel',
+        'referral_code',
         'role_id',
+        'email_verified_at',
     ];
 
     /**
@@ -58,6 +67,68 @@ class User extends Authenticatable implements Auditable
         'email_verified_at' => 'datetime',
         'password'          => 'hashed',
     ];
+
+    public static function booted()
+    {
+        static::created(function ($user) {
+            $user->referral_code = User::generateReferralCode($user->id);
+            $user->save();
+
+            $otp = CustomerOtp::updateOrCreate(
+                [
+                    'user_id'  => $user->id,
+                    'otp_type' => 'email',
+                ], [
+                    'otp'            => User::generateOtp(),
+                    'otp_expiration' => Carbon::now()->addMinutes(5),
+                ]);
+
+            if ($otp) {
+                SendEmailVerificationCode::dispatch($otp);
+            }
+        });
+    }
+
+    /**
+     * generateOtp
+     *
+     * @return void
+     */
+    public static function generateOtp()
+    {
+        $pin = range(0, 9);
+        $set = shuffle($pin);
+        $otp = "";
+        for ($i = 0; $i < 4; $i++) {
+            $otp = $otp . "" . $pin[$i];
+        }
+
+        return $otp;
+    }
+
+    /**
+     * generateReferralCode
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public static function generateReferralCode($id)
+    {
+
+        if (strlen($id) == 1) {
+            return "PMT0000" . $id;
+        } else if (strlen($id) == 2) {
+            return "PMT000" . $id;
+        } else if (strlen($id) == 3) {
+            return "PMT00" . $id;
+        } else if (strlen($id) == 4) {
+            return "PMT0" . $id;
+        } else if (strlen($id) == 5) {
+            return "PMT" . $id;
+        }
+
+    }
 
     public function terminal()
     {

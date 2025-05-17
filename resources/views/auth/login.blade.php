@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="images/favicon.png">
     <title>Sign In | Peace Mass Transit</title>
-    <link rel="stylesheet" href="assets/css/vendor.bundle.css?ver=20241116180">
-    <link rel="stylesheet" href="assets/css/register.css?ver=20241116180">
+    <link rel="stylesheet" href="{{ asset("assets/css/vendor.bundle.css")}}?ver=20241116180">
+    <link rel="stylesheet" href="{{ asset("assets/css/register.css")}}?ver=20241116180">
 
     <style>
         .guest-prompt {
@@ -79,7 +79,7 @@
         <div class="page-ath-content customPageContent">
             <div class="page-ath-header">
                 <a href="/" class="page-ath-logo">
-                    <img class="page-ath-logo-img" src="images/logo.png" alt="TransLite Logo">
+                    <img class="page-ath-logo-img" src="images/logo.png" alt="Peace Mass Transit Logo">
                 </a>
             </div>
 
@@ -168,8 +168,8 @@
         </div>
     </div>
 
-    <script src="assets/js/jquery.bundle.js?ver=20241116180"></script>
-    <script src="assets/js/script.js?ver=20241116180"></script>
+    <script src="{{ asset("assets/js/jquery.bundle.js")}}?ver=20241116180"></script>
+    <script src="{{ asset("assets/js/script.js")}}?ver=20241116180"></script>
     <script type="text/javascript">
         jQuery(function() {
             var $frv = jQuery('.validate');
