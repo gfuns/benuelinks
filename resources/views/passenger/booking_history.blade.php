@@ -47,7 +47,7 @@
                                                 <input class="input-solid input-solid-sm input-transparent"
                                                     type="date" placeholder="Start Date" name="start_date"
                                                     style="border: 1.5px solid #e0e8f3;" required
-                                                    value="{{ $startDate }}">
+                                                    value="{{ $startDate ?? date("Y-m-d") }}">
                                             </div>
                                         </div>
                                         <div class="col-sm-4 col-lg-3 col-mb-6">
