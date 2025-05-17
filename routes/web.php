@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,16 @@ Route::get('/home', [HomeController::class, 'dashboard'])->name('home');
 Route::post('/verify-email', [HomeController::class, 'verifyEmail'])->name("verifyEmail");
 
 Route::get('/send-verification-mail', [HomeController::class, 'sendVerificationMail'])->name("sendVerificationMail");
+
+Route::post('/initiate-password-reset', [FrontEndController::class, 'initiatePasswordReset'])->name("initiatePasswordReset");
+
+Route::get('/password-reset-confirmation', [FrontEndController::class, 'pwdResetConfirmation'])->name("pwdResetConfirmation");
+
+Route::post('/password-reset-verification', [FrontEndController::class, 'passwordResetVerification'])->name("passwordResetVerification");
+
+Route::get('/new-password', [FrontEndController::class, 'newPassword'])->name("newPassword");
+
+Route::post('/create-new-password', [FrontEndController::class, 'createNewPassword'])->name("createNewPassword");
 
 Route::group([
     'prefix' => 'portal/superadmin',

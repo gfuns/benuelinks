@@ -89,13 +89,6 @@
                 <h2 class=""><small><strong>Sign Into Your PMT Account!</strong></small></h2>
 
 
-                {{-- @if ($errors->has('regError'))
-                <div class="alert alert-dismissible fade show alert-danger"><a href="javascript:void(0)" class="close"
-                        data-dismiss="alert" aria-label="close" style="color:white">&nbsp;</a>
-                    {{ $errors->first('regError') }}
-                </div>
-            @endif --}}
-
                 @if ($errors->any())
                     <div class="alert alert-dismissible fade show alert-danger"><a href="javascript:void(0)"
                             class="close" data-dismiss="alert" aria-label="close" style="color:white">&nbsp;</a>
@@ -142,7 +135,7 @@
                             <label for="remember-me">Remember Me</label>
                         </div>
                         <div>
-                            <a href="#">Forgot password?</a>
+                            <a href="/password/reset">Forgot password?</a>
                             <div class="gaps-2x"></div>
                         </div>
                     </div>
@@ -170,6 +163,9 @@
 
     <script src="{{ asset("assets/js/jquery.bundle.js")}}?ver=20241116180"></script>
     <script src="{{ asset("assets/js/script.js")}}?ver=20241116180"></script>
+
+    @include('sweetalert::alert')
+
     <script type="text/javascript">
         jQuery(function() {
             var $frv = jQuery('.validate');
