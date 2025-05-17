@@ -144,7 +144,7 @@ class PassengerController extends Controller
      */
     public function referrals()
     {
-        $referrals = User::where("refferal_id", Auth::user()->id)->get();
+        $referrals = User::where("referral_id", Auth::user()->id)->get();
         return view("passenger.referrals", compact("referrals"));
     }
 
