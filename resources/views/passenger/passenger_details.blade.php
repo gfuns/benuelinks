@@ -143,6 +143,17 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-item input-with-label">
+                                        <label for="email" class="input-item-label">Email</label>
+                                        <div class="input-wrap">
+                                            <input class="input-bordered" type="email" id="email"
+                                                name="email" placeholder="Enter Email Address"
+                                                value="{{ Auth::user()->email }}" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="input-item input-with-label">
                                         <label for="mobile-number" class="input-item-label">Mobile
                                             Number</label>
                                         <div class="input-wrap">

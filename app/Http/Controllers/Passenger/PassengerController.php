@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Passenger;
 
 use App\Http\Controllers\Controller;
+use App\Mail\BookingSuccessful as BookingSuccessful;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
 use App\Models\TravelBooking;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Mail;
 
 class PassengerController extends Controller
 {
@@ -425,6 +427,7 @@ class PassengerController extends Controller
             'booking_id'   => 'required',
             'last_name'    => 'required',
             'other_names'  => 'required',
+            'email'        => 'required',
             'phone_number' => 'required',
             'gender'       => 'required',
             'nok'          => 'required',
@@ -433,6 +436,7 @@ class PassengerController extends Controller
 
         $booking               = TravelBooking::find($request->booking_id);
         $booking->full_name    = $request->last_name . ", " . $request->other_names;
+        $booking->email        = $request->email;
         $booking->phone_number = $request->phone_number;
         $booking->gender       = $request->gender;
         $booking->nok          = $request->nok_name;
@@ -492,6 +496,15 @@ class PassengerController extends Controller
             $booking->save();
 
             DB::commit();
+
+            try {
+                Mail::to($booking)->send(new BookingSuccessful($booking));
+            } catch (\Exception $e) {
+                \Log::error($e->getMessage());
+            } finally {
+                alert()->success('', 'Trip Booked Successfully!');
+                return redirect()->route("passenger.bookingHistory");
+            }
 
             alert()->success('', 'Trip Booked Successfully!');
             return redirect()->route("passenger.bookingHistory");
