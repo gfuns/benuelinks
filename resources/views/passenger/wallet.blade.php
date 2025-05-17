@@ -107,13 +107,13 @@
                                                     <td class="data-col">
                                                         @if ($trx->status == 'pending')
                                                             <span
-                                                                class="dt-status-md badge badge-outline badge-md badge-warning"><strong>{{ ucwords($trx->status) }}</strong></span>
+                                                                class="badge badge-outline badge-md badge-warning"><strong>{{ ucwords($trx->status) }}</strong></span>
                                                         @elseif ($trx->status == 'failed')
                                                             <span
-                                                                class="dt-status-md badge badge-outline badge-md badge-danger text-danger"><strong>{{ ucwords($trx->status) }}</strong></span>
+                                                                class="badge badge-outline badge-md badge-danger text-danger"><strong>{{ ucwords($trx->status) }}</strong></span>
                                                         @else
                                                             <span
-                                                                class="dt-status-md badge badge-outline badge-md badge-success text-success"><strong>{{ ucwords($trx->status) }}</strong></span>
+                                                                class="badge badge-outline badge-md badge-success text-success"><strong>{{ ucwords($trx->status) }}</strong></span>
                                                         @endif
                                                     </td>
                                                 </tr>

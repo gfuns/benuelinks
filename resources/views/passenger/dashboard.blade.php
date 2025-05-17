@@ -135,7 +135,7 @@
                                             </td>
                                             <td class="data-col dt-status data-col-wd-md text-right">
                                                 <span
-                                                    class="dt-status-md badge badge-outline badge-md badge-primary text-primary"
+                                                    class="badge badge-outline badge-md badge-primary text-primary"
                                                     data-toggle="modal" data-target="#viewSeats" data-backdrop="static"
                                                     data-myid="{{ $schedule->id }}"
                                                     data-vehicletype="{{ $schedule->getvehicleType() }}"

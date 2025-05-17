@@ -47,7 +47,7 @@
                                                 <input class="input-solid input-solid-sm input-transparent"
                                                     type="date" placeholder="Start Date" name="start_date"
                                                     style="border: 1.5px solid #e0e8f3;" required
-                                                    value="{{ $startDate ?? date("Y-m-d") }}">
+                                                    value="{{ $startDate }}">
                                             </div>
                                         </div>
                                         <div class="col-sm-4 col-lg-3 col-mb-6">
@@ -119,15 +119,15 @@
                                         <td class="data-col">
                                             @if ($bk->tripStatus() == 'trip successful')
                                                 <span
-                                                    class="dt-status-md badge badge-outline badge-md badge-success text-success"><strong>Trip
+                                                    class="badge badge-outline badge-md badge-success text-success"><strong>Trip
                                                         Successful</strong></span>
                                             @elseif ($bk->tripStatus() == 'in transit')
                                                 <span
-                                                    class="dt-status-md badge badge-outline badge-md badge-primary text-primary"><strong>In
+                                                    class="badge badge-outline badge-md badge-primary text-primary"><strong>In
                                                         Transit</strong></span>
                                             @else
                                                 <span
-                                                    class="dt-status-md badge badge-outline badge-md badge-warning"><strong>Awaiting
+                                                    class="badge badge-outline badge-md badge-warning"><strong>Awaiting
                                                         Boarding</strong></span>
                                             @endif
                                         </td>

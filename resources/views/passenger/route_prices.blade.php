@@ -129,7 +129,7 @@
                                         </td>
                                         <td class="data-col dt-status data-col-wd-md text-right">
                                             <span
-                                                class="dt-status-md badge badge-outline badge-md badge-primary text-primary"
+                                                class="badge badge-outline badge-md badge-primary text-primary"
                                                 data-toggle="modal" data-target="#selectDate" data-backdrop="static"
                                                 data-takeoff="{{ $route->departure }}"
                                                 data-destination="{{ $route->destination }}"
