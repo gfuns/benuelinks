@@ -1,68 +1,59 @@
 @extends('admin.layouts.app')
 @section('content')
-    <div class="container">
-        <div class="page-inner">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="d-flex align-items-center">
-                                <h4 class="card-title">Passenger Bookings</h4>
-                                <button class="btn btn-primary btn-round ms-auto btn-sm" data-bs-toggle="offcanvas"
-                                    data-bs-target="#offcanvasRight">
-                                    <i class="fa fa-plus"></i>
-                                    Book Passenger
-                                </button>
+    <div class="page-innerxxx">
+        <div class="m-4 d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2">
+            <div>
+                <h3 class="fw-bold mb-3">Terminal Check-In ({{ Auth::user()->terminal->terminal }})</h3>
+                <h6 class="op-7 mb-2">Input booking number to search for active tickets and proceed to ticket validation.
+                    Please Note that validating a customer's ticket before his/her arrival at the terminal is strictly
+                    prohibited and would attract sanctions.</h6>
+            </div>
+        </div>
+        <div class="">
+            <div class="col-sm-12 col-md-12 ms-3">
+                <form method="GET" action="{{ route('admin.searchBooking') }}">
+
+                    <div class="row">
+
+                        <div class="col-12 col-md-10">
+                            <div class="form-group">
+                                <input type="text" name="booking_number" class="form-control rounded-pill"
+                                    placeholder="Enter Booking Number" value="{{ $searchParam }}"
+                                    style="height: 50px !important">
+
+                                @error('booking_number')
+                                    <span class="" role="alert">
+                                        <strong style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
+
                         </div>
-                        <div class="card-body">
-
-                            <div class="col-md-12">
-                                <form method="GET" action="{{ route('admin.searchBooking') }}">
-
-                                    <div class="row">
-
-                                        <div class="col-md-8">
-                                            <div class="form-group">
-                                                <label for="currentPassword"><strong>Booking Number</strong></label>
-                                                <input type="text" name="booking_number" class="form-control"
-                                                    placeholder="Enter Booking Number" value="{{ $searchParam }}">
-
-                                                @error('booking_number')
-                                                    <span class="" role="alert">
-                                                        <strong
-                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-
-                                        </div>
 
 
-                                        <div class="col-md-3 filterButton">
-                                            <button type="submit" class="btn btn-primary btn-md">Search For Record</button>
-                                        </div>
+                        <div class="col-12 col-md-2 pillButton">
+                            <button type="submit" class="btn btn-warning btn-md rounded-pill ">View Details</button>
+                        </div>
 
-                                        <div class="col-md-1 filterButton">
-                                            <button type="button" class="btn btn-secondary btn-sm cstFilter"
-                                                style="border: 1px solid black;" data-bs-toggle="modal"
-                                                data-bs-target="#filterBookings"><i class="fas fa-filter"
-                                                    style="font-size:16px"></i></button>
-                                        </div>
-                                    </div>
+                    </div>
 
 
-                                </form>
-                            </div>
+                </form>
+            </div>
 
-
-                            <hr />
+            @if (isset($searchResults))
+                <div class="col-sm-12 col-md-12">
+                    <div class="" style="background: #fff">
+                        <div class="card-header m-4 pt-4  ps-4 d-flex align-items-center">
+                            <div class="card-title" style="font-size: 16px">Search Result</div>
+                        </div>
+                        <div class="card-body m-4 pb-5">
 
                             <div class="table-responsive">
 
-                                <table id="pagedexample" class="table mb-0 text-nowrap table-hover table-centered">
+                                <table class="table mb-0 text-nowrap table-hover table-centered">
                                     <thead>
-                                        <tr>
+                                        <tr style="font-size: 12px">
                                             <th scope="col">S/No.</th>
                                             <th scope="col">Booking Number.</th>
                                             <th scope="col">Passenger Details</th>
@@ -74,8 +65,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($bookings as $bk)
-                                            <tr>
+                                        @foreach ($searchResults as $bk)
+                                            <tr style="font-size: 12px">
                                                 <td class="align-middle"> {{ $loop->index + 1 }} </td>
                                                 <td class="align-middle"> {{ $bk->booking_number }} </td>
                                                 <td class="align-middle"> {{ $bk->full_name }}<br /><span
@@ -149,117 +140,75 @@
                                         @endforeach
 
                                     </tbody>
-
                                 </table>
-
-
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            @endif
+            <div class="col-sm-12 col-md-12">
+                <div class="" style="background: #fff">
+                    <div class="card-header m-4 pt-5 pb-3 ps-4 d-flex align-items-center">
+                        <div class="card-title" style="font-size: 16px">Scheduled Trips For {{ $period }}</div>
+                        <button class="btn btn-primary ms-auto btn-sm" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasRight">
+                            <i class="fa fa-plus"></i>
+                            Book Passenger
+                        </button>
+                    </div>
+                    <div class="card-body m-4 pb-5">
 
+                        <div class="table-responsive">
 
-    <div class="modal fade" id="bookingDetails" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title mb-0" id="newCatgoryLabel">
-                        View Booking Details
-                    </h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <table class="table mb-0 text-nowrap table-hover table-centered">
+                                <thead>
+                                    <tr style="font-size: 12px">
+                                        <th scope="col">S/No.</th>
+                                        <th scope="col">Travel Route</th>
+                                        <th scope="col">Vehicle No.</th>
+                                        <th scope="col">Driver</th>
+                                        <th scope="col">Passengers</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($scheduledTrips as $trip)
+                                        <tr style="font-size: 12px">
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $trip->travelRoute() }}</td>
+                                            <td>@php echo $trip->getvehicle() @endphp</td>
+                                            <td>@php echo $trip->getdriver() @endphp</td>
+                                            <td>{{ $trip->passengers() }}</td>
+                                            <td>
+                                                @if ($trip->status == 'scheduled')
+                                                    <span class="badge badge-warning p-2"
+                                                        style="font-size: 10px">{{ ucwords($trip->status) }}</span>
+                                                @elseif ($trip->status == 'boarding in progress')
+                                                    <span class="badge badge-info p-2"
+                                                        style="font-size: 10px">{{ ucwords($trip->status) }}</span>
+                                                @elseif ($trip->status == 'trip suspended')
+                                                    <span class="badge badge-danger p-2"
+                                                        style="font-size: 10px">{{ ucwords($trip->status) }}</span>
+                                                @elseif ($trip->status == 'in transit')
+                                                    <span class="badge badge-info p-2"
+                                                        style="font-size: 10px">{{ ucwords($trip->status) }}</span>
+                                                @elseif ($trip->status == 'trip successful')
+                                                    <span class="badge badge-success p-2"
+                                                        style="font-size: 10px">{{ ucwords($trip->status) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
 
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-bordered">
-                        <tbody>
-
-                            <tr>
-                                <td class=""><strong>Booking Number</strong></td>
-                                <td class=""><span id="vbookingno"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Travel Route:</strong></td>
-                                <td class=""><span id="vroute"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Selected Vehicle:</strong></td>
-                                <td class=""><span id="vvehicletype"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Departure Date/Time:</strong></td>
-                                <td class=""><span id="vdate"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Passenger Name:</strong></td>
-                                <td class=""><span id="vpassenger"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Passenger Phone Number:</strong></td>
-                                <td class=""><span id="vphoneno"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Seat Number:</strong></td>
-                                <td class=""><span id="vseat"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Next Of Kin:</strong></td>
-                                <td class=""><span id="vnok"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Next Of Kin Phone Number:</strong></td>
-                                <td class=""><span id="vnokphone"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Booking Status:</strong></td>
-                                <td class=""><span id="vbookingstatus"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Booking Method:</strong></td>
-                                <td class=""><span id="vbookingmethod"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Fare Paid:</strong></td>
-                                <td class="">&#8358;<span id="vamount"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Payment Channel</strong></td>
-                                <td class=""><span id="vpaymentchannel"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Payment Status</strong></td>
-                                <td class=""><span id="vpaystatus"></span></td>
-                            </tr>
-
-                            <tr>
-                                <td class=""><strong>Boarding Status</strong></td>
-                                <td class=""><span id="vboarding"></span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="modal">Close</button>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
+
     </div>
 
 
@@ -379,72 +328,110 @@
         </div>
     </div>
 
-    <div class="modal fade" id="filterBookings" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+
+
+    <div class="modal fade" id="bookingDetails" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title mb-0" id="newCatgoryLabel">
-                        Filter Booking Records
+                        View Booking Details
                     </h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
 
                     </button>
                 </div>
-                <form class="needs-validation" novalidate method="post" action="{{ route('admin.filterBookings') }}"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="row">
-                            <!-- form group -->
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <tbody>
 
-                            <div class="mb-3 col-12">
-                                <label class="form-label"><strong>Travel Route</strong></label>
-                                <select id="trvRoute" name="travel_route" class="form-select" data-width="100%"
-                                    required>
-                                    <option value="null">Select Travel Route</option>
-                                    @foreach ($travelRoutes as $troute)
-                                        <option value="{{ $troute->destination }}" @if ($route == $troute->destination) selected @endif>{{ $troute->travelRoute() }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback">Please select travel route.</div>
-                            </div>
+                            <tr>
+                                <td class=""><strong>Booking Number</strong></td>
+                                <td class=""><span id="vbookingno"></span></td>
+                            </tr>
 
-                            <div class="mb-3 col-12">
-                                <label class="form-label"><strong>Booking Status</strong></label>
-                                <select id="bkStatus" name="booking_status" class="form-select" data-width="100%">
-                                    <option value="null">Select Booking Status</option>
-                                    <option value="booked" @if ($status == 'booked') selected @endif>Booked
-                                    </option>
-                                    <option value="validated" @if ($status == 'validated') selected @endif>Validated
-                                    </option>
-                                </select>
-                                <div class="invalid-feedback">Please select booking status.</div>
-                            </div>
+                            <tr>
+                                <td class=""><strong>Travel Route:</strong></td>
+                                <td class=""><span id="vroute"></span></td>
+                            </tr>
 
-                            <div class="mb-3 col-12">
-                                <label class="form-label"><strong>Travel Date</strong></label>
-                                <input type="date" name="travel_date" value="{{ $date }}"
-                                    class="form-control" placeholder="Select Travel Date">
-                                <div class="invalid-feedback">Please select travel date.</div>
-                            </div>
+                            <tr>
+                                <td class=""><strong>Selected Vehicle:</strong></td>
+                                <td class=""><span id="vvehicletype"></span></td>
+                            </tr>
 
+                            <tr>
+                                <td class=""><strong>Departure Date/Time:</strong></td>
+                                <td class=""><span id="vdate"></span></td>
+                            </tr>
 
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit">Filter Records</button>
-                        <button type="button" class="btn btn-outline-primary ms-2"
-                            data-bs-dismiss="modal">Close</button>
-                    </div>
-                </form>
+                            <tr>
+                                <td class=""><strong>Passenger Name:</strong></td>
+                                <td class=""><span id="vpassenger"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Passenger Phone Number:</strong></td>
+                                <td class=""><span id="vphoneno"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Seat Number:</strong></td>
+                                <td class=""><span id="vseat"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Next Of Kin:</strong></td>
+                                <td class=""><span id="vnok"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Next Of Kin Phone Number:</strong></td>
+                                <td class=""><span id="vnokphone"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Booking Status:</strong></td>
+                                <td class=""><span id="vbookingstatus"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Booking Method:</strong></td>
+                                <td class=""><span id="vbookingmethod"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Fare Paid:</strong></td>
+                                <td class="">&#8358;<span id="vamount"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Payment Channel</strong></td>
+                                <td class=""><span id="vpaymentchannel"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Payment Status</strong></td>
+                                <td class=""><span id="vpaystatus"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class=""><strong>Boarding Status</strong></td>
+                                <td class=""><span id="vboarding"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
 
-
     <script type="text/javascript">
-        document.getElementById("ticketing").classList.add('active');
+        document.getElementById("dashboard").classList.add('active');
     </script>
 @endsection
 

@@ -151,6 +151,10 @@
             padding-top: 35px;
         }
 
+        .pillButton {
+            padding-top: 12px;
+        }
+
         .cstFilter {
             padding-top: 10px !important;
         }

@@ -38,31 +38,47 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        $terminal   = Auth::user()->station;
-        $tickets    = TravelBooking::where("departure", $terminal)->whereDate("created_at", today())->count();
-        $revenue    = TravelBooking::where("departure", $terminal)->where("boarding_status", "boarded")->whereDate("travel_date", today())->sum("travel_fare");
-        $trips      = TravelSchedule::where("departure", $terminal)->where("status", "trip successful")->whereDate("scheduled_date", today())->count();
-        $passengers = TravelBooking::where("departure", $terminal)->where("boarding_status", "boarded")->whereDate("travel_date", today())->count();
 
-        $param = [
-            "tickets"    => $tickets,
-            "revenue"    => $revenue,
-            "trips"      => $trips,
-            "passengers" => $passengers,
-        ];
+        $terminal = Auth::user()->station;
 
-        $ticketsSold = [
-            "topRoutes"   => $this->getTopRoutes(),
-            "ticketSales" => $this->getTicketSales(),
-        ];
+        if (Auth::user()->userRole->category == "administrative") {
+            $tickets    = TravelBooking::where("departure", $terminal)->whereDate("created_at", today())->count();
+            $revenue    = TravelBooking::where("departure", $terminal)->where("boarding_status", "boarded")->whereDate("travel_date", today())->sum("travel_fare");
+            $trips      = TravelSchedule::where("departure", $terminal)->where("status", "trip successful")->whereDate("scheduled_date", today())->count();
+            $passengers = TravelBooking::where("departure", $terminal)->where("boarding_status", "boarded")->whereDate("travel_date", today())->count();
 
-        $revennueStats = [
-            "period" => $this->getRevenuePeriod(),
-            "stats"  => $this->getRevenueStats(),
-        ];
+            $param = [
+                "tickets"    => $tickets,
+                "revenue"    => $revenue,
+                "trips"      => $trips,
+                "passengers" => $passengers,
+            ];
 
-        $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->limit(5)->get();
-        return view("admin.dashboard", compact("param", "scheduledTrips", "ticketsSold", "revennueStats"));
+            $ticketsSold = [
+                "topRoutes"   => $this->getTopRoutes(),
+                "ticketSales" => $this->getTicketSales(),
+            ];
+
+            $revennueStats = [
+                "period" => $this->getRevenuePeriod(),
+                "stats"  => $this->getRevenueStats(),
+            ];
+
+            $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->limit(5)->get();
+            return view("admin.dashboard", compact("param", "scheduledTrips", "ticketsSold", "revennueStats"));
+        } else {
+            $searchParam  = request()->booking_number;
+            $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
+            $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
+            if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
+                $period         = "Tomorrow";
+                $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", Carbon::tomorrow())->limit(5)->get();
+            } else {
+                $period         = "Today";
+                $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->limit(5)->get();
+            }
+            return view("admin.dashboard_alt", compact("scheduledTrips", "searchParam", "vehicleTypes", "travelRoutes", "period"));
+        }
     }
 
     /**
@@ -850,7 +866,7 @@ class AdminController extends Controller
         $searchParam  = null;
         $terminal     = Auth::user()->station;
         $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
-        $bookings     = TravelBooking::where("classification", "booking")->where("departure", $terminal)->get();
+        $bookings     = TravelBooking::orderBy("id", "desc")->where("classification", "booking")->where("departure", $terminal)->get();
         $status       = null;
         $date         = null;
         $route        = null;
