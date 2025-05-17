@@ -52,7 +52,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="search-adv-wrap @if($filter != "advanced") hide @endif">
+                        <div class="search-adv-wrap @if ($filter != 'advanced') hide @endif">
                             <form class="adv-search" id="adv-search" action="" method="GET" autocomplete="off">
                                 <div class="adv-search">
                                     <div class="row align-items-end guttar-20px guttar-vr-15px">
@@ -105,7 +105,8 @@
                         @if ($filter != null)
                             <div class="search-adv-result">
                                 <div class="search-info">Found <span
-                                        class="search-count">{{ number_format(count($companyRoutes), 0) }}</span> Record(s) using your query.
+                                        class="search-count">{{ number_format(count($companyRoutes), 0) }}</span>
+                                    Record(s) using your query.
                                 </div>
                             </div>
                         @endif
@@ -143,11 +144,12 @@
                                                 class="sub sub-s2 sub-email">&#8358;{{ number_format($route->transport_fare, 2) }}</span>
                                         </td>
                                         <td class="data-col dt-status data-col-wd-md text-right">
-                                            <a href="">
-                                                <span
-                                                    class="dt-status-md badge badge-outline badge-md badge-primary text-primary"><strong>Book
-                                                    Trip</strong></span>
-                                            </a>
+                                            <span
+                                                class="dt-status-md badge badge-outline badge-md badge-primary text-primary"
+                                                data-toggle="modal" data-target="#selectDate" data-backdrop="static"
+                                                data-takeoff="{{ $route->departure }}"
+                                                data-destination="{{ $route->destination }}"
+                                                style="cursor: pointer"><strong>Book Trip</strong></span>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -194,6 +196,39 @@
 
 
     <div id="ajax-modal"></div>
+
+
+    <div class="modal fade" id="selectDate" tabindex="-1">
+        <div class="modal-dialog modal-dialog-sm" style="margin-top:150px">
+            <div class="modal-content">
+                <a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em
+                        class="ti ti-close"></em></a>
+                <div class="popup-body">
+                    <h3 class="popup-title">Select Departure Date</h3>
+                    <form method="POST" action="{{ route('passenger.searchSchedule') }}">
+                        @csrf
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="input-item input-with-label">
+                                    <div class="input-wrap">
+                                        <input name="departure_date" class="input-bordered" required="required"
+                                            type="date" min="{{ date('Y-m-d') }}" placeholder="Departure Date">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input id="takeoff" type="hidden" name="takeoff" class="form-control" required>
+                        <input id="destination" type="hidden" name="destination" class="form-control" required>
+
+                        <div class="gaps-1x"></div>
+                        <button class="btn btn-sm btn-primary w-100" type="submit">Proceed</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div class="page-overlay">
