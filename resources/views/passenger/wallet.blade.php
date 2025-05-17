@@ -74,7 +74,7 @@
                                 <div class="gaps-1x"></div>
 
                                 <div class="table-responsive">
-                                    <table class="data-table user-list nobreak">
+                                    <table class="data-table dt-filter-init user-list nobreak">
                                         <thead>
                                             <tr class="data-item data-head">
                                                 <th class="data-col">Trx. Date</th>

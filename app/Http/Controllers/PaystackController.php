@@ -47,7 +47,7 @@ class PaystackController extends Controller
             $topup->amount         = $topupAmount;
             $topup->balance_before = Auth::user()->wallet_balance;
             $topup->balance_after  = ($topupAmount + Auth::user()->wallet_balance);
-            $topup->description    = "Wallet Top Transaction";
+            $topup->description    = "Wallet Topup Transaction";
 
             if ($topup->save()) {
                 $paystack                 = new PaystackTrx;
