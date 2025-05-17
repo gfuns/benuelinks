@@ -1,5 +1,12 @@
 @extends('admin.layouts.app')
 @section('content')
+    <style>
+        th,
+        td {
+            font-size: 12px !important;
+        }
+    </style>
+
     <div class="page-innerxxx">
         <div class="m-4 d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2">
             <div>
@@ -11,7 +18,7 @@
         </div>
         <div class="">
             <div class="col-sm-12 col-md-12 ms-3">
-                <form method="GET" action="{{ route('admin.searchBooking') }}">
+                <form method="GET" action="">
 
                     <div class="row">
 
@@ -47,76 +54,75 @@
                         <div class="card-header m-4 pt-4  ps-4 d-flex align-items-center">
                             <div class="card-title" style="font-size: 16px">Search Result</div>
                         </div>
-                        <div class="card-body m-4 pb-5">
+                        <div class="m-4 pb-5">
 
-                            <div class="table-responsive">
-
-                                <table class="table mb-0 text-nowrap table-hover table-centered">
-                                    <thead>
+                            <table class="table mb-0 table-hover table-centered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">S/No.</th>
+                                        <th scope="col">Booking Number.</th>
+                                        <th scope="col">Passenger Details</th>
+                                        <th scope="col">Travel Route</th>
+                                        <th scope="col">Departure Date/Time</th>
+                                        <th scope="col">Booking Date</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($searchResults as $bk)
                                         <tr style="font-size: 12px">
-                                            <th scope="col">S/No.</th>
-                                            <th scope="col">Booking Number.</th>
-                                            <th scope="col">Passenger Details</th>
-                                            <th scope="col">Travel Route</th>
-                                            <th scope="col">Departure Date/Time</th>
-                                            <th scope="col">Booking Date</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($searchResults as $bk)
-                                            <tr style="font-size: 12px">
-                                                <td class="align-middle"> {{ $loop->index + 1 }} </td>
-                                                <td class="align-middle"> {{ $bk->booking_number }} </td>
-                                                <td class="align-middle"> {{ $bk->full_name }}<br /><span
-                                                        style="font-size: 12px">{{ $bk->phone_number }}</span> </td>
-                                                <td class="align-middle">{{ $bk->travelRoute() }}</td>
-                                                <td class="align-middle">
-                                                    {{ date_format(new DateTime($bk->travel_date), 'jS M, Y') }}
-                                                    {{ $bk->departure_time }}
-                                                </td>
-                                                <td class="align-middle">
-                                                    {{ date_format($bk->created_at, 'jS M, Y g:i a') }}
-                                                </td>
-                                                <td>
-                                                    @if ($bk->booking_status == 'validated')
-                                                        <span class="badge badge-success p-2"
-                                                            style="font-size: 10px">{{ ucwords($bk->booking_status) }}</span>
-                                                    @else
-                                                        <span class="badge badge-warning p-2"
-                                                            style="font-size: 10px">{{ ucwords($bk->booking_status) }}</span>
-                                                    @endif
-                                                </td>
-                                                <td class="align-middle">
-                                                    <div class="btn-group dropdown">
-                                                        <button class="btn btn-primary btn-sm dropdown-toggle"
-                                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Action
-                                                        </button>
-                                                        <ul class="dropdown-menu" role="menu" style="">
-                                                            <li>
-                                                                <a class="dropdown-item mb-2" href="#"
-                                                                    data-bs-toggle="modal" data-bs-target="#bookingDetails"
-                                                                    data-backdrop="static" data-myid="{{ $bk->id }}"
-                                                                    data-bookingno="{{ $bk->booking_number }}"
-                                                                    data-passenger="{{ $bk->full_name }}"
-                                                                    data-phoneno="{{ $bk->phone_number }}"
-                                                                    data-route="{{ $bk->travelRoute() }}"
-                                                                    data-date="{{ date_format(new DateTime($bk->travel_date), 'l jS M, Y') }} {{ $bk->departure_time }}"
-                                                                    data-bookingstatus="{{ ucwords($bk->booking_status) }}"
-                                                                    data-vehicletype="{{ $bk->vehicle_type }}"
-                                                                    data-paymentchannel="{{ ucwords($bk->payment_channel) }}"
-                                                                    data-bookingmethod="{{ ucwords($bk->booking_method) }} Booking"
-                                                                    data-boarding="{{ ucwords($bk->boarding_status) }}"
-                                                                    data-amount="{{ number_format($bk->travel_fare, 2) }}"
-                                                                    data-seat="{{ $bk->seat }}"
-                                                                    data-nok="{{ $bk->nok }}"
-                                                                    data-nokphone="{{ $bk->nok_phone }}"
-                                                                    data-paystatus="{{ ucwords($bk->payment_status) }}"><i
-                                                                        class="fe fe-eye dropdown-item-icon"></i>View
-                                                                    Details</a>
-                                                            </li>
+                                            <td class="align-middle"> {{ $loop->index + 1 }} </td>
+                                            <td class="align-middle"> {{ $bk->booking_number }} </td>
+                                            <td class="align-middle"> {{ $bk->full_name }}<br /><span
+                                                    style="font-size: 12px">{{ $bk->phone_number }}</span> </td>
+                                            <td class="align-middle">{{ $bk->travelRoute() }}</td>
+                                            <td class="align-middle">
+                                                {{ date_format(new DateTime($bk->travel_date), 'jS M, Y') }}
+                                                {{ $bk->departure_time }}
+                                            </td>
+                                            <td class="align-middle">
+                                                {{ date_format($bk->created_at, 'jS M, Y g:i a') }}
+                                            </td>
+                                            <td>
+                                                @if ($bk->booking_status == 'validated')
+                                                    <span class="badge badge-success p-2"
+                                                        style="font-size: 10px">{{ ucwords($bk->booking_status) }}</span>
+                                                @else
+                                                    <span class="badge badge-warning p-2"
+                                                        style="font-size: 10px">{{ ucwords($bk->booking_status) }}</span>
+                                                @endif
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="btn-group dropdown">
+                                                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        Action
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu" style="">
+                                                        <li>
+                                                            <a class="dropdown-item mb-2" href="#"
+                                                                data-bs-toggle="modal" data-bs-target="#bookingDetails"
+                                                                data-backdrop="static" data-myid="{{ $bk->id }}"
+                                                                data-bookingno="{{ $bk->booking_number }}"
+                                                                data-passenger="{{ $bk->full_name }}"
+                                                                data-phoneno="{{ $bk->phone_number }}"
+                                                                data-route="{{ $bk->travelRoute() }}"
+                                                                data-date="{{ date_format(new DateTime($bk->travel_date), 'l jS M, Y') }} {{ $bk->departure_time }}"
+                                                                data-bookingstatus="{{ ucwords($bk->booking_status) }}"
+                                                                data-vehicletype="{{ $bk->vehicle_type }}"
+                                                                data-paymentchannel="{{ ucwords($bk->payment_channel) }}"
+                                                                data-bookingmethod="{{ ucwords($bk->booking_method) }} Booking"
+                                                                data-boarding="{{ ucwords($bk->boarding_status) }}"
+                                                                data-amount="{{ number_format($bk->travel_fare, 2) }}"
+                                                                data-seat="{{ $bk->seat }}"
+                                                                data-nok="{{ $bk->nok }}"
+                                                                data-nokphone="{{ $bk->nok_phone }}"
+                                                                data-paystatus="{{ ucwords($bk->payment_status) }}"><i
+                                                                    class="fe fe-eye dropdown-item-icon"></i>View
+                                                                Details</a>
+                                                        </li>
+                                                        @if ($bk->payment_status == 'paid')
                                                             <li>
                                                                 <a class="dropdown-item mb-2"
                                                                     href="{{ route('admin.printBookingTicket', [$bk->id]) }}"
@@ -124,24 +130,41 @@
                                                                         class="fe fe-eye dropdown-item-icon"></i>Print
                                                                     Receipt</a>
                                                             </li>
-                                                            @if ($bk->booking_status == 'booked')
-                                                                <li>
-                                                                    <a class="dropdown-item"
-                                                                        href="{{ route('admin.validateTicket', [$bk->id]) }}"
-                                                                        onclick="return confirm('Are you sure you want to validate this ticket?');"><i
-                                                                            class="fe fe-trash dropdown-item-icon"></i>Validate
-                                                                        Ticket</a>
-                                                                </li>
-                                                            @endif
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                                        @endif
+                                                        @if ($bk->booking_status == 'booked')
+                                                            <li>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.validateTicket', [$bk->id]) }}"
+                                                                    onclick="return confirm('Are you sure you want to validate this ticket?');"><i
+                                                                        class="fe fe-trash dropdown-item-icon"></i>Validate
+                                                                    Ticket</a>
+                                                            </li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
 
-                                    </tbody>
-                                </table>
-                            </div>
+                                    @if (count($searchResults) < 1)
+                                        <div class="card content-area">
+                                            <div class="card-innr">
+                                                <tr>
+                                                    <td colspan="8">
+                                                        <div class="col-xl-12 col-12 job-items job-empty">
+                                                            <div class="text-center mt-4"><i class="far fa-sad-tear"
+                                                                    style="font-size: 30px"></i>
+                                                                <h6 class="mt-2">No Booking Record Found For Your Query
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

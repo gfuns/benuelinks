@@ -126,13 +126,15 @@
                                                                         class="fe fe-eye dropdown-item-icon"></i>View
                                                                     Details</a>
                                                             </li>
-                                                            <li>
-                                                                <a class="dropdown-item mb-2"
-                                                                    href="{{ route('admin.printBookingTicket', [$bk->id]) }}"
-                                                                    target="_blank"><i
-                                                                        class="fe fe-eye dropdown-item-icon"></i>Print
-                                                                    Receipt</a>
-                                                            </li>
+                                                            @if ($bk->payment_status == 'paid')
+                                                                <li>
+                                                                    <a class="dropdown-item mb-2"
+                                                                        href="{{ route('admin.printBookingTicket', [$bk->id]) }}"
+                                                                        target="_blank"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Print
+                                                                        Receipt</a>
+                                                                </li>
+                                                            @endif
                                                             @if ($bk->booking_status == 'booked')
                                                                 <li>
                                                                     <a class="dropdown-item"
@@ -404,7 +406,9 @@
                                     required>
                                     <option value="null">Select Travel Route</option>
                                     @foreach ($travelRoutes as $troute)
-                                        <option value="{{ $troute->destination }}" @if ($route == $troute->destination) selected @endif>{{ $troute->travelRoute() }}</option>
+                                        <option value="{{ $troute->destination }}"
+                                            @if ($route == $troute->destination) selected @endif>{{ $troute->travelRoute() }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">Please select travel route.</div>

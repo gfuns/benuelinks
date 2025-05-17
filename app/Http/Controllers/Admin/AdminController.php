@@ -67,7 +67,11 @@ class AdminController extends Controller
             $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->limit(5)->get();
             return view("admin.dashboard", compact("param", "scheduledTrips", "ticketsSold", "revennueStats"));
         } else {
-            $searchParam  = request()->booking_number;
+            $searchResults = null;
+            $searchParam   = request()->booking_number;
+            if (isset($searchParam)) {
+                $searchResults = TravelBooking::where("booking_number", $searchParam)->get();
+            }
             $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
             $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
             if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
@@ -77,7 +81,7 @@ class AdminController extends Controller
                 $period         = "Today";
                 $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->limit(5)->get();
             }
-            return view("admin.dashboard_alt", compact("scheduledTrips", "searchParam", "vehicleTypes", "travelRoutes", "period"));
+            return view("admin.dashboard_alt", compact("scheduledTrips", "searchParam", "vehicleTypes", "travelRoutes", "period", "searchResults"));
         }
     }
 
