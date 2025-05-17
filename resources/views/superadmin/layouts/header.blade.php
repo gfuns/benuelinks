@@ -39,6 +39,9 @@
     <link href="{{ asset('backend/assets/select2/css/select2.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('backend/assets/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" />
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
     <style type="text/css">
         .back-to-home-label {
             display: inline-flex;
