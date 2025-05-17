@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\BookingSuccessful as BookingSuccessful;
 use App\Mail\TopupSuccessful as TopupSuccessful;
 use App\Models\PaystackTrx;
 use App\Models\TravelBooking;
@@ -251,6 +252,15 @@ class PaystackController extends Controller
             $booking->payment_channel = "wallet";
             $booking->booking_status  = "booked";
             $booking->save();
+
+            try {
+                Mail::to($booking)->send(new BookingSuccessful($booking));
+            } catch (\Exception $e) {
+                \Log::error($e->getMessage());
+            } finally {
+                alert()->success('', 'Trip Booked Successfully!');
+                return redirect()->route("passenger.bookingHistory");
+            }
 
             alert()->success('', 'Trip Booked Successfully!');
             return redirect()->route("passenger.bookingHistory");

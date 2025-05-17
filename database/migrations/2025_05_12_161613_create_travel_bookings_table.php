@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('travel_bookings', function (Blueprint $table) {
             $table->increments("id");
+            $table->integer("user_id")->unsigned()->nullable();
             $table->integer("schedule_id")->unsigned();
             $table->integer("departure")->unsigned();
             $table->integer("destination")->unsigned();
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->enum("booking_status", ["booked", "validated", "pending"])->default("booked");
             $table->enum("boarding_status", ["boarded", "pending"])->default("pending");
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('schedule_id')->references('id')->on('travel_schedules')->onDelete('cascade');
             $table->foreign('departure')->references('id')->on('company_terminals')->onDelete('cascade');
             $table->foreign('destination')->references('id')->on('company_terminals')->onDelete('cascade');

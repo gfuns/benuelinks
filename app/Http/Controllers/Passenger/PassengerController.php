@@ -369,6 +369,7 @@ class PassengerController extends Controller
 
         if (isset($schedule)) {
             $booking                  = new TravelBooking;
+            $booking->user_id         = Auth::user()->id;
             $booking->schedule_id     = $schedule->id;
             $booking->departure       = $schedule->departure;
             $booking->destination     = $schedule->destination;
@@ -530,9 +531,9 @@ class PassengerController extends Controller
         $endDate   = request()->end_date;
 
         if ($filter == "advanced" && isset($startDate) && isset($endDate)) {
-            $bookingHistory = TravelBooking::orderBy("id", "desc")->where("payment_status", "paid")->whereBetween("travel_date", [$startDate, $endDate])->get();
+            $bookingHistory = TravelBooking::orderBy("id", "desc")->where("user_id", Auth::user()->id)->where("payment_status", "paid")->whereBetween("travel_date", [$startDate, $endDate])->get();
         } else {
-            $bookingHistory = TravelBooking::orderBy("id", "desc")->where("payment_status", "paid")->get();
+            $bookingHistory = TravelBooking::orderBy("id", "desc")->where("user_id", Auth::user()->id)->where("payment_status", "paid")->get();
         }
         return view("passenger.booking_history", compact("filter", "bookingHistory", "startDate", "endDate"));
     }

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('travel_schedules', function (Blueprint $table) {
-            $table->integer("vehicle")->unsigned()->nullable();
-            $table->foreign('vehicle')->references('id')->on('company_vehicles')->onDelete('cascade');
+        Schema::table('travel_bookings', function (Blueprint $table) {
+            $table->integer("user_id")->unsigned()->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -22,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('travel_schedules', function (Blueprint $table) {
-            $table->dropColumn('vehicle');
+        Schema::table('travel_bookings', function (Blueprint $table) {
+            $table->dropColumn('user_id');
         });
     }
 };
