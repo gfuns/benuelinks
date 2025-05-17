@@ -30,29 +30,7 @@
                     </div>
 
                     <div class="page-nav-wrap">
-                        <div class="page-nav-bar justify-content-between bg-lighter">
-
-                            <div class="search flex-grow-1 pl-lg-4 w-100 w-sm-auto">
-                                <form action="" method="GET" autocomplete="off">
-                                    <div class="input-wrap">
-                                        <span class="input-icon input-icon-left"><em class="ti ti-search"></em></span>
-                                        <input type="search" class="input-solid input-transparent"
-                                            placeholder="Quick travel route search using take-off point or destination"
-                                            value="{{ $filter == 'quick' ? $keyword : '' }}" name="search">
-                                        <input type="hidden" name="filter" value="quick">
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="tools w-100 w-sm-auto">
-                                <ul class="btn-grp guttar-8px">
-
-                                    <li><a href="#"
-                                            class="btn btn-light btn-sm btn-icon btn-outline bg-white advsearch-opt">
-                                            <em class="ti ti-panel"></em> </a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="search-adv-wrap @if ($filter != 'advanced') hide @endif">
+                        <div class="search-adv-wrap">
                             <form class="adv-search" id="adv-search" action="" method="GET" autocomplete="off">
                                 <div class="adv-search">
                                     <div class="row align-items-end guttar-20px guttar-vr-15px">
@@ -113,7 +91,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="data-table user-list nobreak">
+                        <table class="data-table dt-filter-init user-list nobreak">
                             <thead>
                                 <tr class="data-item data-head">
                                     <th class="data-col">S/No.</th>

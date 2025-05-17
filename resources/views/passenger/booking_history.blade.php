@@ -40,7 +40,8 @@
                                                     Date</label>
                                                 <input class="input-solid input-solid-sm input-transparent"
                                                     type="date" placeholder="Start Date" name="start_date"
-                                                    style="border: 1.5px solid #e0e8f3;" required value="{{ $startDate }}">
+                                                    style="border: 1.5px solid #e0e8f3;" required
+                                                    value="{{ $startDate }}">
                                             </div>
                                         </div>
                                         <div class="col-sm-4 col-lg-3 col-mb-6">
@@ -49,7 +50,8 @@
                                                     Date</label>
                                                 <input class="input-solid input-solid-sm input-transparent"
                                                     type="date" placeholder="End Date" name="end_date"
-                                                    style="border: 1.5px solid #e0e8f3;" required value="{{ $endDate }}">
+                                                    style="border: 1.5px solid #e0e8f3;" required
+                                                    value="{{ $endDate }}">
                                             </div>
                                         </div>
                                         <div class="col-sm-4 col-lg-2 col-mb-6">
@@ -75,7 +77,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="data-table user-list nobreak">
+                        <table class="data-table dt-filter-init user-list nobreak">
                             <thead>
                                 <tr class="data-item data-head">
                                     <th class="data-col">S/No.</th>
@@ -84,10 +86,10 @@
                                     <th class="data-col">Travel Date/Time</th>
                                     <th class="data-col">Fare Paid</th>
                                     <th class="data-col">Trip Status</th>
-                                    <th class="data-col"></th>
                                 </tr>
                             </thead>
                             <tbody>
+
                                 @foreach ($bookingHistory as $bk)
                                     <tr class="data-item">
                                         <td class="data-col">
@@ -127,7 +129,7 @@
                                 @endforeach
                                 @if (count($bookingHistory) < 1)
                                     <tr>
-                                        <td colspan="6">
+                                        <td colspan="7">
                                             <div class="col-xl-12 col-12 job-items job-empty">
                                                 <div class="text-center mt-4"><i class="far fa-sad-tear"
                                                         style="font-size: 48px"></i>

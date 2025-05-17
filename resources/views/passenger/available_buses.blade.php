@@ -158,7 +158,7 @@
                                     <br />
                                     <div class="row">
                                         <div class="col-3">
-                                            <input id="seat-2" name="seatnumber[]" type="checkbox" /><label
+                                            <input id="seat-2" name="seatnumber[]" type="checkbox" value="2" /><label
                                                 for="seat-2" class="seat-two">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}"
@@ -181,7 +181,7 @@
                                     <br />
                                     <div class="row">
                                         <div class="col-3">
-                                            <input id="seat-4" name="seatnumber[]" type="checkbox" /><label
+                                            <input id="seat-4" name="seatnumber[]" type="checkbox" value="4" /><label
                                                 for="seat-4" class="seat-four">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}" alt=""
@@ -191,7 +191,7 @@
                                             </label>
                                         </div>
                                         <div class="col-3">
-                                            <input id="seat-5" name="seatnumber[]" type="checkbox" /><label
+                                            <input id="seat-5" name="seatnumber[]" type="checkbox" value="5" /><label
                                                 for="seat-5" class="seat-five">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}" alt=""
@@ -202,7 +202,7 @@
                                         </div>
                                         <div class="col-3"></div>
                                         <div class="col-3">
-                                            <input id="seat-6" name="seatnumber[]" type="checkbox" /><label
+                                            <input id="seat-6" name="seatnumber[]" type="checkbox" value="6" /><label
                                                 for="seat-6" class="seat-six">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}" alt=""
