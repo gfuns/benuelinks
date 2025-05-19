@@ -513,7 +513,7 @@
                 <div class="col-12 col-md-2 socials mb-3">
                     <a href="#"><img class="socialicon me-3" src="{{ asset('images/facebook.png') }}" /></a>
                     <a href="#"><img class="socialicon me-3" src="{{ asset('images/twitter.png') }}" /></a>
-                    <a href="#"><img class="socialicon" src="{{ asset('images/instagram.png') }}" /></a>
+                    <a href="#"><img class="socialicon" src="{{ asset('images/Instagram.png') }}" /></a>
                 </div>
             </div>
         </div>
