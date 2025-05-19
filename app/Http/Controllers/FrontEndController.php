@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendPasswordResetMail;
 use App\Models\CustomerOtp;
+use App\Models\NewsletterSubscription;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -183,5 +184,43 @@ class FrontEndController extends Controller
         }
 
         return $otp;
+    }
+
+    /**
+     * newsletterSubscription
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function newsletterSubscription(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $exist = NewsletterSubscription::where("email", $request->email)->first();
+
+        if (isset($exist)) {
+            alert()->success("", "You have successfully subscribed to our newsletter.");
+            return back();
+        }
+
+        $subscription        = new NewsletterSubscription;
+        $subscription->email = $request->email;
+        if ($subscription->save()) {
+            alert()->success("", "You have successfully subscribed to our newsletter.");
+            return back();
+        } else {
+            alert()->error("", "Something went wrong, please try again later.");
+            return back();
+        }
     }
 }

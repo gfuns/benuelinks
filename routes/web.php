@@ -24,6 +24,8 @@ Route::get('/about', function () {
     return view('about');
 })->name("about");
 
+Route::post('/newslestter-subscription', [FrontEndController::class, 'newsletterSubscription'])->name('newsletter.subscribe');
+
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'dashboard'])->name('home');

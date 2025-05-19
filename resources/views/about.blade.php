@@ -9,7 +9,7 @@
     <style>
         .hero-section {
             background: url('images/bg.png') no-repeat center center/cover;
-            height: 92vh;
+            height: 102vh;
             color: white;
             position: relative;
             text-align: center;
@@ -234,6 +234,11 @@
             text-align: right;
         }
 
+        .input-group .btn {
+            margin-left: 40px;
+            /* Adjust spacing as needed */
+        }
+
 
         @media (max-width: 575px) {
             .cstnavbar {
@@ -361,7 +366,8 @@
                     <li class="nav-item"><a class="nav-link active" href="/about">About Us</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
                 </ul>
-                <a href="/login" class="cstgfunsBtn btn btn-primary cstLoginBtn rounded-pill ms-auto mt-md-0 mt-4 mb-4">Sign
+                <a href="/login"
+                    class="cstgfunsBtn btn btn-primary cstLoginBtn rounded-pill ms-auto mt-md-0 mt-4 mb-4">Sign
                     Up /
                     Login</a>
             </div>
@@ -476,10 +482,20 @@
             </div>
             <p>Sign up for our newsletter and receive exclusive travel deals, insider tips, and destination
                 inspiration. Don't miss out on the adventure - join our mailing list today!</p>
-            <div class="d-flex justify-content-center mt-3">
-                <input type="email" class="form-control w-50 me-2" placeholder="Enter your email address here ...">
-                <button class="btn btn-primary">Subscribe</button>
+            <div class="d-flex justify-content-center mt-4">
+                <div class="position-relative w-100 w-md-50">
+                    <form method="POST" action="{{ route('newsletter.subscribe') }}">
+                        @csrf
+                        <input type="email" name="email" class="form-control pe-5" required
+                            placeholder="Enter your email address here..." style="height: 50px">
+                        <button class="btn btn-primary position-absolute end-0 top-0 mt-2 me-3 mb-2 px-3 py-1">
+                            Subscribe
+                        </button>
+                    </form>
+                </div>
             </div>
+
+
         </div>
     </section>
 
@@ -521,6 +537,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+    @include('sweetalert::alert')
 </body>
 
 </html>
