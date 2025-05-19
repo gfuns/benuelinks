@@ -361,7 +361,7 @@
                     <li class="nav-item"><a class="nav-link active" href="/about">About Us</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
                 </ul>
-                <a href="/login" class="cstgfunsBtn btn btn-primary cstLoginBtn rounded-pill ms-auto mt-md-0 mt-3">Sign
+                <a href="/login" class="cstgfunsBtn btn btn-primary cstLoginBtn rounded-pill ms-auto mt-md-0 mt-4 mb-4">Sign
                     Up /
                     Login</a>
             </div>
