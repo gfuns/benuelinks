@@ -16,15 +16,25 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::get('/', function () {
-    return view('about');
-})->name("welcome");
-
 Route::get('/about', function () {
     return view('about');
 })->name("about");
 
+Route::get('/', [FrontEndController::class, 'welcome'])->name('welcome');
+
 Route::post('/newslestter-subscription', [FrontEndController::class, 'newsletterSubscription'])->name('newsletter.subscribe');
+
+Route::post('/searchSchedule', [FrontEndController::class, 'searchSchedule'])->name('searchSchedule');
+
+Route::get('/available-buses/{dep?}/{des?}/{date?}', [FrontEndController::class, 'availableBuses'])->name('availableBuses');
+
+Route::post('/seatSelection', [FrontEndController::class, 'seatSelection'])->name('seatSelection');
+
+Route::get('/passenger-details/{id}', [FrontEndController::class, 'passengerDetails'])->name('passengerDetails');
+
+Route::post('/updatePassengerDetails', [FrontEndController::class, 'updatePassengerDetails'])->name('updatePassengerDetails');
+
+Route::get('/booking-preview/{id}', [FrontEndController::class, 'bookingPreview'])->name('bookingPreview');
 
 Auth::routes();
 
