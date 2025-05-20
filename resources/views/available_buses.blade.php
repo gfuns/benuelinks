@@ -10,8 +10,12 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <style>
+        body {
+            overflow-x: hidden;
+        }
+
         .busSection {
-            padding-top: 150px;
+            padding-top: 130px;
             /* padding-bottom: 100px; */
             padding-left: 75px;
         }
@@ -105,7 +109,7 @@
             bottom: 50%;
         }
 
-        .seatBtn{
+        .seatBtn {
             background: #6A6DFD;
             border: #6A6DFD;
         }
@@ -126,8 +130,8 @@
             }
 
             .busSection {
-                padding-top: 150px;
-                padding-bottom: 100px;
+                padding-top: 110px;
+                padding-bottom: 0px;
                 padding-left: 20px;
                 padding-right: 20px;
             }
@@ -136,7 +140,7 @@
             .newsletter-section {
                 padding: 3rem 1rem;
                 text-align: center;
-                margin: 100px 30px 50px 30px;
+                margin: 30px 30px 50px 30px;
             }
 
             .cstLetter {
@@ -256,8 +260,9 @@
                         <div class="mt-5">
                             <tr>
                                 <td colspan="6">
-                                    <div class="col-xl-12 col-12 job-items job-empty">
-                                        <div class="mt-4"><i class="far fa-sad-tear" style="font-size: 48px"></i>
+                                    <div class="col-xl-12 col-12">
+                                        <div class="mt-4">
+                                            {{-- <i class="far fa-sad-tear" style="font-size: 48px"></i> --}}
                                             <h5 class="mt-2">No Trip Schedule Found For Your Query</h5>
                                         </div>
                                     </div>
@@ -267,9 +272,11 @@
                     @endif
                 </div>
 
-                <div class="col-12 col-md-5">
-                    <img class="bussearch" src="{{ asset('images/bussearch.png') }}" class="img-responsive" />
+                {{-- @if (count($schedules) > 1) --}}
+                <div class="col-12 col-md-5 d-none d-md-block">
+                    <img class="bussearch" src="{{ asset('images/bussearch.png') }}" class="img-fluid w-100" />
                 </div>
+                {{-- @endif --}}
 
             </div>
         </div>
@@ -391,8 +398,8 @@
                                     <br />
                                     <div class="row">
                                         <div class="col-3">
-                                            <input id="seat-2" name="seatnumber[]" type="checkbox" value="2" /><label
-                                                for="seat-2" class="seat-two">
+                                            <input id="seat-2" name="seatnumber[]" type="checkbox"
+                                                value="2" /><label for="seat-2" class="seat-two">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}"
                                                         alt=""style="max-width: 40px !important" />
@@ -414,8 +421,8 @@
                                     <br />
                                     <div class="row">
                                         <div class="col-3">
-                                            <input id="seat-4" name="seatnumber[]" type="checkbox" value="4" /><label
-                                                for="seat-4" class="seat-four">
+                                            <input id="seat-4" name="seatnumber[]" type="checkbox"
+                                                value="4" /><label for="seat-4" class="seat-four">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}" alt=""
                                                         style="max-width: 40px !important" />
@@ -424,8 +431,8 @@
                                             </label>
                                         </div>
                                         <div class="col-3">
-                                            <input id="seat-5" name="seatnumber[]" type="checkbox" value="5" /><label
-                                                for="seat-5" class="seat-five">
+                                            <input id="seat-5" name="seatnumber[]" type="checkbox"
+                                                value="5" /><label for="seat-5" class="seat-five">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}" alt=""
                                                         style="max-width: 40px !important" />
@@ -435,8 +442,8 @@
                                         </div>
                                         <div class="col-3"></div>
                                         <div class="col-3">
-                                            <input id="seat-6" name="seatnumber[]" type="checkbox" value="6" /><label
-                                                for="seat-6" class="seat-six">
+                                            <input id="seat-6" name="seatnumber[]" type="checkbox"
+                                                value="6" /><label for="seat-6" class="seat-six">
                                                 <div class="seat-numbers">
                                                     <img src="{{ asset('images/seat.svg') }}" alt=""
                                                         style="max-width: 40px !important" />
@@ -535,6 +542,7 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
@@ -543,7 +551,6 @@
     @include('sweetalert::alert')
 
     <script type="text/javascript">
-
         // Wait for the DOM to load
         document.addEventListener('DOMContentLoaded', function() {
             const checkboxes = document.querySelectorAll('input[name="seatnumber[]"]');
