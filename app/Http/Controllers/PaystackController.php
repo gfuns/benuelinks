@@ -397,11 +397,11 @@ class PaystackController extends Controller
                     \Log::error($e->getMessage());
                 } finally {
                     alert()->success('', 'Trip Booked Successfully!');
-                    return redirect()->route("guest.bookingReceipt", [$trxId]);
+                    return redirect()->route("guest.bookingReceipt", [$booking->id]);
                 }
 
                 alert()->success('', 'Trip Booked Successfully!');
-                return redirect()->route("guest.bookingReceipt", [$trxId]);
+                return redirect()->route("guest.bookingReceipt", [$booking->id]);
             } else {
                 alert()->error('', 'Your card was declined. Please contact your card provider!');
                 return redirect()->route("guest.bookingPreview", [$trxId]);

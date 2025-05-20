@@ -396,7 +396,7 @@ class FrontEndController extends Controller
         $booking->nok          = $request->nok_name;
         $booking->nok_phone    = $request->nok_phone;
         if ($booking->save()) {
-            return redirect()->route("bookingPreview", [$booking->id]);
+            return redirect()->route("guest.bookingPreview", [$booking->id]);
         } else {
             alert()->error('', 'Something Went Wrong!');
             return back();
