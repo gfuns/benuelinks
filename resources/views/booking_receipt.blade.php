@@ -279,7 +279,7 @@
 
                         <div class="row mt-4 d-flex text-center">
                             <div class="mb-4">
-                                <button type="submit" class="btn btn-primary seatBtn">DOWNLOAD BOARDING PASS</button>
+                                <a href="{{ route("guest.downloadReceipt", [$booking->id]) }}"><button type="button" class="btn btn-primary seatBtn">DOWNLOAD BOARDING PASS</button></a>
                             </div>
                         </div>
                     </div>

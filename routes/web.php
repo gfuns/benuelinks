@@ -43,6 +43,8 @@ Route::group([
     Route::post('/payWithCard', [PaystackController::class, 'guestCardPayment'])->name('guest.payWithCard');
 
     Route::get('/booking-receipt/{id}', [FrontEndController::class, 'bookingReceipt'])->name('guest.bookingReceipt');
+
+    Route::get('/download-receipt/{id}', [FrontEndController::class, 'downloadReceipt'])->name('guest.downloadReceipt');
 });
 
 Auth::routes();

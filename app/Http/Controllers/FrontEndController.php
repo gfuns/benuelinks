@@ -6,6 +6,7 @@ use App\Models\CompanyTerminals;
 use App\Models\CustomerOtp;
 use App\Models\GuestBooking;
 use App\Models\NewsletterSubscription;
+use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
 use Carbon\Carbon;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use PDF;
 
 class FrontEndController extends Controller
 {
@@ -414,11 +416,28 @@ class FrontEndController extends Controller
         return view("booking_preview", compact("booking"));
     }
 
+    /**
+     * bookingReceipt
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
     public function bookingReceipt($id)
     {
         Session::forget('guestBookingID');
-        $booking = GuestBooking::find($id);
+        $booking = TravelBooking::find($id);
         return view("booking_receipt", compact("booking"));
+    }
+
+    public function downloadReceipt($id)
+    {
+        $booking = TravelBooking::find($id);
+
+        view()->share(['booking' => $booking]);
+        $pdf      = PDF::loadView('download_receipt');
+        $fileName = "Booking_Receipt_" . $booking->booking_number . ".pdf";
+        return $pdf->download($fileName);
     }
 
     /**
