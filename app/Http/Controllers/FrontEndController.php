@@ -8,7 +8,6 @@ use App\Models\GuestBooking;
 use App\Models\NewsletterSubscription;
 use App\Models\TravelSchedule;
 use App\Models\User;
-use Auth;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -265,7 +264,7 @@ class FrontEndController extends Controller
         $departure   = $request->takeoff;
         $destination = $request->destination;
         $date        = $request->departure_date;
-        return redirect()->route("availableBuses", [$departure, $destination, $date]);
+        return redirect()->route("guest.availableBuses", [$departure, $destination, $date]);
     }
 
     /**
@@ -322,7 +321,7 @@ class FrontEndController extends Controller
 
         if (isset($schedule)) {
             $booking                  = new GuestBooking;
-            $booking->user_id         = Auth::user()->id;
+            $booking->guest_number    = $this->genGuestID();
             $booking->schedule_id     = $schedule->id;
             $booking->departure       = $schedule->departure;
             $booking->destination     = $schedule->destination;
@@ -341,7 +340,8 @@ class FrontEndController extends Controller
             $booking->booking_method  = "online";
             $booking->booking_status  = "pending";
             if ($booking->save()) {
-                return redirect()->route("passengerDetails", [$booking->id]);
+                Session::put("guestBookingID", encrypt($booking->id));
+                return redirect()->route("passenger.passengerDetails", [$booking->id]);
             } else {
                 alert()->error('', 'Something went wrong. Please try again');
                 return back();
@@ -362,6 +362,7 @@ class FrontEndController extends Controller
      */
     public function passengerDetails($id)
     {
+        $id      = decrypt($id);
         $booking = GuestBooking::find($id);
         return view("passenger_details", compact("booking"));
     }
@@ -377,8 +378,7 @@ class FrontEndController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'booking_id'   => 'required',
-            'last_name'    => 'required',
-            'other_names'  => 'required',
+            'legal_name'   => 'required',
             'email'        => 'required',
             'phone_number' => 'required',
             'gender'       => 'required',
@@ -387,7 +387,7 @@ class FrontEndController extends Controller
         ]);
 
         $booking               = GuestBooking::find($request->booking_id);
-        $booking->full_name    = $request->last_name . ", " . $request->other_names;
+        $booking->full_name    = $request->legal_name;
         $booking->email        = $request->email;
         $booking->phone_number = $request->phone_number;
         $booking->gender       = $request->gender;
@@ -414,6 +414,13 @@ class FrontEndController extends Controller
         return view("booking_preview", compact("booking"));
     }
 
+    public function bookingReceipt($id)
+    {
+        Session::forget('guestBookingID');
+        $booking = GuestBooking::find($id);
+        return view("booking_receipt", compact("booking"));
+    }
+
     /**
      * genBookingID
      *
@@ -434,5 +441,27 @@ class FrontEndController extends Controller
         $code = substr($shuffled, 0, 12);
 
         return "PMT-BK-" . $code;
+    }
+
+    /**
+     * genGuestID
+     *
+     * @return void
+     */
+    public function genGuestID()
+    {
+        // Get the current timestamp
+        $timestamp = (string) (strtotime('now') . microtime(true));
+
+        // Remove any non-numeric characters (like dots)
+        $cleanedTimestamp = preg_replace('/[^0-9]/', '', $timestamp);
+
+        // Shuffle the digits
+        $shuffled = str_shuffle($cleanedTimestamp);
+
+        // Extract the first 12 characters
+        $code = substr($shuffled, 0, 12);
+
+        return "PMT-GUEST-" . $code;
     }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer("transaction_id");
             $table->string("reference");
             $table->double("amount");
-            $table->enum("trx_type", ["topup", "booking"]);
+            $table->enum("trx_type", ["topup", "booking", "guest"]);
             $table->enum("status", ["pending", "successful", "failed"]);
             $table->integer("handled")->default(0);
             $table->timestamps();

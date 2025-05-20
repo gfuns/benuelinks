@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,17 +25,25 @@ Route::get('/', [FrontEndController::class, 'welcome'])->name('welcome');
 
 Route::post('/newslestter-subscription', [FrontEndController::class, 'newsletterSubscription'])->name('newsletter.subscribe');
 
-Route::post('/searchSchedule', [FrontEndController::class, 'searchSchedule'])->name('searchSchedule');
+Route::group([
+    'prefix' => 'guest',
+], function ($router) {
+    Route::post('/searchSchedule', [FrontEndController::class, 'searchSchedule'])->name('guest.searchSchedule');
 
-Route::get('/available-buses/{dep?}/{des?}/{date?}', [FrontEndController::class, 'availableBuses'])->name('availableBuses');
+    Route::get('/available-buses/{dep?}/{des?}/{date?}', [FrontEndController::class, 'availableBuses'])->name('guest.availableBuses');
 
-Route::post('/seatSelection', [FrontEndController::class, 'seatSelection'])->name('seatSelection');
+    Route::post('/seatSelection', [FrontEndController::class, 'seatSelection'])->name('guest.seatSelection');
 
-Route::get('/passenger-details/{id}', [FrontEndController::class, 'passengerDetails'])->name('passengerDetails');
+    Route::get('/passenger-details/{id}', [FrontEndController::class, 'passengerDetails'])->name('guest.passengerDetails');
 
-Route::post('/updatePassengerDetails', [FrontEndController::class, 'updatePassengerDetails'])->name('updatePassengerDetails');
+    Route::post('/updatePassengerDetails', [FrontEndController::class, 'updatePassengerDetails'])->name('guest.updatePassengerDetails');
 
-Route::get('/booking-preview/{id}', [FrontEndController::class, 'bookingPreview'])->name('bookingPreview');
+    Route::get('/booking-preview/{id}', [FrontEndController::class, 'bookingPreview'])->name('guest.bookingPreview');
+
+    Route::post('/payWithCard', [PaystackController::class, 'guestCardPayment'])->name('guest.payWithCard');
+
+    Route::get('/booking-receipt/{id}', [FrontEndController::class, 'bookingReceipt'])->name('guest.bookingReceipt');
+});
 
 Auth::routes();
 

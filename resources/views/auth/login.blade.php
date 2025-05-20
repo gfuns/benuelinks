@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="images/favicon.png">
     <title>Sign In | Peace Mass Transit</title>
-    <link rel="stylesheet" href="{{ asset("assets/css/vendor.bundle.css")}}?ver=20241116180">
-    <link rel="stylesheet" href="{{ asset("assets/css/register.css")}}?ver=20241116180">
+    <link rel="stylesheet" href="{{ asset('assets/css/vendor.bundle.css') }}?ver=20241116180">
+    <link rel="stylesheet" href="{{ asset('assets/css/register.css') }}?ver=20241116180">
 
     <style>
         .guest-prompt {
@@ -60,7 +60,7 @@
                 padding: 0px
             }
 
-            .page-ath-form{
+            .page-ath-form {
                 margin: 30px 0px 150px 0px;
             }
 
@@ -114,7 +114,12 @@
                                 can ontinue as a guest</div>
                             <div class="col-3"> <img src="images/onboarding.png" /></div>
                         </div>
-                        <a href="#" class="btn btn-sm rounded-pill px-4 guest-btn">Continue as Guest</a>
+                        @if (Session::has('guestBookingID'))
+                            <a href="{{ route('guest.passengerDetails', [Session::get('guestBookingID')]) }}"
+                                class="btn btn-sm rounded-pill px-4 guest-btn">Continue as Guest</a>
+                        @else
+                            <a href="/" class="btn btn-sm rounded-pill px-4 guest-btn">Continue as Guest</a>
+                        @endif
 
                     </div>
 
@@ -124,7 +129,8 @@
 
                     <div class="input-item">
                         <input type="email" placeholder="Your Email" class="input-bordered" name="email"
-                            value="{{ old('email') }}" data-msg-required="Required." data-msg-email="Enter valid email." required>
+                            value="{{ old('email') }}" data-msg-required="Required."
+                            data-msg-email="Enter valid email." required>
                     </div>
                     <div class="input-item">
                         <input type="password" placeholder="Password" class="input-bordered" name="password"
@@ -165,8 +171,8 @@
         </div>
     </div>
 
-    <script src="{{ asset("assets/js/jquery.bundle.js")}}?ver=20241116180"></script>
-    <script src="{{ asset("assets/js/script.js")}}?ver=20241116180"></script>
+    <script src="{{ asset('assets/js/jquery.bundle.js') }}?ver=20241116180"></script>
+    <script src="{{ asset('assets/js/script.js') }}?ver=20241116180"></script>
 
     @include('sweetalert::alert')
 

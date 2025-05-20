@@ -353,7 +353,7 @@
                         class="ti ti-close"></em></a>
                 <div class="modal-body">
                     <h3 class="modal-title ms-4 mb-4">Select Seat</h3>
-                    <form method="POST" action="{{ route('seatSelection') }}">
+                    <form method="POST" action="{{ route('guest.seatSelection') }}">
                         @csrf
                         <div class="seats-select pt-2 pb-2">
                             <div class="row text-center">

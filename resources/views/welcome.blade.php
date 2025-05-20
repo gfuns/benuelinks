@@ -382,7 +382,7 @@
     <div class="page-nav-wrap">
 
         <div class="search-adv-wrap" style="background: #fff; border: 1px solid #fff">
-            <form class="adv-search" id="adv-search" action="{{ route('searchSchedule') }}" method="POST"
+            <form class="adv-search" id="adv-search" action="{{ route('guest.searchSchedule') }}" method="POST"
                 autocomplete="off">
                 @csrf
                 <div class="adv-search">

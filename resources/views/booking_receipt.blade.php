@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peace Mass Transit (PMT) - Booking</title>
+    <title>Peace Mass Transit (PMT) - Booking Receipt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/seats.css') }}?ver={{ date('his') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
@@ -190,7 +190,7 @@
             border: #6A6DFD;
         }
 
-        .text-height{
+        .text-height {
             height: 45px;
         }
 
@@ -250,13 +250,17 @@
                 text-align: center;
             }
 
-            .pageheading{
+            .pageheading {
                 font-size: 15px;
             }
 
-            .text-height{
-            height: 45px;
-        }
+            .text-height {
+                height: 45px;
+            }
+
+            .fs14 {
+                font-size: 14px;
+            }
 
         }
     </style>
@@ -291,19 +295,19 @@
 
     <section class="busSection bg-light">
         <div class="col-12 col-md-7 mx-auto">
-            <h5 class="pageheading text-center"><strong>Welcome Guest, We need some of your details </strong></h5>
+            <h5 class="pageheading text-center"><strong>Booking Summary and Preview </strong></h5>
             <div class="col-12 stepper d-flex" style="margin-top: 20px; margin-bottom: 40px">
                 <div class="step completed">
                     <div class="circle">1</div>
                     <div class="text">Step 1</div>
                     <div class="text">Trip Selection</div>
                 </div>
-                <div class="step active">
+                <div class="step completed">
                     <div class="circle">2</div>
                     <div class="text">Step 2</div>
                     <div class="text">Passenger Details</div>
                 </div>
-                <div class="step">
+                <div class="step active">
                     <div class="circle">3</div>
                     <div class="text">Step 3</div>
                     <div class="text">Booking Summary</div>
@@ -312,76 +316,78 @@
             <div class="row m-4">
                 <div class="card content-area pt-3 pb-3 ps-4 pe-4 pt-md-5 pb-md-5 ps-md-5 pe-md-5 mb-5">
                     <div class="">
-                        <form class="validate-modern" action="{{ route('guest.updatePassengerDetails') }}" method="POST">
-                            @csrf
-                            <div class="row bg-light inner-card pt-5 pb-5 ps-4 pe-4">
-                                <div class="col-12 mb-4">
-                                    <label for="last-name" class="form-label">Your Legal Name</label>
-                                    <div class="input-wrap">
-                                        <input class="form-control text-height" type="text" id="last-name" name="legal_name"
-                                            required="required" placeholder="Enter Legal Name" minlength="3"value="" required>
+                        <table class="table">
+                            <tbody class="fs14">
+                                <tr>
+                                    <td class=""><strong>Take-off Point</strong></td>
+                                    <td class="">{{ $booking->departurePoint->terminal }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class=""><strong>Destination</strong></td>
+                                    <td class="">{{ $booking->destinationPoint->terminal }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class=""><strong>Travel Date</strong></td>
+                                    <td class="">
+                                        {{ date_format(new DateTime($booking->travel_date), 'l - jS M, Y') }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class=""><strong>Departure Time</strong></td>
+                                    <td class="">{{ $booking->departure_time }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class=""><strong>Seat Number</strong></td>
+                                    <td class="">Seat {{ $booking->seat }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class=""><strong>Travel Fare</strong></td>
+                                    <td class="">&#8358;{{ number_format($booking->travel_fare, 2) }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class=""><strong>Cash Back</strong></td>
+                                    <td class="">&#8358;{{ number_format(0, 2) }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class=""><strong>Total Amount</strong></td>
+                                    <td class="">&#8358;{{ number_format($booking->travel_fare, 2) }}
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <div class="mt-5 fs14">
+                            <h4>Terms and Conditions</h4>
+                            <p>Please Note that Peace Mass Transit (PMT) does not have a refund policy, however
+                                our tickets are valid for a period of 30 days from the day of purchase. </p>
+                            <p>By proceeding to make payment, you agree to the Terms and Conditions of Peace
+                                Mass Transit (PMT).</p>
+
+                        </div>
+
+                        <div class="mt-4">
+                            <form method="POST" action="{{ route('guest.payWithCard') }}">
+                                @csrf
+                                <input id="myid" type="hidden" name="booking_id" value="{{ $booking->id }}"
+                                    class="form-control" required>
+
+
+                                <div class="row d-flex text-center">
+                                    <div class="mb-4">
+                                        <button type="submit" class="btn btn-primary seatBtn">Proceed To
+                                            Payment</button>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6 mb-4">
-                                    <label for="email" class="form-label">Email</label>
-                                    <div class="input-wrap">
-                                        <input class="form-control text-height" type="email" id="email" name="email"
-                                            placeholder="Enter Email Address" value="" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-md-6 mb-4">
-                                    <label for="mobile-number" class="form-label">Mobile
-                                        Number</label>
-                                    <div class="input-wrap">
-                                        <input class="form-control text-height" type="text" id="mobile-number"
-                                            name="phone_number" placeholder="Enter Mobile Number" value=""
-                                            required>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-md-6 mb-4">
-                                    <label for="mobile-number" class="form-label">Gender</label>
-                                    <div class="input-wrap">
-                                        <select class="form-control text-height" name="gender" required id="gender"
-                                            required="required">
-                                            <option value="">Select Gender</option>
-                                            <option value="male">Male</option>
-                                            <option value="remale">Female</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-md-6 mb-4">
-                                    <label for="nok-name" class="form-label">Next Of Kin's
-                                        Name</label>
-                                    <div class="input-wrap">
-                                        <input class="form-control text-height" type="text" id="nok-name" name="nok_name"
-                                            placeholder="Enter Next Of Kin's Name" value="" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-md-6 mb-4">
-                                    <label for="nok-phone" class="form-label">Next Of Kin's
-                                        Phone Number</label>
-                                    <div class="input-wrap">
-                                        <input class="form-control text-height" type="text" id="nok-phone" name="nok_phone"
-                                            placeholder="Enter Next Of Kin's Phone Number" value="" required>
-                                    </div>
-                                </div>
-
-                                <div class="gaps-1x"></div>
-                                <div class="mt-5">
-                                    <input id="myid" type="hidden" name="booking_id" value="{{ $booking->id }}"
-                                        class="form-control" required>
-                                    <center>
-                                        <button type="submit" class="btn btn-primary seatBtn">Proceed &nbsp;<i
-                                                class="fas fa-angle-right"></i></button>
-                                    </center>
-                                </div>
-                            </div>
-
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

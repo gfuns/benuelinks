@@ -25,8 +25,10 @@ return new class extends Migration
             $table->string("ticket_number")->nullable();
             $table->string("full_name");
             $table->string("phone_number");
+            $table->string("gender")->nullable();
             $table->string("nok")->nullable();
             $table->string("nok_phone")->nullable();
+            $table->string("email")->nullable();
             $table->string("seat");
             $table->double("travel_fare", 12, 2);
             $table->enum("payment_channel", ["cash", "card payment", "transfer", "wallet", "pending"]);

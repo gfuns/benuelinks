@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string("ticket_number")->nullable();
             $table->string("full_name")->nullable();
             $table->string("phone_number")->nullable();
+            $table->string("email")->nullable();
+            $table->string("gender")->nullable();
             $table->string("nok")->nullable();
             $table->string("nok_phone")->nullable();
             $table->string("seat");
