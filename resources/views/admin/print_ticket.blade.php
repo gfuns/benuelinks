@@ -139,7 +139,12 @@
 
                 <tr>
                     <td class=""><strong>Seat Number:</strong></td>
-                    <td class=""><span>{{ $booking->seat }}</span></td>
+                    <td class=""><span>Seat {{ $booking->seat }}</span></td>
+                </tr>
+
+                <tr>
+                    <td class=""><strong>Amount Paid:</strong></td>
+                    <td class=""><span>&#8358; {{ number_format($booking->travel_fare, 2) }}</span></td>
                 </tr>
             </tbody>
         </table>

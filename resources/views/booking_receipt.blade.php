@@ -14,75 +14,6 @@
             overflow-x: hidden;
         }
 
-        .stepper .step {
-            width: 33%;
-            text-align: center;
-            position: relative;
-        }
-
-        .stepper .step::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            height: 1.5px;
-            background: #e0e0e0;
-            transform: translateY(-50%);
-            z-index: 1;
-        }
-
-
-        /* Green when step is completed */
-        .stepper .step.completed::before {
-            background: #007bff;
-            /* Green */
-        }
-
-        /* Green when step is completed */
-        .stepper .step.active::before {
-            background: #007bff;
-            /* Green */
-        }
-
-        .stepper .step:first-child::before {
-            width: 50%;
-            left: 50%;
-        }
-
-        .stepper .step:last-child::before {
-            width: 50%;
-        }
-
-        .stepper .step .circle {
-            position: relative;
-            z-index: 2;
-            width: 25px;
-            height: 25px;
-            line-height: 25px;
-            border-radius: 50%;
-            background: #e0e0e0;
-            color: #6c757d;
-            margin: 0 auto 10px;
-            font-size: 12px;
-        }
-
-        .stepper .step.active .circle,
-        .stepper .step.completed .circle {
-            background: #007bff;
-            color: white;
-        }
-
-        .stepper .step.active .text,
-        .stepper .step.completed .text {
-            color: #007bff;
-            font-weight: bold;
-        }
-
-        .text {
-            font-size: 10px;
-        }
-
         .busSection {
             padding-top: 130px;
         }
@@ -295,98 +226,61 @@
 
     <section class="busSection bg-light">
         <div class="col-12 col-md-7 mx-auto">
-            <h5 class="pageheading text-center"><strong>Booking Summary and Preview </strong></h5>
-            <div class="col-12 stepper d-flex" style="margin-top: 20px; margin-bottom: 40px">
-                <div class="step completed">
-                    <div class="circle">1</div>
-                    <div class="text">Step 1</div>
-                    <div class="text">Trip Selection</div>
-                </div>
-                <div class="step completed">
-                    <div class="circle">2</div>
-                    <div class="text">Step 2</div>
-                    <div class="text">Passenger Details</div>
-                </div>
-                <div class="step active">
-                    <div class="circle">3</div>
-                    <div class="text">Step 3</div>
-                    <div class="text">Booking Summary</div>
-                </div>
-            </div>
+            <h5 class="pageheading text-center"><strong>PAYMENT RECEIPT </strong></h5>
+
             <div class="row m-4">
                 <div class="card content-area pt-3 pb-3 ps-4 pe-4 pt-md-5 pb-md-5 ps-md-5 pe-md-5 mb-5">
                     <div class="">
                         <table class="table">
                             <tbody class="fs14">
                                 <tr>
-                                    <td class=""><strong>Take-off Point</strong></td>
-                                    <td class="">{{ $booking->departurePoint->terminal }}</td>
+                                    <td class=""><strong>Booking Number</strong></td>
+                                    <td class=""><span>{{ $booking->booking_number }}</span></td>
                                 </tr>
 
                                 <tr>
-                                    <td class=""><strong>Destination</strong></td>
-                                    <td class="">{{ $booking->destinationPoint->terminal }}</td>
+                                    <td class=""><strong>Travel Route:</strong></td>
+                                    <td class=""><span>{{ $booking->travelRoute() }}</span></td>
                                 </tr>
 
                                 <tr>
-                                    <td class=""><strong>Travel Date</strong></td>
-                                    <td class="">
-                                        {{ date_format(new DateTime($booking->travel_date), 'l - jS M, Y') }}
-                                    </td>
+                                    <td class=""><strong>Selected Vehicle:</strong></td>
+                                    <td class=""><span>{{ $booking->vehicle_type }}</span></td>
                                 </tr>
 
                                 <tr>
-                                    <td class=""><strong>Departure Time</strong></td>
-                                    <td class="">{{ $booking->departure_time }}</td>
+                                    <td class=""><strong>Departure Date/Time:</strong></td>
+                                    <td class=""><span>{{ date_format(new DateTime($booking->travel_date), 'l jS M, Y') }}
+                                            {{ $booking->departure_time }}</span></td>
                                 </tr>
 
                                 <tr>
-                                    <td class=""><strong>Seat Number</strong></td>
-                                    <td class="">Seat {{ $booking->seat }}</td>
+                                    <td class=""><strong>Passenger Name:</strong></td>
+                                    <td class=""><span>{{ $booking->full_name }}</span></td>
                                 </tr>
 
                                 <tr>
-                                    <td class=""><strong>Travel Fare</strong></td>
-                                    <td class="">&#8358;{{ number_format($booking->travel_fare, 2) }}
-                                    </td>
+                                    <td class=""><strong>Passenger Phone Number:</strong></td>
+                                    <td class=""><span>{{ $booking->phone_number }}</span></td>
                                 </tr>
 
                                 <tr>
-                                    <td class=""><strong>Cash Back</strong></td>
-                                    <td class="">&#8358;{{ number_format(0, 2) }}</td>
+                                    <td class=""><strong>Seat Number:</strong></td>
+                                    <td class=""><span>Seat {{ $booking->seat }}</span></td>
                                 </tr>
 
                                 <tr>
-                                    <td class=""><strong>Total Amount</strong></td>
-                                    <td class="">&#8358;{{ number_format($booking->travel_fare, 2) }}
-                                    </td>
+                                    <td class=""><strong>Amount Paid:</strong></td>
+                                    <td class=""><span>&#8358; {{ number_format($booking->travel_fare, 2) }}</span></td>
                                 </tr>
 
                             </tbody>
                         </table>
-                        <div class="mt-5 fs14">
-                            <h4>Terms and Conditions</h4>
-                            <p>Please Note that Peace Mass Transit (PMT) does not have a refund policy, however
-                                our tickets are valid for a period of 30 days from the day of purchase. </p>
-                            <p>By proceeding to make payment, you agree to the Terms and Conditions of Peace
-                                Mass Transit (PMT).</p>
 
-                        </div>
-
-                        <div class="mt-4">
-                            <form method="POST" action="{{ route('guest.payWithCard') }}">
-                                @csrf
-                                <input id="myid" type="hidden" name="booking_id" value="{{ $booking->id }}"
-                                    class="form-control" required>
-
-
-                                <div class="row d-flex text-center">
-                                    <div class="mb-4">
-                                        <button type="submit" class="btn btn-primary seatBtn">Proceed To
-                                            Payment</button>
-                                    </div>
-                                </div>
-                            </form>
+                        <div class="row mt-4 d-flex text-center">
+                            <div class="mb-4">
+                                <button type="submit" class="btn btn-primary seatBtn">DOWNLOAD BOARDING PASS</button>
+                            </div>
                         </div>
                     </div>
                 </div>
