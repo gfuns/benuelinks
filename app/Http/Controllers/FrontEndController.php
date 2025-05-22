@@ -237,13 +237,13 @@ class FrontEndController extends Controller
         $email = request()->email;
 
         if (! isset($email)) {
-            return redirect()->away('https://pmt.gabrielnwankwo.com');
+            return redirect()->away('https://pmt.torchbibleinstitute.com/subscription');
         }
 
         $exist = NewsletterSubscription::where("email", $email)->first();
 
         if (isset($exist)) {
-            return redirect()->away('https://pmt.gabrielnwankwo.com');
+            return redirect()->away('https://pmt.torchbibleinstitute.com/subscription');
 
             // alert()->success("", "You have successfully subscribed to our newsletter.");
             // return back();
@@ -252,12 +252,12 @@ class FrontEndController extends Controller
         $subscription        = new NewsletterSubscription;
         $subscription->email = $request->email;
         if ($subscription->save()) {
-            return redirect()->away('https://pmt.gabrielnwankwo.com');
+            return redirect()->away('https://pmt.torchbibleinstitute.com/subscription');
 
             // alert()->success("", "You have successfully subscribed to our newsletter.");
             // return back();
         } else {
-            return redirect()->away('https://pmt.gabrielnwankwo.com');
+            return redirect()->away('https://pmt.torchbibleinstitute.com/subscription');
 
             // alert()->error("", "Something went wrong, please try again later.");
             // return back();
