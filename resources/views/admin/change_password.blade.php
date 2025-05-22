@@ -1,5 +1,38 @@
 @extends('admin.layouts.app')
 @section('content')
+<style type="text/css">
+    .password-toggle {
+        position: relative;
+    }
+
+    .password-toggle input[type="password"] {
+        padding-right: 30px;
+    }
+
+    .password-toggle .toggle-password {
+        position: absolute;
+        top: 66%;
+        right: 20px;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+    .password-toggle .toggle-password-2 {
+        position: absolute;
+        top: 66%;
+        right: 20px;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+
+    .password-toggle .toggle-password-3 {
+        position: absolute;
+        top: 66%;
+        right: 20px;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+</style>
     <div class="container">
         <div class="page-inner">
             <div class="row">
@@ -72,5 +105,50 @@
 
     <script type="text/javascript">
         document.getElementById("pwdchange").classList.add('active');
+
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("password");
+            var icon = document.querySelector(".toggle-password i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function togglePassword2Visibility() {
+            var passwordInput = document.getElementById("password2");
+            var icon = document.querySelector(".toggle-password-2 i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function togglePassword3Visibility() {
+            var passwordInput = document.getElementById("password3");
+            var icon = document.querySelector(".toggle-password-3 i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
     </script>
 @endsection

@@ -12,6 +12,64 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style-blue.css') }}?ver={{ date('his') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+    <style type="text/css">
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle input[type="password"] {
+            padding-right: 30px;
+        }
+
+        .password-toggle .toggle-password {
+            position: absolute;
+            top: 55%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .password-toggle .toggle-password-2 {
+            position: absolute;
+            top: 55%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .password-toggle .toggle-password-3 {
+            position: absolute;
+            top: 55%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .password-toggle .toggle-pin {
+            position: absolute;
+            top: 55%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .password-toggle .toggle-pin-2 {
+            position: absolute;
+            top: 55%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .password-toggle .toggle-pin-3 {
+            position: absolute;
+            top: 55%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body class="admin-dashboard page-user">
@@ -98,21 +156,22 @@
 
                                                 <div class="col-md-6">
                                                     <div class="input-item input-with-label">
-                                                        <label for="mobile-number" class="input-item-label">Gender</label>
+                                                        <label for="mobile-number"
+                                                            class="input-item-label">Gender</label>
                                                         <div class="input-wrap">
-                                                            <select class="select-bordered select-block" name="gender" required
-                                                            id="gender" required="required">
-                                                            <option value="">Select Gender</option>
-                                                            <option value="male"
-                                                                @if (Auth::user()->gender == 'male') selected @endif>
-                                                                Male
-                                                            </option>
-                                                            <option value="remale"
-                                                                @if (Auth::user()->gender == 'female') selected @endif>
-                                                                Female
-                                                            </option>
+                                                            <select class="select-bordered select-block" name="gender"
+                                                                required id="gender" required="required">
+                                                                <option value="">Select Gender</option>
+                                                                <option value="male"
+                                                                    @if (Auth::user()->gender == 'male') selected @endif>
+                                                                    Male
+                                                                </option>
+                                                                <option value="remale"
+                                                                    @if (Auth::user()->gender == 'female') selected @endif>
+                                                                    Female
+                                                                </option>
 
-                                                        </select>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -163,44 +222,56 @@
                                                 @csrf
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <div class="input-item input-with-label">
-                                                            <label for="old-pin" class="input-item-label">Current
+                                                        <div class="input-item input-with-label password-toggle">
+                                                            <label for="pin" class="input-item-label">Current
                                                                 PIN</label>
                                                             <div class="input-wrap">
                                                                 <input class="input-bordered" type="password"
                                                                     placeholder="Current PIN" name="current_pin"
-                                                                    id="old-pin" required="required" minlength="4"
+                                                                    id="pin" required="required" minlength="4"
                                                                     maxlength="4">
+                                                                <span class="toggle-pin"
+                                                                    onclick="togglePinVisibility()">
+                                                                    <i class="fa fa-eye"></i>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <div class="input-item input-with-label">
-                                                            <label for="new-pin" class="input-item-label">New
+                                                        <div class="input-item input-with-label password-toggle">
+                                                            <label for="pin2" class="input-item-label">New
                                                                 PIN</label>
                                                             <div class="input-wrap">
-                                                                <input class="input-bordered" id="new-pin"
+                                                                <input class="input-bordered" id="pin2"
                                                                     type="password" name="new_pin"
                                                                     placeholder="New PIN" required="required"
                                                                     minlength="4" maxlength="4">
+
+                                                                <span class="toggle-pin-2"
+                                                                    onclick="togglePin2Visibility()">
+                                                                    <i class="fa fa-eye"></i>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <div class="input-item input-with-label">
-                                                            <label for="confirm-pin" class="input-item-label">Confirm
+                                                        <div class="input-item input-with-label password-toggle">
+                                                            <label for="pin3" class="input-item-label">Confirm
                                                                 New
                                                                 PIN</label>
                                                             <div class="input-wrap">
-                                                                <input id="confirm-pin" class="input-bordered"
+                                                                <input id="pin3" class="input-bordered"
                                                                     type="password" name="pin_confirmation"
                                                                     placeholder="Confirm New PIN"
                                                                     data-rule-equalTo="#new-pin"
                                                                     data-msg-equalTo="PIN do not match."
                                                                     required="required" minlength="4"
                                                                     maxlength="4">
+
+                                                                <span class="toggle-pin-3"
+                                                                    onclick="togglePin3Visibility()">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -236,41 +307,56 @@
                                             @csrf
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <div class="input-item input-with-label">
-                                                        <label for="old-pass" class="input-item-label">Current
+                                                    <div class="input-item input-with-label password-toggle">
+                                                        <label for="password" class="input-item-label">Current
                                                             Password</label>
                                                         <div class="input-wrap">
                                                             <input class="input-bordered" type="password"
                                                                 placeholder="Current Password" name="current_password"
-                                                                id="old-pass" required="required">
+                                                                id="password" required="required">
+
+                                                            <span class="toggle-password"
+                                                                onclick="togglePasswordVisibility()">
+                                                                <i class="fa fa-eye"></i>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <div class="input-item input-with-label">
-                                                        <label for="new-pass" class="input-item-label">New
+                                                    <div class="input-item input-with-label password-toggle">
+                                                        <label for="password2" class="input-item-label">New
                                                             Password</label>
                                                         <div class="input-wrap">
-                                                            <input class="input-bordered" id="new-pass"
+                                                            <input class="input-bordered" id="password2"
                                                                 type="password" name="new_password"
                                                                 placeholder="New Password" required="required"
                                                                 minlength="6">
+
+                                                            <span class="toggle-password-2"
+                                                                onclick="togglePassword2Visibility()">
+                                                                <i class="fa fa-eye"></i>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <div class="input-item input-with-label">
-                                                        <label for="confirm-pass" class="input-item-label">Confirm New
+                                                    <div class="input-item input-with-label password-toggle">
+                                                        <label for="password3" class="input-item-label">Confirm New
                                                             Password</label>
                                                         <div class="input-wrap">
-                                                            <input id="confirm-pass" class="input-bordered"
+                                                            <input id="password3" class="input-bordered"
                                                                 type="password" name="password_confirmation"
                                                                 placeholder="Confirm Password"
                                                                 data-rule-equalTo="#new-pass"
                                                                 data-msg-equalTo="Password not match."
                                                                 required="required" minlength="6">
+
+                                                            <span class="toggle-password-3"
+                                                                onclick="togglePassword3Visibility()">
+                                                                <i class="fa fa-eye"></i>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -330,6 +416,97 @@
 
     <script type="text/javascript">
         document.getElementById("settings").classList.add('active');
+
+
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("password");
+            var icon = document.querySelector(".toggle-password i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function togglePassword2Visibility() {
+            var passwordInput = document.getElementById("password2");
+            var icon = document.querySelector(".toggle-password-2 i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function togglePassword3Visibility() {
+            var passwordInput = document.getElementById("password3");
+            var icon = document.querySelector(".toggle-password-3 i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function togglePinVisibility() {
+            var passwordInput = document.getElementById("pin");
+            var icon = document.querySelector(".toggle-pin i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function togglePin2Visibility() {
+            var passwordInput = document.getElementById("pin2");
+            var icon = document.querySelector(".toggle-pin-2 i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function togglePin3Visibility() {
+            var passwordInput = document.getElementById("pin3");
+            var icon = document.querySelector(".toggle-pin-3 i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
     </script>
 
 </body>

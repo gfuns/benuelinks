@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/vendor.bundle.css') }}?ver=20241116180">
     <link rel="stylesheet" href="{{ asset('assets/css/register.css') }}?ver=20241116180">
 
-    <style>
+    <style type="text/css">
         .guest-prompt {
             background: #F6F7F9;
             border: 1px solid #ccc;
@@ -73,6 +73,23 @@
                 padding: 0 30px
             }
         }
+
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle input[type="password"] {
+            padding-right: 30px;
+        }
+
+        .password-toggle .toggle-password {
+            position: absolute;
+            top: 37%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
     </style>
 
 </head>
@@ -132,10 +149,13 @@
                             value="{{ old('email') }}" data-msg-required="Required."
                             data-msg-email="Enter valid email." required>
                     </div>
-                    <div class="input-item">
+                    <div class="input-item password-toggle">
                         <input type="password" placeholder="Password" class="input-bordered" name="password"
                             id="password" minlength="6" data-msg-required="Required."
                             data-msg-minlength="At least 6 chars." required>
+                            <span class="toggle-password" onclick="togglePasswordVisibility()">
+                                <i class="fa fa-eye"></i>
+                            </span>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">
@@ -185,6 +205,21 @@
                 });
             }
         });
+
+        function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("password");
+        var icon = document.querySelector(".toggle-password i");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
     </script>
 
 </body>

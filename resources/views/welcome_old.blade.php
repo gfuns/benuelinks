@@ -6,12 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peace Mass Transit (PMT) - About Us</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <style>
         .hero-section {
-            background: url('images/home.png') no-repeat center center/cover;
-            height: 90vh;
+            background: url('images/bg.png') no-repeat center center/cover;
+            height: 102vh;
             color: white;
             position: relative;
             text-align: center;
@@ -24,9 +22,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(60, 90, 200, 0.3);
-            /* soft bluish overlay */
-            /* background: rgba(0, 0, 0, 0.5); */
+            background: rgba(0, 0, 0, 0.5);
             /* Dark overlay */
         }
 
@@ -35,25 +31,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 8rem;
-            font-weight: bold;
-        }
-
-        .hero-section h5 {
-            position: absolute;
-            top: 37%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2rem;
-            font-weight: bold;
-        }
-
-        .hero-section h6 {
-            position: absolute;
-            top: 65%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.5rem;
+            font-size: 5rem;
             font-weight: bold;
         }
 
@@ -159,14 +137,6 @@
             margin: 100px 150px 50px 150px;
         }
 
-        .destination-section {
-            /* background: #f9f9f9; */
-            padding: 3rem 1rem;
-            text-align: center;
-            margin-bottom: 30px;
-            /* margin: 0px 50px 50px 50px; */
-        }
-
         .cstnavbar {
             margin-left: 150px;
         }
@@ -195,9 +165,10 @@
 
         .cstBenefits {
             border-radius: 37.5px;
-            margin: 150px 150px;
-            height: 250px;
-            margin-bottom: 100px;
+            background: #F2F2F2;
+            margin: 0px 150px;
+            height: 300px;
+            margin-bottom: 150px;
             padding: 10px;
         }
 
@@ -211,8 +182,8 @@
             margin-bottom: 25px;
         }
 
-        .cstAdvert {
-            margin: 0px 215px;
+        .cstVideo {
+            margin: 0px 150px;
         }
 
         .socialicon {
@@ -238,48 +209,6 @@
 
         .cstLetter {
             padding: 0px 200px;
-        }
-
-        .destination-bg {
-            background: url('images/destination.png') no-repeat center center/cover;
-            height: 10vh;
-            margin: 0px 250px 0px;
-            /* width: 600px; */
-            position: relative;
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .destination-bg h5 {
-            position: absolute;
-            top: 55%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.7rem;
-            font-weight: bold;
-            color: #6A6DFD;
-            width: 100%;
-        }
-
-        .gallery-bg {
-            background: url('images/gallery.png') no-repeat center center/cover;
-            height: 12vh;
-            margin: 50px 300px 0px;
-            /* width: 600px; */
-            position: relative;
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .gallery-bg h5 {
-            position: absolute;
-            top: 55%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.7rem;
-            font-weight: bold;
-            color: #6A6DFD;
-            width: 100%;
         }
 
         .letter-bg {
@@ -310,59 +239,6 @@
             /* Adjust spacing as needed */
         }
 
-        .img-rounded {
-            border-radius: 20px;
-            height: 200px;
-            width: 200px;
-        }
-
-        .destination-name {
-            display: block;
-            text-align: left;
-            margin-left: 20px;
-            margin-top: 5px;
-            font-weight: bold;
-        }
-
-        .destination-map {
-            display: block;
-            text-align: left;
-            margin-left: 20px;
-            font-size: 12px;
-        }
-
-        .advert2 {
-            height: 453px;
-        }
-
-        .gallery1{
-            width: 250px;
-            padding-bottom: 20px;
-        }
-        .gallery2{
-            width: 250px;
-        }
-
-        .gallery3{
-            width: 300px;
-            height: 500px;
-        }
-
-        .gallery4{
-            width: 200px;
-            padding-bottom: 20px;
-        }
-
-        .gallery5{
-            width: 200px;
-        }
-
-        .image-box {
-      height: 250px;
-    }
-    .image-tall {
-      height: 520px;
-    }
 
         @media (max-width: 575px) {
             .cstnavbar {
@@ -492,20 +368,15 @@
                 </ul>
                 <a href="/login"
                     class="cstgfunsBtn btn btn-primary cstLoginBtn rounded-pill ms-auto mt-md-0 mt-4 mb-md-0 mb-4">Sign
-                    Up / Login</a>
+                    Up /
+                    Login</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero-section">
-
-        {{-- <div class="container"> --}}
-        <h5>DISCOVER YOUR NEXT</h5>
-        <h1>ADVENTURE</h1>
-        <h6>Discover the excitement of Nigeria's hidden gems with our tailored road trip packages, designed just for
-            you!</h6>
-        {{-- </div> --}}
+        <h1>ABOUT US</h1>
     </section>
 
     <div class="page-nav-wrap">
@@ -570,7 +441,14 @@
     </div>
 
 
-
+    <!-- Company Overview -->
+    <section class="py-5 text-center cstIntro">
+        <div class="container">
+            <p>Peace Mass Transit (PMT) is a leading Nigerian transportation company known for its extensive intercity
+                network, affordable fares, and commitment to safety and customer satisfaction, offering convenient
+                online booking options and a wide range of routes.</p>
+        </div>
+    </section>
 
     <!-- Features -->
     <section class="cstBenefits">
@@ -600,126 +478,37 @@
         </div>
     </section>
 
-
-    <!-- Popular Destinations -->
-    <section class="destination-section">
-        <div class="cstLetter">
-            <div class="destination-bg">
-                <h5>POPULAR DESTINATIONS</h5>
-            </div>
-
-            <div class="row col-12">
-                <div class="col-6 col-md-3">
-                    <img src="{{ asset('images/lagos.jpg') }}" class="img-fluid img-rounded" />
-                    <span class="destination-name">Lagos</span>
-                    <span class="destination-map"><i class="fas fa-map-marker-alt"></i> 20 Packages</span>
-                </div>
-                <div class="col-6 col-md-3">
-                    <img src="{{ asset('images/portharcourt.jpg') }}" class="img-fluid img-rounded" />
-                    <span class="destination-name">Port Harcourt</span>
-                    <span class="destination-map"><i class="fas fa-map-marker-alt"></i> 20 Packages</span>
-                </div>
-                <div class="col-6 col-md-3">
-                    <img src="{{ asset('images/abuja.png') }}" class="img-fluid img-rounded" />
-                    <span class="destination-name">Abuja</span>
-                    <span class="destination-map"><i class="fas fa-map-marker-alt"></i> 20 Packages</span>
-                </div>
-                <div class="col-6 col-md-3">
-                    <img src="{{ asset('images/delta.jpg') }}" class="img-fluid img-rounded" />
-                    <span class="destination-name">Delta</span>
-                    <span class="destination-map"><i class="fas fa-map-marker-alt"></i> 20 Packages</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Adverts -->
-    <section class="cstAdvert">
-        <div class="container">
-            <div class="row col-12">
-                <div class="col-6 col-md-7">
-                    <img src="{{ asset('images/advert1.png') }}" class="img-fluid" />
-                </div>
-                <div class="col-6 col-md-5">
-                    <img src="{{ asset('images/advert2.png') }}" class="img-fluid advert2" />
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- How It Works -->
-    <section class="cstGuide bg-light">
+    <section class="cstVideo">
         <div class="container">
-            sdsd
-        </div>
-    </section>
+            <div class="d-flex flex-column flex-md-row align-items-start gap-4">
+                <div class="d-flex flex-row flex-md-column">
+                    <div class="workdiv">
+                        <img class="workimg" src="{{ asset('images/route.png') }}" />
+                    </div>
+                    <div class="workdiv">
+                        <img class="workimg" src="{{ asset('images/calendar.png') }}" />
+                    </div>
+                    <div class="workdiv">
+                        <img class="workimg" src="{{ asset('images/luggage.png') }}" />
+                    </div>
+                    <div class="workdiv">
+                        <img class="workimg" src="{{ asset('images/bus.png') }}" />
+                    </div>
+                </div>
 
-    <!-- Gallery -->
-    <section class="destination-section">
-        <div class="cstLetter">
-            <div class="gallery-bg">
-                <h5>OUR ADVENTURES</h5>
+                <div class="flex-grow-1 position-relative video-card">
+                    <div class="video-card-content">
+                        <div>
+                            <h3 class="fw-bold">HOW IT WORKS</h3>
+                            <h1 class="fw-bold">Trip <br />Booking</h1>
+                        </div>
+                        <div class="play-btn">
+                            <img class="btnplay" src="{{ asset('images/PlayButton.png') }}" />
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="container">
-                <div class="row g-4 align-items-stretch">
-
-                  <!-- Left Column -->
-                  <div class="col-12 col-md-3 d-flex flex-column gap-4">
-                    <div class="image-box">
-                      <img src="{{ asset('images/gallery1.png') }}" alt="Image 1" class="rounded-img">
-                    </div>
-                    <div class="image-box">
-                      <img src="{{ asset('images/gallery2.png') }}" alt="Image 2" class="rounded-img">
-                    </div>
-                  </div>
-
-                  <!-- Middle Column -->
-                  <div class="col-12 col-md-6">
-                    <div class="image-tall">
-                      <img src="{{ asset('images/gallery3.png') }}" alt="Image 3" class="rounded-img">
-                    </div>
-                  </div>
-
-                  <!-- Right Column -->
-                  <div class="col-12 col-md-3 d-flex flex-column gap-4">
-                    <div class="image-box">
-                      <img src="{{ asset('images/gallery4.png') }}" alt="Image 4" class="rounded-img">
-                    </div>
-                    <div class="image-box">
-                      <img src="{{ asset('images/gallery5.png') }}" alt="Image 5" class="rounded-img">
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-
-            {{-- <div class="d-flex justify-content-between align-items-stretch gap-3">
-                <div class="flex-fill">
-                    <div class="row">
-                        <div class="col-12">
-                            <img src="{{ asset('images/gallery1.png') }}" class="gallery1" />
-                        </div>
-                        <div class="col-12">
-                            <img src="{{ asset('images/gallery2.png') }}" class="gallery2" />
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-fill">
-                    <img src="{{ asset('images/gallery3.png') }}" class="gallery3" />
-                </div>
-                <div class="flex-fill">
-                    <div class="row">
-                        <div class="col-12">
-                            <img src="{{ asset('images/gallery4.png') }}" class="gallery4" />
-                        </div>
-                        <div class="col-12">
-                            <img src="{{ asset('images/gallery5.png') }}" class="gallery5" />
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
         </div>
     </section>
 

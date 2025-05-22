@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/vendor.bundle.css?ver=20241116180">
     <link rel="stylesheet" href="assets/css/register.css?ver=20241116180">
 
-    <style>
+    <style type="text/css">
         .customPageContent {
             background: #fff;
             border: 1px solid #E2E8F0;
@@ -39,7 +39,7 @@
                 padding: 0px
             }
 
-            .page-ath-form{
+            .page-ath-form {
                 margin: 30px 0px 150px 0px;
             }
 
@@ -51,6 +51,30 @@
                 margin-right: auto;
                 padding: 0 30px
             }
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle input[type="password"] {
+            padding-right: 30px;
+        }
+
+        .password-toggle .toggle-password {
+            position: absolute;
+            top: 37%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .password-toggle .toggle-password-2 {
+            position: absolute;
+            top: 37%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
         }
     </style>
 
@@ -118,37 +142,43 @@
                             data-msg-email="Enter valid phone number." required>
                     </div>
 
-                    <div class="input-item">
+                    <div class="input-item password-toggle">
                         {{-- <label style="font-size:12px; font-weight:bold">Password <span style="color:red">*</span></label> --}}
                         <input type="password" placeholder="Password" class="input-bordered" name="password"
                             id="password" minlength="6" data-msg-required="Required."
                             data-msg-minlength="At least 6 chars." required>
+                        <span class="toggle-password" onclick="togglePasswordVisibility()">
+                            <i class="fa fa-eye"></i>
+                        </span>
                     </div>
 
-                    <div class="input-item">
+                    <div class="input-item password-toggle">
                         {{-- <label style="font-size:12px; font-weight:bold">Password <span style="color:red">*</span></label> --}}
-                        <input type="password" placeholder="Confirm Password" class="input-bordered"
+                        <input id="password2" type="password" placeholder="Confirm Password" class="input-bordered"
                             name="password_confirmation" id="password" minlength="6" data-msg-required="Required."
                             data-msg-minlength="At least 6 chars." required>
+                        <span class="toggle-password-2" onclick="togglePassword2Visibility()">
+                            <i class="fa fa-eye"></i>
+                        </span>
                     </div>
 
                     <div class="input-item">
                         {{-- <label style="font-size:12px; font-weight:bold">How did you hear about us?</label> --}}
                         <select name="referral_channel" class="select select-block select-bordered">
                             <option value="">How did you hear about us?</option>
-                            <option value="Twitter" @if (old('referral_channel') == 'Twitter')
-                                selected @endif>Twitter</option>
-                            <option value="Facebook" @if (old('referral_channel') == 'Facebook')
-                                selected @endif>Facebook</option>
-                            <option value="Instagram" @if (old('referral_channel') == 'Instagram') selected @endif>Instagram</option>
-                            <option value="Newspaper" @if (old('referral_channel') == 'Newspaper') selected @endif>Newspaper</option>
-                            <option value="TV" @if (old('referral_channel') == 'TV')
-                                selected @endif>TV</option>
-                            <option value="Bill Board" @if (old('referral_channel') == 'Bill Board') selected @endif>Bill Board</option>
-                            <option value="Referral" @if (old('referral_channel') == 'Referral')
-                                selected @endif>Referral</option>
-                            <option value="Others" @if (old('referral_channel') == 'Others')
-                                selected @endif>Others</option>
+                            <option value="Twitter" @if (old('referral_channel') == 'Twitter') selected @endif>Twitter</option>
+                            <option value="Facebook" @if (old('referral_channel') == 'Facebook') selected @endif>Facebook
+                            </option>
+                            <option value="Instagram" @if (old('referral_channel') == 'Instagram') selected @endif>Instagram
+                            </option>
+                            <option value="Newspaper" @if (old('referral_channel') == 'Newspaper') selected @endif>Newspaper
+                            </option>
+                            <option value="TV" @if (old('referral_channel') == 'TV') selected @endif>TV</option>
+                            <option value="Bill Board" @if (old('referral_channel') == 'Bill Board') selected @endif>Bill Board
+                            </option>
+                            <option value="Referral" @if (old('referral_channel') == 'Referral') selected @endif>Referral
+                            </option>
+                            <option value="Others" @if (old('referral_channel') == 'Others') selected @endif>Others</option>
                         </select>
                     </div>
 
@@ -156,7 +186,8 @@
                     <div class="input-item text-left">
                         <input name="terms" class="input-checkbox input-checkbox-md" id="agree"
                             type="checkbox" required="required"
-                            data-msg-required="You should accept our terms and policy." {{ old('terms') ? 'checked' : '' }}>
+                            data-msg-required="You should accept our terms and policy."
+                            {{ old('terms') ? 'checked' : '' }}>
                         <label for="agree">I agree to the <a target="_blank" href="#">Terms</a>
                             and <a target="_blank" href="#">Privacy
                                 Policy</a>.</label>
@@ -194,6 +225,37 @@
                 });
             }
         });
+
+
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("password");
+            var icon = document.querySelector(".toggle-password i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function togglePassword2Visibility() {
+            var passwordInput = document.getElementById("password2");
+            var icon = document.querySelector(".toggle-password-2 i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
     </script>
 
 </body>

@@ -60,7 +60,7 @@
                 padding: 0px
             }
 
-            .page-ath-form{
+            .page-ath-form {
                 margin: 30px 0px 350px 0px;
             }
 
@@ -73,6 +73,32 @@
                 padding: 0 30px
             }
         }
+
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle input[type="password"] {
+            padding-right: 30px;
+        }
+
+        .password-toggle .toggle-password {
+            position: absolute;
+            top: 37%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .password-toggle .toggle-password-2 {
+            position: absolute;
+            top: 37%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
     </style>
 
 </head>
@@ -105,20 +131,27 @@
                 @endif
 
                 <div class="mt-4 text-center">
-                    <form class="login-form validate validate-modern" method="POST" action="{{ route('createNewPassword') }}"
-                        id="register">
+                    <form class="login-form validate validate-modern" method="POST"
+                        action="{{ route('createNewPassword') }}" id="register">
                         @csrf
 
-                        <div class="input-item">
+                        <div class="input-item password-toggle">
                             <input type="password" placeholder="Password" class="input-bordered" name="password"
                                 id="password" minlength="6" data-msg-required="Required."
                                 data-msg-minlength="At least 6 chars." required>
+                            <span class="toggle-password" onclick="togglePasswordVisibility()">
+                                <i class="fa fa-eye"></i>
+                            </span>
                         </div>
 
-                        <div class="input-item">
-                            <input type="password" placeholder="Confirm Password" class="input-bordered" name="password_confirmation"
-                                id="password" minlength="6" data-msg-required="Required."
+                        <div class="input-item password-toggle">
+                            <input type="password" placeholder="Confirm Password" class="input-bordered"
+                                name="password_confirmation" id="password2" minlength="6" data-msg-required="Required."
                                 data-msg-minlength="At least 6 chars." required>
+
+                            <span class="toggle-password-2" onclick="togglePassword2Visibility()">
+                                <i class="fa fa-eye"></i>
+                            </span>
                         </div>
 
                         <input type="hidden" name="email" value="{{ $email }}">
@@ -155,6 +188,37 @@
                 });
             }
         });
+
+
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("password");
+            var icon = document.querySelector(".toggle-password i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        function togglePassword2Visibility() {
+            var passwordInput = document.getElementById("password2");
+            var icon = document.querySelector(".toggle-password-2 i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
     </script>
 
 </body>
