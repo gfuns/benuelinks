@@ -513,9 +513,7 @@ class FrontEndController extends Controller
      */
     public function apiBasedDestinations()
     {
-        return new JsonResponse([
-            'success' => true,
-            'items'   => CompanyTerminals::select("id", "terminal")->where("status", "active")->get(),
-        ], 200);
+        $terminals = CompanyTerminals::select("id", "terminal")->where("status", "active")->get();
+        return new JsonResponse($terminals, 200);
     }
 }
