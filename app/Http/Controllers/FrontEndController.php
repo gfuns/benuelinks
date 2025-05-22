@@ -11,6 +11,7 @@ use App\Models\TravelSchedule;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -503,5 +504,21 @@ class FrontEndController extends Controller
         $code = substr($shuffled, 0, 12);
 
         return "PMT-GUEST-" . $code;
+    }
+
+    /**
+     * apiBasedDestinations
+     *
+     * @return void
+     */
+    public function apiBasedDestinations()
+    {
+        return new JsonResponse([
+            'status_code' => (int) 200,
+            'status'      => "Successful",
+            'data'        => [
+                'destinations' => CompanyTerminals::select("id", "terminal")->where("status", "active")->get(),
+            ],
+        ], 200);
     }
 }
