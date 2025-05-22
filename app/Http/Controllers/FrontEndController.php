@@ -223,32 +223,44 @@ class FrontEndController extends Controller
      */
     public function newsletterSubscription(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'email' => 'required',
+        // ]);
 
-        if ($validator->fails()) {
-            $errors = $validator->errors()->all();
-            $errors = implode("<br>", $errors);
-            toast($errors, 'error');
-            return back();
+        // if ($validator->fails()) {
+        //     $errors = $validator->errors()->all();
+        //     $errors = implode("<br>", $errors);
+        //     toast($errors, 'error');
+        //     return back();
+        // }
+
+        $email = request()->email;
+
+        if (! isset($email)) {
+            return redirect()->away('https://pmt.gabrielnwankwo.com');
         }
 
-        $exist = NewsletterSubscription::where("email", $request->email)->first();
+        $exist = NewsletterSubscription::where("email", $email)->first();
 
         if (isset($exist)) {
-            alert()->success("", "You have successfully subscribed to our newsletter.");
-            return back();
+            return redirect()->away('https://pmt.gabrielnwankwo.com');
+
+            // alert()->success("", "You have successfully subscribed to our newsletter.");
+            // return back();
         }
 
         $subscription        = new NewsletterSubscription;
         $subscription->email = $request->email;
         if ($subscription->save()) {
-            alert()->success("", "You have successfully subscribed to our newsletter.");
-            return back();
+            return redirect()->away('https://pmt.gabrielnwankwo.com');
+
+            // alert()->success("", "You have successfully subscribed to our newsletter.");
+            // return back();
         } else {
-            alert()->error("", "Something went wrong, please try again later.");
-            return back();
+            return redirect()->away('https://pmt.gabrielnwankwo.com');
+
+            // alert()->error("", "Something went wrong, please try again later.");
+            // return back();
         }
     }
 
@@ -273,23 +285,23 @@ class FrontEndController extends Controller
     public function searchSchedule(Request $request)
     {
 
-        $validator = Validator::make($request->all(), [
-            'takeoff'        => 'required',
-            'destination'    => 'required',
-            'departure_date' => 'required',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'takeoff'        => 'required',
+        //     'destination'    => 'required',
+        //     'departure_date' => 'required',
+        // ]);
 
-        if ($validator->fails()) {
-            $errors = $validator->errors()->all();
-            $errors = implode("<br>", $errors);
-            toast($errors, 'error');
-            return back();
-        }
+        // if ($validator->fails()) {
+        //     $errors = $validator->errors()->all();
+        //     $errors = implode("<br>", $errors);
+        //     toast($errors, 'error');
+        //     return back();
+        // }
 
         $departure   = request()->takeoff;
         $destination = request()->destination;
         $date        = request()->departure_date;
-        $return      = request()->return_date;
+        $return      = request()->return_date ?? null;
         return redirect()->route("guest.availableBuses", [$departure, $destination, $date, $return]);
     }
 
