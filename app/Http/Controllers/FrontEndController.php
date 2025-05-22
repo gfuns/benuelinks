@@ -272,6 +272,7 @@ class FrontEndController extends Controller
      */
     public function searchSchedule(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'takeoff'        => 'required',
             'destination'    => 'required',
@@ -285,10 +286,11 @@ class FrontEndController extends Controller
             return back();
         }
 
-        $departure   = $request->takeoff;
-        $destination = $request->destination;
-        $date        = $request->departure_date;
-        return redirect()->route("guest.availableBuses", [$departure, $destination, $date]);
+        $departure   = request()->takeoff;
+        $destination = request()->destination;
+        $date        = request()->departure_date;
+        $return      = request()->return_date;
+        return redirect()->route("guest.availableBuses", [$departure, $destination, $date, $return]);
     }
 
     /**
@@ -300,7 +302,7 @@ class FrontEndController extends Controller
      *
      * @return void
      */
-    public function availableBuses($departure, $destination, $date)
+    public function availableBuses($departure, $destination, $date, $return)
     {
         $schedules = TravelSchedule::where("departure", $departure)->where("destination", $destination)->whereDate("scheduled_date", $date)->where("status", "scheduled")->get();
 
