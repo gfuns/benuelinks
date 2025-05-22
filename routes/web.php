@@ -23,7 +23,7 @@ Route::get('/about', function () {
 
 Route::get('/', [FrontEndController::class, 'welcome'])->name('welcome');
 
-Route::get('/admin', [FrontEndController::class, 'adminLogin'])->name('adminLogin');
+Route::get('/control/admin', [FrontEndController::class, 'adminLogin'])->name('adminLogin');
 
 Route::get('/invite', [FrontEndController::class, 'inviteUser'])->name('inviteUser');
 
