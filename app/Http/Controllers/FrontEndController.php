@@ -21,6 +21,17 @@ class FrontEndController extends Controller
 {
 
     /**
+     * inviteUser
+     *
+     * @return void
+     */
+    public function inviteUser()
+    {
+        $referralcode = request()->ref;
+        return view("auth.register", compact("referralcode"));
+    }
+
+    /**
      * initiatePasswordReset
      *
      * @param Request request

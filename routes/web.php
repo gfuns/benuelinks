@@ -23,6 +23,8 @@ Route::get('/about', function () {
 
 Route::get('/', [FrontEndController::class, 'welcome'])->name('welcome');
 
+Route::get('/invite', [FrontEndController::class, 'inviteUser'])->name('inviteUser');
+
 Route::post('/newslestter-subscription', [FrontEndController::class, 'newsletterSubscription'])->name('newsletter.subscribe');
 
 Route::group([

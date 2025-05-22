@@ -64,7 +64,7 @@
                                 <h4 class="card-title card-title-sm">Referral Lists</h4>
                             </div>
                             <div class="table-responsive">
-                                <table class="data-table refferal-table nobreak" data-items="10">
+                                <table class="data-table dt-filter-init refferal-table nobreak" data-items="10">
                                     <thead>
                                         <tr class="data-item data-head">
                                             <th class="data-col serial-no"><span>S/NO.</span></th>
@@ -79,7 +79,7 @@
                                                 <td class="data-col refferal-name">{{ $loop->index + 1 }}</td>
                                                 <td class="data-col refferal-name">
                                                     {{ $ref->last_name . '  ' . $ref->other_names }}</td>
-                                                <td class="data-col refferal-tokens">~</td>
+                                                <td class="data-col refferal-tokens">&#8358;{{ number_format(500, 2) }}</td>
                                                 <td class="data-col refferal-date">
                                                     {{ date_format($ref->created_at, 'jS M, Y g:i A') }}</td>
                                             </tr>

@@ -74,6 +74,14 @@ class User extends Authenticatable implements Auditable
             $user->referral_code = User::generateReferralCode($user->id);
             $user->save();
 
+            if (request()->input('referral_code') != null) {
+                $referee = User::where("referral_code", request()->input('referral_code'))->first();
+                if (isset($referee)) {
+                    $user->referral_id = $referee->id;
+                    $user->save();
+                }
+            }
+
             $otp = CustomerOtp::updateOrCreate(
                 [
                     'user_id'  => $user->id,

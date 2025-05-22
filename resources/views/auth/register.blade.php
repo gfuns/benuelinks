@@ -182,6 +182,15 @@
                         </select>
                     </div>
 
+                    @if (isset($referralcode))
+                        <div class="input-item">
+                            {{-- <label style="font-size:12px; font-weight:bold">Phone Number <span style="color:red">*</span></label> --}}
+                            <input type="hidden" placeholder="Referral Code" class="input-bordered"
+                                name="referral_code" value="{{ $referralcode }}" data-msg-required="Required."
+                                data-msg-email="Enter valid referral." readonly required>
+                        </div>
+                    @endif
+
                     <input type="hidden" name="invitation_code" value="">
                     <div class="input-item text-left">
                         <input name="terms" class="input-checkbox input-checkbox-md" id="agree"
