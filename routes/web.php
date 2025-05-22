@@ -17,11 +17,13 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::get('/about', function () {
-    return view('about');
-})->name("about");
+Route::get('/', function () {
+    return redirect()->away('https://pmt.gabrielnwankwo.com');
+})->name("welcome");
 
-Route::get('/', [FrontEndController::class, 'welcome'])->name('welcome');
+// Route::get('/about', function () {
+//     return view('about');
+// })->name("about");
 
 Route::get('/control/admin', [FrontEndController::class, 'adminLogin'])->name('adminLogin');
 
