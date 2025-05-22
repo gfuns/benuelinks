@@ -514,11 +514,8 @@ class FrontEndController extends Controller
     public function apiBasedDestinations()
     {
         return new JsonResponse([
-            'status_code' => (int) 200,
-            'status'      => "Successful",
-            'data'        => [
-                'destinations' => CompanyTerminals::select("id", "terminal")->where("status", "active")->get(),
-            ],
+            'success' => true,
+            'items'   => CompanyTerminals::select("id", "terminal")->where("status", "active")->get(),
         ], 200);
     }
 }
