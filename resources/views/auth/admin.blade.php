@@ -213,7 +213,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                                        <button type="submit" class="btn btn-lg btn-primary btn-block">Sign In</button>
                                     </div>
                                 </form>
                             </div>
