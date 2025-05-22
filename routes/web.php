@@ -27,7 +27,7 @@ Route::get('/control/admin', [FrontEndController::class, 'adminLogin'])->name('a
 
 Route::get('/invite', [FrontEndController::class, 'inviteUser'])->name('inviteUser');
 
-Route::post('/newslestter-subscription', [FrontEndController::class, 'newsletterSubscription'])->name('newsletter.subscribe');
+Route::post('/newsletterSubscription', [FrontEndController::class, 'newsletterSubscription'])->name('newsletter.subscribe');
 
 Route::group([
     'prefix' => 'guest',
