@@ -32,6 +32,16 @@ class FrontEndController extends Controller
     }
 
     /**
+     * adminLogin
+     *
+     * @return void
+     */
+    public function adminLogin()
+    {
+        return view("auth.admin");
+    }
+
+    /**
      * initiatePasswordReset
      *
      * @param Request request

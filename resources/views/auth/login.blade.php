@@ -100,7 +100,7 @@
         <div class="page-ath-content customPageContent">
             <div class="page-ath-header">
                 <a href="/" class="page-ath-logo">
-                    <img class="page-ath-logo-img" src="images/logo.png" alt="Peace Mass Transit Logo">
+                    <img class="page-ath-logo-img" src="{{ asset("images/logo.png") }}" alt="Peace Mass Transit Logo">
                 </a>
             </div>
 
