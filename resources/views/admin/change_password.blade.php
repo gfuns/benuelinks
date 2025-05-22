@@ -1,38 +1,38 @@
 @extends('admin.layouts.app')
 @section('content')
-<style type="text/css">
-    .password-toggle {
-        position: relative;
-    }
+    <style type="text/css">
+        .password-toggle {
+            position: relative;
+        }
 
-    .password-toggle input[type="password"] {
-        padding-right: 30px;
-    }
+        .password-toggle input[type="password"] {
+            padding-right: 30px;
+        }
 
-    .password-toggle .toggle-password {
-        position: absolute;
-        top: 66%;
-        right: 20px;
-        transform: translateY(-50%);
-        cursor: pointer;
-    }
+        .password-toggle .toggle-password {
+            position: absolute;
+            top: 66%;
+            right: 20px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
 
-    .password-toggle .toggle-password-2 {
-        position: absolute;
-        top: 66%;
-        right: 20px;
-        transform: translateY(-50%);
-        cursor: pointer;
-    }
+        .password-toggle .toggle-password-2 {
+            position: absolute;
+            top: 66%;
+            right: 20px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
 
-    .password-toggle .toggle-password-3 {
-        position: absolute;
-        top: 66%;
-        right: 20px;
-        transform: translateY(-50%);
-        cursor: pointer;
-    }
-</style>
+        .password-toggle .toggle-password-3 {
+            position: absolute;
+            top: 66%;
+            right: 20px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
     <div class="container">
         <div class="page-inner">
             <div class="row">
@@ -43,16 +43,20 @@
                         </div>
 
                         <div class="card-body">
-                            <form method="POST" action="{{ route("admin.updatePassword") }}">
+                            <form method="POST" action="{{ route('admin.updatePassword') }}">
                                 @csrf
 
                                 <div class="row">
 
                                     <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="currentPassword"><strong>Current Password</strong></label>
+                                        <div class="form-group password-toggle">
+                                            <label for="password"><strong>Current Password</strong></label>
                                             <input type="password" name="current_password" class="form-control"
-                                                id="currentPassword" placeholder="Old Password" required />
+                                                id="password" placeholder="Old Password" required />
+
+                                            <span class="toggle-password" onclick="togglePasswordVisibility()">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
 
                                             @error('current_password')
                                                 <span class="" role="alert">
@@ -64,10 +68,14 @@
 
 
                                     <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="newPassword"><strong>New Password</strong></label>
-                                            <input type="password" name="new_password" class="form-control" id="newPassword"
+                                        <div class="form-group password-toggle">
+                                            <label for="password2"><strong>New Password</strong></label>
+                                            <input type="password" name="new_password" class="form-control" id="password2"
                                                 placeholder="New Password" required />
+
+                                            <span class="toggle-password-2" onclick="togglePassword2Visibility()">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
 
                                             @error('new_password')
                                                 <span class="" role="alert">
@@ -78,10 +86,14 @@
                                     </div>
 
                                     <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="confirmPassword"><strong>Confirm Password</strong></label>
+                                        <div class="form-group password-toggle">
+                                            <label for="password3"><strong>Confirm Password</strong></label>
                                             <input type="password" name="password_confirmation" class="form-control"
-                                                id="confirmPassword" placeholder="Confirm Password" required />
+                                                id="password3" placeholder="Confirm Password" required />
+
+                                            <span class="toggle-password-3" onclick="togglePassword3Visibility()">
+                                                <i class="fa fa-eye"></i>
+                                            </span>
 
                                             @error('new_password')
                                                 <span class="" role="alert">
