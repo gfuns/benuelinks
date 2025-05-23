@@ -36,7 +36,7 @@ Route::group([
 ], function ($router) {
     Route::get('/searchSchedule', [FrontEndController::class, 'searchSchedule'])->name('guest.searchSchedule');
 
-    Route::get('/available-buses/{dep?}/{des?}/{date?}/{return?}', [FrontEndController::class, 'availableBuses'])->name('guest.availableBuses');
+    Route::get('/available-buses/{triptype?}/{dep?}/{des?}/{date?}/{return?}', [FrontEndController::class, 'availableBuses'])->name('guest.availableBuses');
 
     Route::post('/seatSelection', [FrontEndController::class, 'seatSelection'])->name('guest.seatSelection');
 

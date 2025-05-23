@@ -297,11 +297,12 @@ class FrontEndController extends Controller
         //     return back();
         // }
 
+        $triptype    = request()->triptype;
         $departure   = request()->takeoff;
         $destination = request()->destination;
         $date        = request()->departure_date;
         $return      = request()->return_date ?? null;
-        return redirect()->route("guest.availableBuses", [$departure, $destination, $date, $return]);
+        return redirect()->route("guest.availableBuses", [$triptype, $departure, $destination, $date, $return]);
     }
 
     /**
@@ -313,7 +314,7 @@ class FrontEndController extends Controller
      *
      * @return void
      */
-    public function availableBuses($departure, $destination, $date, $return)
+    public function availableBuses($triptype, $departure, $destination, $date, $return)
     {
         $schedules = TravelSchedule::where("departure", $departure)->where("destination", $destination)->whereDate("scheduled_date", $date)->where("status", "scheduled")->get();
 
