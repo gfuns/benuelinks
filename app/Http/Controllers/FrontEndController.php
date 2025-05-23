@@ -301,7 +301,7 @@ class FrontEndController extends Controller
         $departure   = request()->takeoff;
         $destination = request()->destination;
         $date        = request()->departure_date;
-        $return      = request()->return_date ?? null;
+        $return      = isset(request()->return_date) ? (request()->return_date == 0 ? null : request()->return_date) : null;
         return redirect()->route("guest.availableBuses", [$triptype, $departure, $destination, $date, $return]);
     }
 
