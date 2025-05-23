@@ -297,8 +297,6 @@ class FrontEndController extends Controller
         //     return back();
         // }
 
-        dd($request->all());
-
         $triptype    = request()->triptype;
         $departure   = request()->takeoff;
         $destination = request()->destination;
