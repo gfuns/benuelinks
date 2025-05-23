@@ -202,15 +202,15 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/"><img src="{{ asset('images/logo.png') }}" /></a>
+            <a class="navbar-brand" href="https://pmt.gabrielnwankwo.com"><img src="{{ asset('images/logo.png') }}" /></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav cstnavbar">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://pmt.gabrielnwankwo.com">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Hire a Bus</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://pmt.gabrielnwankwo.com/about-us">About Us</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
                 </ul>
                 <a href="/login"
@@ -325,7 +325,7 @@
                             <a href="#" class="footer-links">Destinations</a>
                             <a href="#" class="footer-links">Hire a Bus</a>
                             <a href="#" class="footer-links">Tours</a>
-                            <a href="/about" class="footer-links">About</a>
+                            <a href="https://pmt.gabrielnwankwo.com/about-us" class="footer-links">About</a>
                             <a href="#" class="footer-links">Blog</a>
                             <a href="#" class="footer-links">Contact</a>
                         </div>
@@ -335,7 +335,7 @@
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Destinations</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Hire a Bus</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Tours</a></div>
-                            <div class="col-6 col-md-2"><a href="/about" class="footer-links">About</a></div>
+                            <div class="col-6 col-md-2"><a href="https://pmt.gabrielnwankwo.com/about-us" class="footer-links">About</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Blog</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Contact</a></div>
                         </div>

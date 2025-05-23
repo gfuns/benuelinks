@@ -179,15 +179,15 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/"><img src="{{ asset('images/logo.png') }}" /></a>
+            <a class="navbar-brand" href="https://pmt.gabrielnwankwo.com"><img src="{{ asset('images/logo.png') }}" /></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav cstnavbar">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://pmt.gabrielnwankwo.com">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Hire a Bus</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://pmt.gabrielnwankwo.com/about-us">About Us</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
                 </ul>
                 <a href="/login"
@@ -293,7 +293,7 @@
                 inspiration. Don't miss out on the adventure - join our mailing list today!</p>
             <div class="d-flex justify-content-center mt-4">
                 <div class="position-relative w-100 w-md-50">
-                    <form method="POST" action="{{ route('newsletter.subscribe') }}">
+                    <form method="GET" action="{{ route('newsletter.subscribe') }}">
                         @csrf
                         <input type="email" name="email" class="form-control pe-5" required
                             placeholder="Enter your email address here..." style="height: 50px">
@@ -319,7 +319,7 @@
                             <a href="#" class="footer-links">Destinations</a>
                             <a href="#" class="footer-links">Hire a Bus</a>
                             <a href="#" class="footer-links">Tours</a>
-                            <a href="/about" class="footer-links">About</a>
+                            <a href="https://pmt.gabrielnwankwo.com/about-us" class="footer-links">About</a>
                             <a href="#" class="footer-links">Blog</a>
                             <a href="#" class="footer-links">Contact</a>
                         </div>
@@ -329,7 +329,7 @@
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Destinations</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Hire a Bus</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Tours</a></div>
-                            <div class="col-6 col-md-2"><a href="/about" class="footer-links">About</a></div>
+                            <div class="col-6 col-md-2"><a href="https://pmt.gabrielnwankwo.com/about" class="footer-links">About</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Blog</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Contact</a></div>
                         </div>
@@ -349,10 +349,11 @@
     <div class="modal fade" id="viewSeats" tabindex="-1">
         <div class="modal-dialog modal-dialog-sm" style="margin-top:150px">
             <div class="modal-content">
-                <a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em
-                        class="ti ti-close"></em></a>
+                <div class="modal-header" style="border:none">
+                    <h5 class="modal-title ms-4">Select Seat</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
                 <div class="modal-body">
-                    <h3 class="modal-title ms-4 mb-4">Select Seat</h3>
                     <form method="POST" action="{{ route('guest.seatSelection') }}">
                         @csrf
                         <div class="seats-select pt-2 pb-2">
