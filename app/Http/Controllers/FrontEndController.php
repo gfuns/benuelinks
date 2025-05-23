@@ -314,7 +314,7 @@ class FrontEndController extends Controller
      *
      * @return void
      */
-    public function availableBuses($triptype, $departure, $destination, $date, $return)
+    public function availableBuses($triptype, $departure, $destination, $date, $return = null)
     {
         $schedules = TravelSchedule::where("departure", $departure)->where("destination", $destination)->whereDate("scheduled_date", $date)->where("status", "scheduled")->get();
 
