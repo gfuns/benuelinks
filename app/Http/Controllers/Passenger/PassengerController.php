@@ -562,10 +562,10 @@ class PassengerController extends Controller
                 return back();
             }
 
-            $debitAccount = BankOneHelper::debitAccount($booking->travel_fare);
+            $debitAccount = BankOneHelper::debitAccount($booking->travel_fare, $booking->booking_number);
 
-            if ($debitAccount === false) {
-                alert()->error('', 'We could not debit your wallet at this time. Please try again later.');
+            if ($debitAccount["status"] === false) {
+                alert()->error('', $debitAccount["message"]);
                 return back();
             }
 
@@ -573,7 +573,7 @@ class PassengerController extends Controller
             $walletTrx                 = new WalletTransactions;
             $walletTrx->user_id        = Auth::user()->id;
             $walletTrx->trx_type       = "debit";
-            $walletTrx->reference      = $this->genTrxId();
+            $walletTrx->reference      = $debitAccount["message"];
             $walletTrx->amount         = $booking->travel_fare;
             $walletTrx->balance_before = $accountBalance;
             $walletTrx->balance_after  = ($accountBalance - $booking->travel_fare);

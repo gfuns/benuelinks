@@ -8,6 +8,7 @@ class BankOneHelper
 {
     public static function accountBalance()
     {
+        return 50000;
         $user = Auth::user();
         try {
 
@@ -21,7 +22,7 @@ class BankOneHelper
                 return 0;
             } else {
                 $data = json_decode($response, true);
-                \Log::info($data["AvailableBalance"]);
+                // \Log::info($data["AvailableBalance"]);
                 if (isset($data["AvailableBalance"])) {
                     $balance = $data["AvailableBalance"];
                     // $balance = $data["WithdrawableBalance"];
@@ -46,10 +47,87 @@ class BankOneHelper
         }
     }
 
-    public static function debitAccount($amount)
+    public static function debitAccount($amount, $bookingNo)
     {
         $user = Auth::user();
-        return false;
+
+        try {
+
+            $baseURL   = env("BANK_ONE_BASE_URL");
+            $authToken = env("MY_BANK_ONE_AUTH_TOKEN");
+            $authToken = env("MY_BANK_ONE_AUTH_TOKEN");
+            $glCode    = env("BANK_ONE_DEBIT_GL");
+            $url       = $baseURL . '/thirdpartyapiservice/apiservice/CoreTransactions/Debit';
+            $reference = self::genMiddlewareRef($user->id);
+
+            // dd($url);
+
+            $postData = [
+                'RetrievalReference' => $reference,
+                'AccountNumber'      => $user->account_number,
+                'NibssCode'          => $user->bankOneBankId,
+                'Amount'             => ($amount * 100),
+                'Fee'                => 0,
+                'Narration'          => "Payment for Trip with Booking No: {$bookingNo}",
+                'Token'              => $authToken,
+                'GLCode'             => $glCode,
+            ];
+
+            // dd($postData);
+
+            $response = Http::post($url, $postData);
+            // \Log::info($response);
+            // dd($response);
+
+            if ($response->failed()) {
+                return [
+                    "status"  => false,
+                    "message" => "Request Failed",
+                ];
+
+            } else {
+
+                $data = json_decode($response, true);
+                \Log::info($data);
+                // dd($data);
+                if ($data["IsSuccessful"] === false) {
+                    toast($data["Message"], 'error');
+                    return [
+                        "status"  => false,
+                        "message" => $data["Message"],
+                    ];
+                }
+
+                return [
+                    "status"  => true,
+                    "message" => $reference,
+                ];
+            }
+        } catch (\Exception $e) {
+            report($e);
+            return [
+                "status"  => false,
+                "message" => $e->getMessage(),
+            ];
+        }
+    }
+
+    public static function genMiddlewareRef($businessId)
+    {
+        $data = [
+            "business_id" => $businessId,
+        ];
+
+        $url      = "https://peacemasstransit.ng/api/v1/generateReference";
+        $response = Http::timeout(600)->accept('application/json')->withHeaders([
+            'x-api-key' => env("MIDDLEWARE_KEY"),
+        ])->post($url, $data);
+
+        $data = json_decode($response, true);
+
+        $reference = $data['response']['data'];
+
+        return $reference;
     }
 
 }
