@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\BankOneController;
 use App\Http\Controllers\Passenger\PassengerController;
 use App\Http\Controllers\PaystackController;
 use Illuminate\Support\Facades\Route;
@@ -53,5 +54,7 @@ Route::group([
 });
 
 Route::get('/paystack/callback', [PaystackController::class, 'handlePaystackCallback']);
+
+Route::post('/bankone/webhook', [BankOneController::class, 'webhookNotification']);
 
 Route::get('/ajax/get-bookedSeats/{scheduleid}', [AjaxController::class, 'getBookedSeats'])->name('ajax.bookedSeats');
