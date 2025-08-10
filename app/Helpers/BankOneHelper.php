@@ -91,10 +91,10 @@ class BankOneHelper
                 \Log::info($data);
                 // dd($data);
                 if ($data["IsSuccessful"] === false) {
-                    toast($data["Message"], 'error');
+                    toast($data["ResponseMessage"], 'error');
                     return [
                         "status"  => false,
-                        "message" => $data["Message"],
+                        "message" => $data["ResponseMessage"],
                     ];
                 }
 
