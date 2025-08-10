@@ -98,10 +98,18 @@ class BankOneHelper
                     ];
                 }
 
+                if ($data["ResponseMessage"] != "Insufficient Funds") {
+                    return [
+                        "status"  => true,
+                        "message" => $reference,
+                    ];
+                }
+
                 return [
-                    "status"  => true,
-                    "message" => $reference,
+                    "status"  => false,
+                    "message" => $data["ResponseMessage"],
                 ];
+
             }
         } catch (\Exception $e) {
             report($e);
