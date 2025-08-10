@@ -8,7 +8,6 @@ class BankOneHelper
 {
     public static function accountBalance()
     {
-        return 50000;
         $user = Auth::user();
         try {
 
@@ -88,7 +87,7 @@ class BankOneHelper
             } else {
 
                 $data = json_decode($response, true);
-                \Log::info($data);
+                // \Log::info($data);
                 // dd($data);
                 if ($data["IsSuccessful"] === false) {
                     toast($data["ResponseMessage"], 'error');
