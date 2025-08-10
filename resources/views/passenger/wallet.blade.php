@@ -13,11 +13,11 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
-        <style type="text/css">
-            .nobreak {
-                white-space: nowrap;
-            }
-        </style>
+    <style type="text/css">
+        .nobreak {
+            white-space: nowrap;
+        }
+    </style>
 </head>
 
 <body class="admin-dashboard page-user">
@@ -34,7 +34,7 @@
                                     <div class="token-balance-text">
                                         <h6 class="card-sub-title mb-2" style="font-size: 20px;">WALLET BALANCE</h6>
                                         <span class="lead" style="font-size: 20px;">&#8358;
-                                            {{ number_format(Auth::user()->wallet_balance, 2) }}&nbsp;
+                                            {{ number_format($balances["deposits"], 2) }}&nbsp;
                                             <em class="fas fa-info-circle fs-12" data-toggle="tooltip"
                                                 data-placement="right" title=""
                                                 data-original-title="Combined calculations of all balances."></em></span>
@@ -50,13 +50,13 @@
                                                         style="font-size: 12px; font-weight:bold;">Customer
                                                         Deposits</span>
                                                     <span class="lead">&#8358;
-                                                        {{ number_format(Auth::user()->wallet_balance, 2) }}</span>
+                                                        {{ number_format($balances["deposits"], 2) }}</span>
                                                 </li>
                                                 <li class="token-balance-sub">
                                                     <span class="sub"
                                                         style="font-size: 12px; font-weight:bold;">Referral
                                                         Bonuses</span>
-                                                    <span class="lead">&#8358; 0.00</span>
+                                                    <span class="lead">&#8358; {{ number_format($balances["bonuses"], 2) }}</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -229,7 +229,8 @@
                                         </div>
                                         <div class="gaps-1x"></div>
                                         <div class="d-sm-flex justify-content-between align-items-center">
-                                            <button type="submit" class="btn btn-primary password-update"  onClick="this.disabled=true; this.innerHTML='Submiting request, please wait...';this.form.submit();">Activate
+                                            <button type="submit" class="btn btn-primary password-update"
+                                                onClick="this.disabled=true; this.innerHTML='Submiting request, please wait...';this.form.submit();">Activate
                                                 Wallet</button>
                                             <div class="gaps-2x d-sm-none"></div>
                                         </div>
@@ -272,6 +273,42 @@
                 <a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em
                         class="ti ti-close"></em></a>
                 <div class="popup-body">
+                    <h3 class="popup-title">Wallet Topup</h3>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h5 style="font-size:16px">To topup your wallet, please make a transfer to your dedicated account details shown
+                                below:</h5>
+                            <div class="input-item input-with-label">
+                                <table style="font-size:16px !important;">
+                                    <tr>
+                                        <td width="50%"><strong>Bank:</strong></td>
+                                        <td>Peace Microfinace Bank</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Account Number:</strong></td>
+                                        <td>{{ Auth::user()->account_number }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Account Name:</strong></td>
+                                        <td>{{ Auth::user()->last_name . ' ' . Auth::user()->other_names }}</td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- <div class="modal fade" id="OLDinitiateTopup" tabindex="-1">
+        <div class="modal-dialog modal-dialog-md" style="margin-top:150px">
+            <div class="modal-content">
+                <a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em
+                        class="ti ti-close"></em></a>
+                <div class="popup-body">
                     <h3 class="popup-title">Initiate Topup</h3>
                     <form class="validate-modern lang-form-submit _reload"
                         action="{{ route('passenger.initiateWalletTopup') }}" method="POST" id="lang-add-new">
@@ -295,7 +332,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="page-overlay">
         <div class="spinner">

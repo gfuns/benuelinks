@@ -182,7 +182,7 @@
                                             </div>
 
                                             <div>
-                                                @if (Auth::user()->wallet_balance >= $booking->travel_fare)
+                                                @if ($accountBalance >= $booking->travel_fare)
                                                     <a href="{{ route("passenger.payWithWallet", [$booking->id]) }}" onclick="return disableAfterClick(this);"><button type="button" class="btn btn-primary profile-update">Pay Using Wallet
                                                         &nbsp;<i class="fas fa-wallet"></i></button></a>
                                                 @endif

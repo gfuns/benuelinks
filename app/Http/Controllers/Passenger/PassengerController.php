@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Passenger;
 
+use App\Helpers\BankOneHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\BookingSuccessful as BookingSuccessful;
 use App\Models\CompanyRoutes;
@@ -211,8 +212,12 @@ class PassengerController extends Controller
      */
     public function wallet()
     {
+        $balances = [
+            "deposits" => BankOneHelper::accountBalance(),
+            "bonuses"  => 0,
+        ];
         $transactions = WalletTransactions::orderBy("id", "desc")->where("user_id", Auth::user()->id)->get();
-        return view("passenger.wallet", compact("transactions"));
+        return view("passenger.wallet", compact("transactions", "balances"));
     }
 
     /**
@@ -533,8 +538,9 @@ class PassengerController extends Controller
      */
     public function bookingPreview($id)
     {
-        $booking = TravelBooking::find($id);
-        return view("passenger.booking_preview", compact("booking"));
+        $booking        = TravelBooking::find($id);
+        $accountBalance = BankOneHelper::accountBalance();
+        return view("passenger.booking_preview", compact("booking", "accountBalance"));
     }
 
     /**
@@ -549,20 +555,34 @@ class PassengerController extends Controller
         try {
             $booking = TravelBooking::find($id);
 
+            $accountBalance = BankOneHelper::accountBalance();
+
+            if ($accountBalance < $booking->travel_fare) {
+                alert()->error('', 'Insufficient Wallet Balance');
+                return back();
+            }
+
+            $debitAccount = BankOneHelper::debitAccount($booking->travel_fare);
+
+            if ($debitAccount === false) {
+                alert()->error('', 'We could not debit your wallet at this time. Please try again later.');
+                return back();
+            }
+
             DB::beginTransaction();
             $walletTrx                 = new WalletTransactions;
             $walletTrx->user_id        = Auth::user()->id;
             $walletTrx->trx_type       = "debit";
             $walletTrx->reference      = $this->genTrxId();
             $walletTrx->amount         = $booking->travel_fare;
-            $walletTrx->balance_before = Auth::user()->wallet_balance;
-            $walletTrx->balance_after  = (Auth::user()->wallet_balance - $booking->travel_fare);
+            $walletTrx->balance_before = $accountBalance;
+            $walletTrx->balance_after  = ($accountBalance - $booking->travel_fare);
             $walletTrx->description    = "Payment for Trip with Booking No: {$booking->booking_number}";
             $walletTrx->status         = "successful";
             $walletTrx->save();
 
             $user                 = Auth::user();
-            $user->wallet_balance = (double) ($user->wallet_balance - $booking->travel_fare);
+            $user->wallet_balance = (double) ($accountBalance - $booking->travel_fare);
             $user->save();
 
             $booking->payment_status  = "paid";
