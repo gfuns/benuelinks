@@ -20,9 +20,13 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('gender')->nullable();
+            $table->date('dob')->nullable();
+            $table->string('bvn')->nullable();
+            $table->string('contact_address')->nullable();
             $table->string('referral_channel')->nullable();
             $table->string('referral_code')->nullable();
             $table->string('referral_id')->nullable();
+            $table->string('account_number')->nullable();
             $table->string('wallet_pin')->nullable();
             $table->double('wallet_balance', 12, 2)->default(0.00);
             $table->string('nok')->nullable();
@@ -31,6 +35,9 @@ return new class extends Migration
             $table->integer('station')->unsigned()->nullable();
             $table->enum("status", ["active", "suspended", "banned"])->default("active");
             $table->string('token')->nullable();
+            $table->string('bankOneCustomerId')->nullable();
+            $table->string('bankOneBankId')->nullable();
+            $table->string('bankOneAccountNumber')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->foreign('role_id')->references('id')->on('user_roles')->onDelete('cascade');

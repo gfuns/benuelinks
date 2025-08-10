@@ -26,7 +26,7 @@
     <div class="page-content">
         <div class="container">
             <div class="row">
-                @if (isset(Auth::user()->wallet_pin))
+                @if (isset(Auth::user()->account_number))
                     <div class="col-lg-4 order-1 order-lg-2">
                         <div class="token-statistics card card-token height-auto">
                             <div class="card-innr">
@@ -229,7 +229,7 @@
                                         </div>
                                         <div class="gaps-1x"></div>
                                         <div class="d-sm-flex justify-content-between align-items-center">
-                                            <button type="submit" class="btn btn-primary password-update">Activate
+                                            <button type="submit" class="btn btn-primary password-update"  onClick="this.disabled=true; this.innerHTML='Submiting request, please wait...';this.form.submit();">Activate
                                                 Wallet</button>
                                             <div class="gaps-2x d-sm-none"></div>
                                         </div>

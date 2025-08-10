@@ -15,7 +15,9 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Mail;
 
 class PassengerController extends Controller
@@ -68,10 +70,13 @@ class PassengerController extends Controller
     public function updateProfile(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'last_name'    => 'required',
-            'other_names'  => 'required',
-            'phone_number' => 'required',
-            'gender'       => 'required',
+            'last_name'       => 'required',
+            'other_names'     => 'required',
+            'phone_number'    => 'required',
+            'gender'          => 'required',
+            'dob'             => 'required',
+            'bvn'             => 'required',
+            'contact_address' => 'required',
         ]);
 
         $user               = Auth::user();
@@ -79,8 +84,15 @@ class PassengerController extends Controller
         $user->other_names  = $request->other_names;
         $user->phone_number = $request->phone_number;
         $user->gender       = $request->gender;
-        $user->nok          = $request->nok_name;
-        $user->nok_phone    = $request->nok_phone;
+        if (! isset(Auth::user()->bvn)) {
+            $user->bvn = $request->bvn;
+        }
+        if (! isset(Auth::user()->dob)) {
+            $user->dob = $request->dob;
+        }
+        $user->contact_address = $request->contact_address;
+        $user->nok             = $request->nok_name;
+        $user->nok_phone       = $request->nok_phone;
         if ($user->save()) {
             alert()->success('', 'Profile Information Updated Successfully.');
             return back();
@@ -229,13 +241,75 @@ class PassengerController extends Controller
             return back();
         }
 
-        $user             = Auth::user();
-        $user->wallet_pin = Hash::make($request->wallet_pin);
-        $user->save();
-        if ($user->save()) {
-            alert()->success('', 'Wallet PIN Setup Successfully.');
-            return back();
-        } else {
+        try {
+            DB::beginTransaction();
+
+            $baseURL   = env("BANK_ONE_BASE_URL");
+            $authToken = env("MY_BANK_ONE_AUTH_TOKEN");
+            $url       = $baseURL . '/BankOneWebAPI/api/Account/CreateAccountQuick/2?authToken=' . $authToken;
+
+            // dd($url);
+
+            $postData = [
+                'TransactionTrackingRef'    => Str::uuid(),
+                'AccountOpeningTrackingRef' => Str::uuid(),
+                'ProductCode'               => env("BANK_ONE_PRODUCT_CODE"),
+                'LastName'                  => Auth::user()->last_name,
+                'OtherNames'                => Auth::user()->other_names,
+                'BVN'                       => Auth::user()->bvn,
+                'PhoneNo'                   => Auth::user()->phone_number,
+                'Gender'                    => Auth::user()->gender === 'male' ? 0 : 1,
+                'DateOfBirth'               => $this->bankOneDate(Auth::user()->dob),
+                'Address'                   => Auth::user()->contact_address,
+                'AccountOfficerCode'        => env("BANK_ONE_ACCOUNT_OFFICER"),
+                'Email'                     => Auth::user()->email,
+                'AccountTier'               => 2,
+            ];
+
+            // dd($postData);
+
+            $response = Http::post($url, $postData);
+            \Log::info($response);
+            // dd($response);
+
+            if ($response->failed()) {
+                // dd("Yesy");
+                toast('An Error Occured While Creating Account For Customer On Bank One Infrastructure', 'error');
+                return back();
+
+            } else {
+
+                $data = json_decode($response, true);
+                \Log::info($data);
+                // dd($data);
+                if ($data["IsSuccessful"] === false) {
+                    toast($data["Message"], 'error');
+                    return back();
+                }
+
+                $user                       = Auth::user();
+                $user->wallet_pin           = Hash::make($request->wallet_pin);
+                $user->account_number       = $data["Message"]["AccountNumber"];
+                $user->bankOneCustomerId    = $data["Message"]["CustomerID"];
+                $user->bankOneBankId        = $data["Message"]["Id"];
+                $user->bankOneAccountNumber = $data["Message"]["BankoneAccountNumber"];
+                $user->save();
+
+                DB::commit();
+
+                $accountName = $user->last_name . " " . $business->other_names;
+
+                $this->logAccount($user->account_number, $accountName, $user->id);
+
+                alert()->success('', 'Wallet PIN Setup Successfully.');
+                return back();
+            }
+        } catch (\Exception $e) {
+
+            DB::rollback();
+
+            report($e);
+
             alert()->error('', 'Something Went Wrong!');
             return back();
         }
@@ -251,9 +325,9 @@ class PassengerController extends Controller
     public function updateWalletPin(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'current_pin'      => 'required',
-            'new_pin'          => 'required',
-            'pin_confirmation' => 'required',
+            'current_pin'      => 'required|digits:4',
+            'new_pin'          => 'required|digits:4',
+            'pin_confirmation' => 'required|digits:4',
         ]);
 
         if ($validator->fails()) {
@@ -575,5 +649,29 @@ class PassengerController extends Controller
         }
 
         return "PMT" . $code;
+    }
+
+    public function bankOneDate($date)
+    {
+        $date    = str_replace('/', '-', $date);
+        $newDate = date('Y-m-d', strtotime($date));
+        return $newDate;
+    }
+
+    public function logAccount($accountNo, $accountName, $bizId)
+    {
+        $data = [
+            "account_name"   => $accountName,
+            "account_number" => $accountNo,
+            "business_id"    => $bizId,
+        ];
+
+        $url      = "https://peacemasstransit.ng/api/v1/logAccount";
+        $response = Http::timeout(600)->accept('application/json')->withHeaders([
+            'x-api-key' => env("MIDDLEWARE_KEY"),
+        ])->post($url, $data);
+
+        $data = json_decode($response, true);
+
     }
 }

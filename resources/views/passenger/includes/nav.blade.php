@@ -35,7 +35,7 @@
                                             style="color:white">{{ Auth::user()->email }}</a></small></div>
                             </div>
                             <ul class="user-links">
-                                <li><a href=""><i class="ti ti-id-badge"></i>My Account</a></li>
+                                <li><a href="{{ route("passenger.accountSettings") }}"><i class="ti ti-id-badge"></i>My Account</a></li>
                             </ul>
                             <ul class="user-links bg-light">
                                 <li>
