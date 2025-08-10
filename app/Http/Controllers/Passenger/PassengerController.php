@@ -274,7 +274,7 @@ class PassengerController extends Controller
             // dd($postData);
 
             $response = Http::post($url, $postData);
-            \Log::info($response);
+            // \Log::info($response);
             // dd($response);
 
             if ($response->failed()) {
@@ -285,7 +285,7 @@ class PassengerController extends Controller
             } else {
 
                 $data = json_decode($response, true);
-                \Log::info($data);
+                // \Log::info($data);
                 // dd($data);
                 if ($data["IsSuccessful"] === false) {
                     toast($data["Message"], 'error');
@@ -302,7 +302,7 @@ class PassengerController extends Controller
 
                 DB::commit();
 
-                $accountName = $user->last_name . " " . $business->other_names;
+                $accountName = $user->last_name . " " . $user->other_names;
 
                 $this->logAccount($user->account_number, $accountName, $user->id);
 
