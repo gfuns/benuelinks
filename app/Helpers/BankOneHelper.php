@@ -21,16 +21,20 @@ class BankOneHelper
                 return 0;
             } else {
                 $data = json_decode($response, true);
-                \Log::info($data);
-                if ($data["IsSuccessful"] === false) {
-                    return 0;
+                \Log::info($data["AvailableBalance"]);
+                if (isset($data["AvailableBalance"])) {
+                    $balance = $data["AvailableBalance"];
+                    // $balance = $data["WithdrawableBalance"];
+
+                    $user                 = Auth::user();
+                    $user->wallet_balance = $balance;
+                    $user->save();
+
+                    return $balance;
+
                 }
+                return 0;
 
-                $balance = 0;
-
-                $user                 = Auth::user();
-                $user->wallet_balance = $balance;
-                $user->save();
             }
             return 0;
 
