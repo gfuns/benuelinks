@@ -27,36 +27,50 @@ class BankOneController extends Controller
             Log::channel('bankone')->info("");
             Log::channel('bankone')->info('Incoming Data', (array) $data);
 
-            $reference   = $data->reference;
-            $topupAmount = $data->amount;
-            $businessId  = $data->business_id;
+            if ($data->trx_type == "credit" && $data->trx_status == "successful") {
 
-            $user = User::find($businessId);
+                $topupAmount = (double) ($data->amount / 100);
 
-            DB::beginTransaction();
+                $user = User::find($data->business_id);
 
-            $topup                 = new WalletTransactions;
-            $topup->user_id        = $user->id;
-            $topup->trx_type       = "credit";
-            $topup->reference      = $reference;
-            $topup->amount         = $topupAmount;
-            $topup->balance_before = $user->wallet_balance;
-            $topup->balance_after  = ($topupAmount + $user->wallet_balance);
-            $topup->description    = "Wallet Topup Transaction";
-            $topup->status         = "successful";
-            $topup->save();
+                DB::beginTransaction();
 
-            $user->wallet_balance = (double) ($user->wallet_balance + $topup->amount);
-            $user->save();
+                $topup                 = new WalletTransactions;
+                $topup->user_id        = $user->id;
+                $topup->trx_type       = "credit";
+                $topup->reference      = $data->reference;
+                $topup->amount         = $topupAmount;
+                $topup->balance_before = $user->wallet_balance;
+                $topup->balance_after  = ($topupAmount + $user->wallet_balance);
+                $topup->description    = "Wallet Topup Transaction";
+                $topup->status         = "successful";
+                $topup->save();
 
-            DB::commit();
+                $user->wallet_balance = (double) ($user->wallet_balance + $topup->amount);
+                $user->save();
 
-            Mail::to($user)->send(new TopupSuccessful($user, $topup));
+                DB::commit();
 
-            return new JsonResponse([
-                'statusCode' => (int) 200,
-                'message'    => "Data Received and Processed Successfully",
-            ]);
+                Mail::to($user)->send(new TopupSuccessful($user, $topup));
+
+                return new JsonResponse([
+                    'statusCode' => (int) 200,
+                    'message'    => "Data Received and Processed Successfully",
+                ]);
+
+            } else if ($data->trx_type == "debit" && $data->trx_status == "successful") {
+
+                Log::channel('bankone')->info("");
+                Log::channel('bankone')->info('Calling Bank One Debit Customer Function');
+                // self::bankOneDebitCustomer();
+
+            } else {
+
+                Log::channel('bankone')->info("");
+                Log::channel('bankone')->info('Either Transaction is failed or transaction type not credit or debit');
+
+            }
+
         } catch (\Throwable $e) {
             DB::rollback();
 
