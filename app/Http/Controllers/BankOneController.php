@@ -55,7 +55,7 @@ class BankOneController extends Controller
 
                 return new JsonResponse([
                     'statusCode' => (int) 200,
-                    'message'    => "Data Received and Processed Successfully",
+                    'message'    => "Transaction with Reference: { $data->reference} Successfully Processed.",
                 ]);
 
             } else if ($data->trx_type == "debit" && $data->trx_status == "successful") {
