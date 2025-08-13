@@ -4,7 +4,7 @@
         <div class="page-inner">
             <div class="row">
                 <div class="col-md-12">
-                     <div class="card">
+                    <div class="card">
                         <div class="card-header">
                             <div class="card-title">Audit Trail Report</div>
                         </div>
@@ -19,11 +19,12 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Terminal</strong></label>
-                                                <select id="fterminal" name="terminal" class="form-select"
-                                                    data-width="100%" required>
+                                                <select id="fterminal" name="terminal" class="form-select" data-width="100%"
+                                                    required>
                                                     <option value="null">All Terminals</option>
                                                     @foreach ($terminals as $dp)
-                                                        <option value="{{ $dp->id }}" @if($terminal == $dp->id) selected @endif>
+                                                        <option value="{{ $dp->id }}"
+                                                            @if ($terminal == $dp->id) selected @endif>
                                                             {{ $dp->terminal }}</option>
                                                     @endforeach
                                                 </select>
@@ -45,11 +46,19 @@
                                                     data-width="100%" required>
                                                     <option value="null">Select Activity Type</option>
                                                     <option value="null">All Activities</option>
-                                                    <option value="created" @if($event == "created") selected @endif>New Record Creation</option>
+                                                    <option value="created"
+                                                        @if ($event == 'created') selected @endif>New Record
+                                                        Creation</option>
                                                     {{-- <option value="retrieved">Record Retrieval</option> --}}
-                                                    <option value="updated" @if($event == "updated") selected @endif>Record Update</option>
-                                                    <option value="deleted" @if($event == "deleted") selected @endif>Record Deletion</option>
-                                                    <option value="restored" @if($event == "restored") selected @endif>Record Restoration</option>
+                                                    <option value="updated"
+                                                        @if ($event == 'updated') selected @endif>Record Update
+                                                    </option>
+                                                    <option value="deleted"
+                                                        @if ($event == 'deleted') selected @endif>Record Deletion
+                                                    </option>
+                                                    <option value="restored"
+                                                        @if ($event == 'restored') selected @endif>Record Restoration
+                                                    </option>
                                                 </select>
 
                                                 @error('event_type')
@@ -117,7 +126,7 @@
                                         <tr>
                                             <td class="th">S/No.</td>
                                             <td class="th">Surname</td>
-                                           <td class="th">Other Names</td>
+                                            <td class="th">Other Names</td>
                                             <td class="th">Station</td>
                                             <td class="th">User Role</td>
                                             <td class="th">Activity</td>
@@ -131,26 +140,29 @@
                                             @foreach ($activities as $act)
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
-                                                    <td>{{ $act->user->last_name }}</td>
-                                                   <td>{{ $act->user->other_names }}</td>
+                                                    <td>{{ isset($act->user) ? $act->user->last_name : 'System' }}</td>
+                                                    <td>{{ isset($act->user) ? $act->user->other_names : 'Generated' }}
+                                                    </td>
                                                     <td>{{ $act->station() }}</td>
-                                                    <td>{{ $act->user->userRole->role }}</td>
+                                                    <td>{{ isset($act->user) ? $act->user->userRole->role : 'Customer/Webhook' }}
+                                                    </td>
                                                     <td>{{ $act->event() }}</td>
                                                     <td>{{ date_format($act->created_at, 'jS M, Y g:ia') }}</td>
                                                     <td class="align-middle">
                                                         <button class="btn btn-primary btn-xs" type="button"
                                                             data-bs-toggle="modal" data-bs-target="#viewAuditDetails"
                                                             data-backdrop="static" data-myid="{{ $act->id }}"
-                                                            data-surname="{{ $act->user->last_name }}"
-                                                            data-othernames="{{ $act->user->other_names }}"
+                                                            data-surname="{{ isset($act->user) ? $act->user->last_name : 'System' }}"
+                                                            data-othernames="{{ isset($act->user) ? $act->user->other_names : 'Generated' }}"
                                                             data-terminal="{{ $act->station() }}"
-                                                            data-role="{{ $act->user->userRole->role }}"
+                                                            data-role="{{ isset($act->user) ? $act->user->userRole->role : 'Customer/Webhook' }}"
                                                             data-event="{{ $act->event() }}"
                                                             data-table="{{ preg_replace('/App\\\\Models\\\\/', '', $act->auditable_type) }}"
                                                             data-oldrecord="{{ $act->oldValues() }}"
                                                             data-newrecord="{{ $act->newValues() }}"
                                                             data-ip="{{ $act->ip_address }}"
                                                             data-agent="{{ $act->user_agent }}"
+                                                            data-url="{{ $act->url }}"
                                                             data-datecreated="{{ date_format($act->created_at, 'jS F, Y g:ia') }}">View
                                                             Details</button>
                                                     </td>
@@ -232,6 +244,11 @@
                             <tr>
                                 <td class="">User Agent</td>
                                 <td class=""><span id="vagent"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td class="">URL</td>
+                                <td class=""><span id="vurl"></span></td>
                             </tr>
 
                             <tr>

@@ -130,7 +130,7 @@
                                                     <td>{{ $loop->index + 1 }}</td>
                                                     <td>{{ $act->user->last_name }}</td>
                                                     <td>{{ $act->user->other_names }}</td>
-                                                    <td>{{ $act->terminal->terminal }}</td>
+                                                    <td>{{ isset($act->terminal) ? $act->terminal->terminal : "N/A" }}</td>
                                                     <td>{{ $act->user->userRole->role }}</td>
                                                     <td>{{ $act->event }}</td>
                                                     <td>{{ date_format($act->created_at, 'jS M, Y g:ia') }}</td>
@@ -140,7 +140,7 @@
                                                             data-backdrop="static" data-myid="{{ $act->id }}"
                                                             data-surname="{{ $act->user->last_name }}"
                                                             data-othernames="{{ $act->user->other_names }}"
-                                                            data-terminal="{{ $act->terminal->terminal }}"
+                                                            data-terminal="{{ isset($act->terminal) ? $act->terminal->terminal : "N/A" }}"
                                                             data-role="{{ $act->user->userRole->role }}"
                                                             data-event="{{ $act->event }}"
                                                             data-description="{{ $act->description }}"

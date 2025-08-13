@@ -588,6 +588,7 @@ $('#viewAuditDetails').on('show.bs.modal', function(event) {
     var event = button.data('event') // Extract info from data-* attributes
     var ip = button.data('ip') // Extract info from data-* attributes
     var agent = button.data('agent') // Extract info from data-* attributes
+    var url = button.data('url') // Extract info from data-* attributes
     var model = button.data('table') // Extract info from data-* attributes
     var newvalues = button.data('newrecord') // Extract info from data-* attributes
     var oldvalues = button.data('oldrecord') // Extract info from data-* attributes
@@ -603,6 +604,7 @@ $('#viewAuditDetails').on('show.bs.modal', function(event) {
     document.getElementById("vevent").innerHTML = event;
     document.getElementById("vip").innerHTML = ip;
     document.getElementById("vagent").innerHTML = agent;
+    document.getElementById("vurl").innerHTML = url;
     document.getElementById("vmodel").innerHTML = model;
     document.getElementById("voldvalues").innerHTML = oldvalues;
     document.getElementById("vnewvalues").innerHTML = newvalues;

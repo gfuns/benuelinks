@@ -19,7 +19,7 @@ class AuditTrails extends Model
     public function station()
     {
         $station = CompanyTerminals::find($this->tags);
-        return $station->terminal;
+        return isset($station) ? $station->terminal : "N/A";
     }
 
     public function event()
