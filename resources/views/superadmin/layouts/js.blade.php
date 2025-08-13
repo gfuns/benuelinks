@@ -38,7 +38,7 @@
 
 <script src="{{ asset('backend/assets/select2/js/select2.min.js') }}"></script>
 
-<script src="{{ asset('backend/assets/js/admin.js') }}"></script>
+<script src="{{ asset('backend/assets/js/admin.js') }}?version={{ date("his") }}"></script>
 
 
  @include('sweetalert::alert')
