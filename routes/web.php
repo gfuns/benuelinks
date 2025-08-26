@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/', function () {
-    return redirect()->away('https://pmt.gabrielnwankwo.com');
+    return redirect()->away('https://peacextracomfort.com');
 })->name("welcome");
 
 // Route::get('/about', function () {
