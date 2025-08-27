@@ -2,8 +2,10 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendPasswordResetMail;
+use App\Models\BankonePayments;
 use App\Models\CompanyTerminals;
 use App\Models\CustomerOtp;
+use App\Models\GuestAccounts;
 use App\Models\GuestBooking;
 use App\Models\NewsletterSubscription;
 use App\Models\TravelBooking;
@@ -13,7 +15,9 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use PDF;
@@ -453,16 +457,112 @@ class FrontEndController extends Controller
     }
 
     /**
+     * payWithBankOne
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function payWithBankOne(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'booking_id' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            alert()->error('', $errors);
+            return back();
+        }
+
+        try {
+            $booking = GuestBooking::find($request->booking_id);
+
+            $guestAccount = DB::transaction(function () {
+                // Fetch one random available guest_account and lock it
+                $guest = GuestAccounts::where('availability', 1)
+                    ->inRandomOrder()
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($guest) {
+                    // Update availability inside the same transaction
+                    $guest->availability = 0;
+                    $guest->save();
+                }
+
+                return $guest;
+            });
+
+            if (! isset($guestAccount)) {
+                alert()->error('', "Could Not Find An Available Virtual Account For This Transaction. Please Try Again Later.");
+                return back();
+            }
+
+            $bankOne                 = new BankonePayments;
+            $bankOne->transaction_id = $booking->id;
+            $bankOne->reference      = self::genMiddlewareRef($booking->id);
+            $bankOne->amount         = $booking->travel_fare;
+            $bankOne->trx_type       = "guest";
+            $bankOne->account_number = $guestAccount->account_number;
+            $bankOne->account_name   = $guestAccount->last_name . " " . $guestAccount->other_names;
+            $bankOne->bank           = $guestAccount->bank_name;
+            if ($bankOne->save()) {
+
+                return redirect()->route("guest.paymentDetails", [$bankOne->reference]);
+
+            } else {
+                alert()->error('', "Failed to initialize payment gateway");
+                return back();
+            }
+
+        } catch (\Throwable $e) {
+
+            report($e);
+            alert()->error('', "Failed to initialize payment gateway");
+            return back();
+        }
+    }
+
+    /**
+     * paymentDetails
+     *
+     * @param mixed reference
+     *
+     * @return void
+     */
+    public function paymentDetails($reference)
+    {
+        $paymentDetails = BankonePayments::where("reference", $reference)->first();
+        if ($paymentDetails->status == "pending") {
+
+            return view("payment_details", compact("paymentDetails"));
+
+        } else if ($paymentDetails->status == "successful") {
+
+            $booking = GuestBooking::find($paymentDetails->transaction_id);
+            alert()->success('', 'Trip Booked Successfully!');
+            return redirect()->route("guest.bookingReceipt", [$booking->booking_number]);
+
+        } else {
+            alert()->error('', 'This transaction has timed out and your payment was not received!');
+            return redirect()->route("guest.bookingPreview", [$paymentDetails->transaction_id]);
+        }
+
+    }
+
+    /**
      * bookingReceipt
      *
      * @param mixed id
      *
      * @return void
      */
-    public function bookingReceipt($id)
+    public function bookingReceipt($bookingId)
     {
         Session::forget('guestBookingID');
-        $booking = TravelBooking::find($id);
+        $booking = TravelBooking::where("booking_number", $bookingId)->first();
         return view("booking_receipt", compact("booking"));
     }
 
@@ -529,5 +629,31 @@ class FrontEndController extends Controller
     {
         $terminals = CompanyTerminals::select("id", "terminal")->where("status", "active")->get();
         return new JsonResponse($terminals, 200);
+    }
+
+    /**
+     * genMiddlewareRef
+     *
+     * @param mixed businessId
+     *
+     * @return void
+     */
+    public function genMiddlewareRef($businessId)
+    {
+        $data = [
+            "business_id"    => $businessId,
+            "classification" => "guest",
+        ];
+
+        $url      = "https://peacemasstransit.ng/api/v1/generateReference";
+        $response = Http::timeout(600)->accept('application/json')->withHeaders([
+            'x-api-key' => env("MIDDLEWARE_KEY"),
+        ])->post($url, $data);
+
+        $data = json_decode($response, true);
+
+        $reference = $data['response']['data'];
+
+        return $reference;
     }
 }

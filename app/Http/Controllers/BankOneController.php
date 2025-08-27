@@ -135,7 +135,7 @@ class BankOneController extends Controller
                             $booking->classification  = "booking";
                             $booking->payment_status  = $guest->payment_status;
                             $booking->travel_fare     = $guest->travel_fare;
-                            $booking->booking_number  = self::genBookingID();
+                            $booking->booking_number  = $guest->booking_number;
                             $booking->booking_method  = "online";
                             $booking->booking_status  = $guest->booking_status;
                             $booking->save();
@@ -187,25 +187,4 @@ class BankOneController extends Controller
         }
     }
 
-    /**
-     * genBookingID
-     *
-     * @return void
-     */
-    public function genBookingID()
-    {
-        // Get the current timestamp
-        $timestamp = (string) (strtotime('now') . microtime(true));
-
-        // Remove any non-numeric characters (like dots)
-        $cleanedTimestamp = preg_replace('/[^0-9]/', '', $timestamp);
-
-        // Shuffle the digits
-        $shuffled = str_shuffle($cleanedTimestamp);
-
-        // Extract the first 12 characters
-        $code = substr($shuffled, 0, 12);
-
-        return "PMT-BK-" . $code;
-    }
 }

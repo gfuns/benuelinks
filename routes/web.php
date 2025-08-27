@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,7 +45,11 @@ Route::group([
 
     Route::get('/booking-preview/{id}', [FrontEndController::class, 'bookingPreview'])->name('guest.bookingPreview');
 
-    Route::post('/payWithCard', [PaystackController::class, 'guestCardPayment'])->name('guest.payWithCard');
+    Route::post('/payWithBankOne', [FrontEndController::class, 'payWithBankOne'])->name('guest.payWithBankOne');
+
+    Route::get('/payment-details/{reference}', [FrontEndController::class, 'paymentDetails'])->name('guest.paymentDetails');
+
+    // Route::post('/payWithCard', [PaystackController::class, 'guestCardPayment'])->name('guest.payWithCard');
 
     Route::get('/booking-receipt/{id}', [FrontEndController::class, 'bookingReceipt'])->name('guest.bookingReceipt');
 

@@ -347,7 +347,7 @@
                                             required="required">
                                             <option value="">Select Gender</option>
                                             <option value="male">Male</option>
-                                            <option value="remale">Female</option>
+                                            <option value="female">Female</option>
                                         </select>
                                     </div>
                                 </div>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peace Mass Transit (PMT) - Booking</title>
+    <title>Peace Mass Transit (PMT) - Booking Payment Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/seats.css') }}?ver={{ date('his') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
@@ -271,7 +271,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="https://pmt.gabrielnwankwo.com"><img src="{{ asset('images/logo.png') }}" /></a>
+            <a class="navbar-brand" href="https://pmt.gabrielnwankwo.com"><img
+                    src="{{ asset('images/logo.png') }}" /></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -279,7 +280,8 @@
                 <ul class="navbar-nav cstnavbar">
                     <li class="nav-item"><a class="nav-link" href="https://pmt.gabrielnwankwo.com">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Hire a Bus</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://pmt.gabrielnwankwo.com/about-us">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://pmt.gabrielnwankwo.com/about-us">About Us</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
                 </ul>
                 <a href="/login"
@@ -295,99 +297,49 @@
 
     <section class="busSection bg-light">
         <div class="col-12 col-md-7 mx-auto">
-            <h5 class="pageheading text-center"><strong>Booking Summary and Preview </strong></h5>
-            <div class="col-12 stepper d-flex" style="margin-top: 20px; margin-bottom: 40px">
-                <div class="step completed">
-                    <div class="circle">1</div>
-                    <div class="text">Step 1</div>
-                    <div class="text">Trip Selection</div>
-                </div>
-                <div class="step completed">
-                    <div class="circle">2</div>
-                    <div class="text">Step 2</div>
-                    <div class="text">Passenger Details</div>
-                </div>
-                <div class="step active">
-                    <div class="circle">3</div>
-                    <div class="text">Step 3</div>
-                    <div class="text">Booking Summary</div>
-                </div>
-            </div>
+            <h5 class="pageheading text-center"><strong>Payment Information </strong></h5>
+
             <div class="row m-4">
+
                 <div class="card content-area pt-3 pb-3 ps-4 pe-4 pt-md-5 pb-md-5 ps-md-5 pe-md-5 mb-5">
-                    <div class="">
+                    <h5 style="font-size: 16px">To complete your booking, Please make a transfer of
+                        <b>&#8358;{{ number_format($paymentDetails->amount, 2) }}</b> to the account details shown
+                        below:</h5>
+                    <div class="mt-4">
                         <table class="table">
                             <tbody class="fs14">
                                 <tr>
-                                    <td class=""><strong>Take-off Point</strong></td>
-                                    <td class="">{{ $booking->departurePoint->terminal }}</td>
+                                    <td class=""><strong>Bank Name:</strong></td>
+                                    <td class="">{{ $paymentDetails->bank }}</td>
                                 </tr>
 
                                 <tr>
-                                    <td class=""><strong>Destination</strong></td>
-                                    <td class="">{{ $booking->destinationPoint->terminal }}</td>
+                                    <td class=""><strong>Account Number:</strong></td>
+                                    <td class="">{{ $paymentDetails->account_number }}</td>
                                 </tr>
 
                                 <tr>
-                                    <td class=""><strong>Travel Date</strong></td>
-                                    <td class="">
-                                        {{ date_format(new DateTime($booking->travel_date), 'l - jS M, Y') }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class=""><strong>Departure Time</strong></td>
-                                    <td class="">{{ $booking->departure_time }}</td>
-                                </tr>
-
-                                <tr>
-                                    <td class=""><strong>Seat Number</strong></td>
-                                    <td class="">Seat {{ $booking->seat }}</td>
-                                </tr>
-
-                                <tr>
-                                    <td class=""><strong>Travel Fare</strong></td>
-                                    <td class="">&#8358;{{ number_format($booking->travel_fare, 2) }}
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class=""><strong>Cash Back</strong></td>
-                                    <td class="">&#8358;{{ number_format(0, 2) }}</td>
-                                </tr>
-
-                                <tr>
-                                    <td class=""><strong>Total Amount</strong></td>
-                                    <td class="">&#8358;{{ number_format($booking->travel_fare, 2) }}
-                                    </td>
+                                    <td class=""><strong>Account Name:</strong></td>
+                                    <td class="">{{ $paymentDetails->account_name }}</td>
                                 </tr>
 
                             </tbody>
                         </table>
-                        <div class="mt-5 fs14">
-                            <h4>Terms and Conditions</h4>
-                            <p>Please Note that Peace Mass Transit (PMT) does not have a refund policy, however
-                                our tickets are valid for a period of 30 days from the day of purchase. </p>
-                            <p>By proceeding to make payment, you agree to the Terms and Conditions of Peace
-                                Mass Transit (PMT).</p>
+                        <div class="mt-5">
+                            <h5 style="color:black; font-size: 14px"><u><b>Please Note:</b></u> <br>
+                                <ul style="list-style: disc; padding-left:15px">
+                                    <li class="mt-2">The displayed account is only valid for 10 Minutes.</li>
+                                    <li class="mt-2">Ensure you send the exact amount as displayed. Underpayment or
+                                        Overpayment will
+                                        result in the transaction marked as failed. Refund will take about 21 days to be
+                                        processed.</li>
+                                </ul>
+
+                            </h5>
 
                         </div>
 
-                        <div class="mt-4">
-                            <form method="POST" action="{{ route('guest.payWithBankOne') }}">
-                                @csrf
-                                <input id="myid" type="hidden" name="booking_id" value="{{ $booking->id }}"
-                                    class="form-control" required>
 
-
-                                <div class="row d-flex text-center">
-                                    <div class="mb-4">
-                                        <button type="submit" class="btn btn-primary seatBtn">Proceed To
-                                            Payment</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -441,7 +393,8 @@
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Destinations</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Hire a Bus</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Tours</a></div>
-                            <div class="col-6 col-md-2"><a href="https://pmt.gabrielnwankwo.com/about-us" class="footer-links">About</a></div>
+                            <div class="col-6 col-md-2"><a href="https://pmt.gabrielnwankwo.com/about-us"
+                                    class="footer-links">About</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Blog</a></div>
                             <div class="col-6 col-md-2"><a href="#" class="footer-links">Contact</a></div>
                         </div>
@@ -466,6 +419,11 @@
     @include('sweetalert::alert')
 
 
+    <script>
+        setInterval(function() {
+            location.reload();
+        }, 30000); // 60000 milliseconds = 1 minute
+    </script>
 </body>
 
 </html>
