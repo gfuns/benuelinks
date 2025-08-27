@@ -693,8 +693,8 @@ class PassengerController extends Controller
      */
     public function paymentDetails($reference)
     {
-        $bankOne = BankonePayments::where("reference", $reference)->first();
-        return view("passenger.payment_details", compact("bankOne"));
+        $paymentDetails = BankonePayments::where("reference", $reference)->first();
+        return view("passenger.payment_details", compact("paymentDetails"));
     }
 
     /**
