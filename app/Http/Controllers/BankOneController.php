@@ -30,6 +30,9 @@ class BankOneController extends Controller
             Log::channel('bankone')->info("");
             Log::channel('bankone')->info('Incoming Data', (array) $data);
 
+            Log::channel('bankone')->info('Classification ' . $data->classification);
+            Log::channel('bankone')->info('Account Number ' . $data->accountNumber);
+
             if ($data->trx_type == "credit" && $data->trx_status == "successful") {
 
                 if ($data->classification == "inflow") {
