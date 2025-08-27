@@ -1582,8 +1582,11 @@ class SuperAdminController extends Controller
      */
     public function guestAccounts()
     {
+        $lastRecord    = GuestAccounts::count();
+        $marker        = $this->getMarkers($lastRecord, request()->page);
         $guestAccounts = GuestAccounts::all();
-        return view("superadmin.guest_accounts", compact("guestAccounts"));
+
+        return view("superadmin.guest_accounts", compact("guestAccounts", "lastRecord", "marker"));
     }
 
     /**
@@ -1707,6 +1710,38 @@ class SuperAdminController extends Controller
         $date    = str_replace('/', '-', $date);
         $newDate = date('Y-m-d', strtotime($date));
         return $newDate;
+    }
+
+    /**
+     * getMarkers Helper Function
+     *
+     * @param mixed lastRecord
+     * @param mixed pageNum
+     *
+     * @return void
+     */
+    public function getMarkers($lastRecord, $pageNum)
+    {
+        if ($pageNum == null) {
+            $pageNum = 1;
+        }
+        $end    = (50 * ((int) $pageNum));
+        $marker = [];
+        if ((int) $pageNum == 1) {
+            $marker["begin"] = (int) $pageNum;
+            $marker["index"] = (int) $pageNum;
+        } else {
+            $marker["begin"] = number_format(((50 * ((int) $pageNum)) - 49), 0);
+            $marker["index"] = number_format(((50 * ((int) $pageNum)) - 49), 0);
+        }
+
+        if ($end > $lastRecord) {
+            $marker["end"] = number_format($lastRecord, 0);
+        } else {
+            $marker["end"] = number_format($end, 0);
+        }
+
+        return $marker;
     }
 
 }
