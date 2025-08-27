@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('bankOneCustomerId')->nullable();
             $table->string('bankOneBankId')->nullable();
             $table->string('bankOneAccountNumber')->nullable();
+            $table->integer('availability')->default(1);
             $table->timestamps();
         });
     }
