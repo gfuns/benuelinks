@@ -107,10 +107,13 @@ class BankOneController extends Controller
 
                         if ($trx->trx_type == "guest") {
 
-                            $guest = GuestBooking::find($trx->transaction_id);
-
                             DB::beginTransaction();
 
+                            $trx->handled = 1;
+                            $trx->status  = "successful";
+                            $trx->save();
+
+                            $guest                  = GuestBooking::find($trx->transaction_id);
                             $guest->payment_status  = "paid";
                             $guest->payment_channel = "transfer";
                             $guest->booking_status  = "booked";
@@ -139,6 +142,10 @@ class BankOneController extends Controller
                             $booking->booking_method  = "online";
                             $booking->booking_status  = $guest->booking_status;
                             $booking->save();
+
+                            $gA               = GuestAccounts::where('account_number', $trx->account_number)->first();
+                            $gA->availability = 1;
+                            $gA->save();
 
                             DB::commit();
 
