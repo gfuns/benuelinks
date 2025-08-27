@@ -30,9 +30,6 @@ class BankOneController extends Controller
             Log::channel('bankone')->info("");
             Log::channel('bankone')->info('Incoming Data', (array) $data);
 
-            Log::channel('bankone')->info('Classification ' . $data->classification);
-            Log::channel('bankone')->info('Account Number ' . $data->recipientAccountNumber);
-
             if ($data->trx_type == "credit" && $data->trx_status == "successful") {
 
                 if ($data->classification == "inflow") {
@@ -70,7 +67,10 @@ class BankOneController extends Controller
 
                 if ($data->classification == "booking") {
 
+                    Log::channel('bankone')->info("Booking Transaction Found");
                     $trx = BankonePayments::where("account_number", $data->recipientAccountNumber)->where('handled', 0)->first();
+
+                    Log::channel('bankone')->info($trx);
 
                     if (isset($trx) && $trx != null) {
                         DB::beginTransaction();
@@ -100,6 +100,8 @@ class BankOneController extends Controller
 
                     }
 
+                    Log::channel('bankone')->info("Booking Transaction Does not Exist");
+
                 }
 
                 if ($data->classification == "guest") {
@@ -127,7 +129,7 @@ class BankOneController extends Controller
         } catch (\Throwable $e) {
             DB::rollback();
 
-            report($e);
+            Log::channel('bankone')->error($e->getMessage());
 
             return new JsonResponse([
                 'statusCode' => (int) 400,
