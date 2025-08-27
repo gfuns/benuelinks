@@ -5,6 +5,7 @@ use App\Mail\BookingSuccessful as BookingSuccessful;
 use App\Mail\TopupSuccessful as TopupSuccessful;
 use App\Models\BankonePayments;
 use App\Models\GuestAccounts;
+use App\Models\TravelBooking;
 use App\Models\User;
 use App\Models\WalletTransactions;
 use Illuminate\Http\JsonResponse;
