@@ -31,7 +31,7 @@ class BankOneController extends Controller
             Log::channel('bankone')->info('Incoming Data', (array) $data);
 
             Log::channel('bankone')->info('Classification ' . $data->classification);
-            Log::channel('bankone')->info('Account Number ' . $data->accountNumber);
+            Log::channel('bankone')->info('Account Number ' . $data->recipientAccountNumber);
 
             if ($data->trx_type == "credit" && $data->trx_status == "successful") {
 
@@ -70,7 +70,7 @@ class BankOneController extends Controller
 
                 if ($data->classification == "booking") {
 
-                    $trx = BankonePayments::where("account_number", $data->accountNumber)->where('handled', 0)->first();
+                    $trx = BankonePayments::where("account_number", $data->recipientAccountNumber)->where('handled', 0)->first();
 
                     if (isset($trx) && $trx != null) {
                         DB::beginTransaction();
