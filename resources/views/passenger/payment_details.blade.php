@@ -170,7 +170,7 @@
 <script>
     setInterval(function() {
         location.reload();
-    }, 30000); // 60000 milliseconds = 1 minute
+    }, 60000); // 60000 milliseconds = 1 minute
 </script>
 
 </body>
