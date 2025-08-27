@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('dob');
             $table->string('bvn');
             $table->string('contact_address')->nullable();
-            $table->string('account_number');
+            $table->string('account_number')->unique();
             $table->string('bank_name')->default("Peace Microfinace Bank");
             $table->string('bankOneCustomerId')->nullable();
             $table->string('bankOneBankId')->nullable();

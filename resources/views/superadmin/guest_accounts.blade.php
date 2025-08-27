@@ -8,6 +8,11 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center">
                                 <h4 class="card-title">Guest Virtual Accounts</h4>
+                                <button class="btn btn-primary btn-round ms-auto btn-sm">
+                                    <a href="{{ route('superadmin.generateGuestAccount') }}" style="color: white"> <i
+                                            class="fa fa-plus"></i>
+                                        Create New Guest Account</a>
+                                </button>
                             </div>
                         </div>
                         <div class="card-body">
