@@ -167,7 +167,11 @@
 
     @include('sweetalert::alert')
 
-
+<script>
+    setInterval(function() {
+        location.reload();
+    }, 30000); // 60000 milliseconds = 1 minute
+</script>
 
 </body>
 

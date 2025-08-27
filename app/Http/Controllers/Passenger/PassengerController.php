@@ -694,7 +694,31 @@ class PassengerController extends Controller
     public function paymentDetails($reference)
     {
         $paymentDetails = BankonePayments::where("reference", $reference)->first();
-        return view("passenger.payment_details", compact("paymentDetails"));
+        if ($paymentDetails->status == "pending") {
+
+            return view("passenger.payment_details", compact("paymentDetails"));
+
+        } else if ($paymentDetails->status == "successful") {
+            $booking                  = TravelBooking::find($paymentDetails->transaction_id);
+            $booking->payment_status  = "paid";
+            $booking->payment_channel = "transfer";
+            $booking->booking_status  = "booked";
+            $booking->save();
+
+            try {
+                Mail::to($booking)->send(new BookingSuccessful($booking));
+            } catch (\Exception $e) {
+                \Log::error($e->getMessage());
+            } finally {
+                alert()->success('', 'Trip Booked Successfully!');
+                return redirect()->route("passenger.bookingHistory");
+            }
+
+        } else {
+            alert()->error('', 'This transaction has timed out and your payment was not received!');
+            return redirect()->route("passenger.bookingPreview", [$paymentDetails->transaction_id]);
+        }
+
     }
 
     /**
