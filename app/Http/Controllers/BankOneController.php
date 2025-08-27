@@ -1,7 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Mail\BookingSuccessful as BookingSuccessful;
 use App\Mail\TopupSuccessful as TopupSuccessful;
+use App\Models\BankonePayments;
+use App\Models\GuestAccounts;
 use App\Models\User;
 use App\Models\WalletTransactions;
 use Illuminate\Http\JsonResponse;
@@ -29,29 +32,66 @@ class BankOneController extends Controller
 
             if ($data->trx_type == "credit" && $data->trx_status == "successful") {
 
-                $topupAmount = (double) ($data->amount / 100);
+                if ($data->classification == "inflow") {
 
-                $user = User::find($data->business_id);
+                    $topupAmount = (double) ($data->amount / 100);
 
-                DB::beginTransaction();
+                    $user = User::find($data->business_id);
 
-                $topup                 = new WalletTransactions;
-                $topup->user_id        = $user->id;
-                $topup->trx_type       = "credit";
-                $topup->reference      = $data->reference;
-                $topup->amount         = $topupAmount;
-                $topup->balance_before = $user->wallet_balance;
-                $topup->balance_after  = ($topupAmount + $user->wallet_balance);
-                $topup->description    = "Wallet Topup Transaction";
-                $topup->status         = "successful";
-                $topup->save();
+                    DB::beginTransaction();
 
-                $user->wallet_balance = (double) ($user->wallet_balance + $topup->amount);
-                $user->save();
+                    $topup                 = new WalletTransactions;
+                    $topup->user_id        = $user->id;
+                    $topup->trx_type       = "credit";
+                    $topup->reference      = $data->reference;
+                    $topup->amount         = $topupAmount;
+                    $topup->balance_before = $user->wallet_balance;
+                    $topup->balance_after  = ($topupAmount + $user->wallet_balance);
+                    $topup->description    = "Wallet Topup Transaction";
+                    $topup->status         = "successful";
+                    $topup->save();
 
-                DB::commit();
+                    $user->wallet_balance = (double) ($user->wallet_balance + $topup->amount);
+                    $user->save();
 
-                Mail::to($user)->send(new TopupSuccessful($user, $topup));
+                    DB::commit();
+
+                    Mail::to($user)->send(new TopupSuccessful($user, $topup));
+
+                }
+
+                if ($data->classification == "booking") {
+
+                    $trx = BankonePayments::where("reference", $data->reference)->where('handled', 0)->first();
+
+                    if (isset($trx) && $trx != null) {
+                        DB::beginTransaction();
+
+                        $trx->handled = 1;
+                        $trx->status  = "successful";
+                        $trx->save();
+
+                        $booking                  = TravelBooking::find($trx->transaction_id);
+                        $booking->payment_status  = "paid";
+                        $booking->payment_channel = "transfer";
+                        $booking->booking_status  = "booked";
+                        $booking->save();
+
+                        $gA               = GuestAccounts::where('account_number', $trx->account_number)->first();
+                        $gA->availability = 1;
+                        $gA->save();
+
+                        DB::commit();
+
+                        Mail::to($booking)->send(new BookingSuccessful($booking));
+
+                    }
+
+                }
+
+                if ($data->classification == "guest") {
+
+                }
 
                 return new JsonResponse([
                     'statusCode' => (int) 200,

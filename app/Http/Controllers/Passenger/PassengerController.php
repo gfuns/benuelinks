@@ -699,6 +699,10 @@ class PassengerController extends Controller
             return view("passenger.payment_details", compact("paymentDetails"));
 
         } else if ($paymentDetails->status == "successful") {
+
+            alert()->success('', 'Trip Booked Successfully!');
+            return redirect()->route("passenger.bookingHistory");
+
             $booking                  = TravelBooking::find($paymentDetails->transaction_id);
             $booking->payment_status  = "paid";
             $booking->payment_channel = "transfer";
@@ -772,8 +776,8 @@ class PassengerController extends Controller
     public function genMiddlewareRef($businessId)
     {
         $data = [
-            "business_id" => $businessId,
-            "category"    => "booking",
+            "business_id"    => $businessId,
+            "classification" => "booking",
         ];
 
         $url      = "https://peacemasstransit.ng/api/v1/generateReference";

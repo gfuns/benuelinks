@@ -166,7 +166,7 @@
                                                                     @if (Auth::user()->gender == 'male') selected @endif>
                                                                     Male
                                                                 </option>
-                                                                <option value="remale"
+                                                                <option value="female"
                                                                     @if (Auth::user()->gender == 'female') selected @endif>
                                                                     Female
                                                                 </option>

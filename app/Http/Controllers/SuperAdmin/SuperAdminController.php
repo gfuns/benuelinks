@@ -1685,6 +1685,7 @@ class SuperAdminController extends Controller
             "account_name"   => $accountName,
             "account_number" => $accountNo,
             "business_id"    => $bizId,
+            "guest_account"  => 1,
         ];
 
         $url      = "https://peacemasstransit.ng/api/v1/logAccount";
