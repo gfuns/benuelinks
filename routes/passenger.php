@@ -48,7 +48,11 @@ Route::group([
 
     Route::post('/bookingPayment', [PassengerController::class, 'bookingPayment'])->name('passenger.bookingPayment');
 
-    Route::post('/payWithCard', [PaystackController::class, 'payWithCard'])->name('passenger.payWithCard');
+    Route::post('/payWithBankOne', [PassengerController::class, 'payWithBankOne'])->name('passenger.payWithBankOne');
+
+    Route::get('/payment-details/{reference}', [PassengerController::class, 'paymentDetails'])->name('passenger.paymentDetails');
+
+    // Route::post('/payWithCard', [PaystackController::class, 'payWithCard'])->name('passenger.payWithCard');
 
     Route::get('/payWithWallet/{id}', [PassengerController::class, 'payWithWallet'])->name('passenger.payWithWallet');
 });

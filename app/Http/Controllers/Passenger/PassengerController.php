@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Passenger;
 use App\Helpers\BankOneHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\BookingSuccessful as BookingSuccessful;
+use App\Models\BankonePayments;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
+use App\Models\GuestAccounts;
 use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
@@ -614,6 +616,88 @@ class PassengerController extends Controller
     }
 
     /**
+     * payWithBankOne
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function payWithBankOne(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'booking_id' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            alert()->error('', $errors);
+            return back();
+        }
+
+        try {
+            $booking = TravelBooking::find($request->booking_id);
+
+            $guestAccount = DB::transaction(function () {
+                // Fetch one random available guest_account and lock it
+                $guest = GuestAccounts::where('availability', 1)
+                    ->inRandomOrder()
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($guest) {
+                    // Update availability inside the same transaction
+                    $guest->availability = 0;
+                    $guest->save();
+                }
+
+                return $guest;
+            });
+
+            if (! isset($guestAccount)) {
+                alert()->error('', "Could Not Find An Available Virtual Account For This Transaction. Please Try Again Later.");
+                return back();
+            }
+
+            $bankOne                 = new BankonePayments;
+            $bankOne->transaction_id = $booking->id;
+            $bankOne->reference      = self::genMiddlewareRef(Auth::user()->id);
+            $bankOne->amount         = $booking->travel_fare;
+            $bankOne->trx_type       = "booking";
+            $bankOne->account_number = $guestAccount->account_number;
+            $bankOne->account_name   = $guestAccount->last_name . " " . $guestAccount->other_names;
+            $bankOne->bank           = $guestAccount->bank_name;
+            if ($bankOne->save()) {
+
+                return redirect()->route("passenger.paymentDetails", [$bankOne->reference]);
+
+            } else {
+                alert()->error('', "Failed to initialize payment gateway");
+                return back();
+            }
+        } catch (\Throwable $e) {
+
+            report($e);
+            alert()->error('', "Failed to initialize payment gateway");
+            return back();
+        }
+
+    }
+
+    /**
+     * paymentDetails
+     *
+     * @param mixed reference
+     *
+     * @return void
+     */
+    public function paymentDetails($reference)
+    {
+        $bankOne = BankonePayments::where("reference", $reference)->first();
+        return view("passenger.payment_details", compact("bankOne"));
+    }
+
+    /**
      * bookingHistory
      *
      * @return void
@@ -652,6 +736,32 @@ class PassengerController extends Controller
         $code = substr($shuffled, 0, 12);
 
         return "PMT-BK-" . $code;
+    }
+
+    /**
+     * genMiddlewareRef
+     *
+     * @param mixed businessId
+     *
+     * @return void
+     */
+    public function genMiddlewareRef($businessId)
+    {
+        $data = [
+            "business_id" => $businessId,
+            "category"    => "booking",
+        ];
+
+        $url      = "https://peacemasstransit.ng/api/v1/generateReference";
+        $response = Http::timeout(600)->accept('application/json')->withHeaders([
+            'x-api-key' => env("MIDDLEWARE_KEY"),
+        ])->post($url, $data);
+
+        $data = json_decode($response, true);
+
+        $reference = $data['response']['data'];
+
+        return $reference;
     }
 
     /**

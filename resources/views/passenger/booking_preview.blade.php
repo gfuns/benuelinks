@@ -168,7 +168,7 @@
                                 </table>
 
                                 <div class="mt-4">
-                                    <form method="POST" action="{{ route("passenger.payWithCard") }}">
+                                    <form method="POST" action="{{ route("passenger.payWithBankOne") }}">
                                         @csrf
                                         <input id="myid" type="hidden" name="booking_id"
                                             value="{{ $booking->id }}" class="form-control" required>
@@ -176,8 +176,7 @@
 
                                         <div class="row d-flex justify-content-between">
                                             <div class="mb-4">
-                                                <button type="submit" class="btn btn-primary profile-update">Pay With
-                                                    Card
+                                                <button type="submit" class="btn btn-primary profile-update">Proceed To Payment
                                                     &nbsp;<i class="fas fa-credit-card"></i></button>
                                             </div>
 
