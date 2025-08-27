@@ -185,6 +185,10 @@ Route::group([
 
     Route::get('/transactions-report/{sd?}/{ed?}', [SuperAdminController::class, 'processTransactionFilter'])->name('superadmin.processTransactionFilter');
 
+    Route::get('/guest-accounts', [SuperAdminController::class, 'guestAccounts'])->name('superadmin.guestAccounts');
+
+    Route::get('/generateGuestAccount', [SuperAdminController::class, 'generateGuestAccount'])->name('superadmin.generateGuestAccount');
+
 });
 
 require __DIR__ . '/admin.php';

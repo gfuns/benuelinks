@@ -153,6 +153,13 @@
                     </li>
                 @endif
 
+                <li id="guestAcounts" class="nav-item mb-3">
+                    <a href="{{ route('superadmin.guestAccounts') }}">
+                        <i class="fas fa-recycle"></i>
+                        <p>Guest Virtual Accounts</p>
+                    </a>
+                </li>
+
                 <li id="logout" class="nav-item">
                     <a href="{{ route('logout') }}"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

@@ -7,6 +7,7 @@ use App\Models\AuthenticationLogs;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
 use App\Models\CompanyVehicles;
+use App\Models\GuestAccounts;
 use App\Models\PlatformFeature;
 use App\Models\States;
 use App\Models\TravelBooking;
@@ -19,7 +20,9 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use \Carbon\Carbon;
 
 class SuperAdminController extends Controller
@@ -1571,4 +1574,138 @@ class SuperAdminController extends Controller
 
         return $revenue;
     }
+
+    /**
+     * guestAccounts
+     *
+     * @return void
+     */
+    public function guestAccounts()
+    {
+        $guestAccounts = GuestAccounts::all();
+        return view("superadmin.guest_accounts", compact("guestAccounts"));
+    }
+
+    /**
+     * generateGuestAccount
+     *
+     * @return void
+     */
+    public function generateGuestAccount()
+    {
+        $baseURL   = env("BANK_ONE_BASE_URL");
+        $authToken = env("MY_BANK_ONE_AUTH_TOKEN");
+        $url       = $baseURL . '/BankOneWebAPI/api/Account/CreateAccountQuick/2?authToken=' . $authToken;
+
+        try {
+            $postData = [
+                'TransactionTrackingRef'    => Str::uuid(),
+                'AccountOpeningTrackingRef' => Str::uuid(),
+                'ProductCode'               => env("BANK_ONE_PRODUCT_CODE"),
+                'LastName'                  => "Peace",
+                'OtherNames'                => "Mass Transit",
+                'BVN'                       => "11234567890",
+                'PhoneNo'                   => "07007322362",
+                'Gender'                    => 0,
+                'DateOfBirth'               => $this->bankOneDate("1990-01-01"),
+                'Address'                   => "39 Ajose Adeogun Street, Off Obafemi Awolowo Way, Utako, Abuja",
+                'AccountOfficerCode'        => env("BANK_ONE_ACCOUNT_OFFICER"),
+                'Email'                     => "support@peacextracomfort.com",
+                'AccountTier'               => 2,
+            ];
+
+            // for ($i = 1; $i <= 10; $i++) {
+            $response = Http::post($url, $postData);
+
+            if ($response->failed()) {
+                // dd("Yesy");
+                toast('An Error Occured While Creating Account For Customer On Bank One Infrastructure', 'error');
+                return back();
+
+            } else {
+                $data = json_decode($response, true);
+                // dd($data);
+                if ($data["IsSuccessful"] === false) {
+                    toast($data["Message"], 'error');
+                    return back();
+                }
+
+                DB::beginTransaction();
+
+                $guestAccount                       = new GuestAccounts;
+                $guestAccount->last_name            = $postData["LastName"];
+                $guestAccount->other_names          = $postData["OtherNames"];
+                $guestAccount->email                = $postData["Email"];
+                $guestAccount->phone_number         = $postData["PhoneNo"];
+                $guestAccount->gender               = "Male";
+                $guestAccount->dob                  = $this->formatDate($postData["DateOfBirth"]);
+                $guestAccount->bvn                  = $postData["BVN"];
+                $guestAccount->contact_address      = $postData["Address"];
+                $guestAccount->account_number       = $data["Message"]["AccountNumber"];
+                $guestAccount->bankOneBankId        = $data["Message"]["Id"];
+                $guestAccount->bankOneCustomerId    = $data["Message"]["CustomerID"];
+                $guestAccount->bankOneAccountNumber = $data["Message"]["BankoneAccountNumber"];
+                $guestAccount->save();
+
+                DB::commit();
+
+                $accountName = $guestAccount->last_name . " " . $guestAccount->other_names;
+
+                $this->logAccount($guestAccount->account_number, $accountName, $guestAccount->id);
+
+            }
+            // }
+
+            toast('Guest Accounts Created Successfully', 'success');
+            return back();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            report($e);
+
+            toast('Something went wrong. Please try again ' . $e->getMessage(), 'error');
+            return back();
+        }
+    }
+
+    /**
+     * logAccount
+     *
+     * @param mixed accountNo
+     * @param mixed accountName
+     * @param mixed bizId
+     *
+     * @return void
+     */
+    public function logAccount($accountNo, $accountName, $bizId)
+    {
+        $data = [
+            "account_name"   => $accountName,
+            "account_number" => $accountNo,
+            "business_id"    => $bizId,
+        ];
+
+        $url      = "https://peacemasstransit.ng/api/v1/logAccount";
+        $response = Http::timeout(600)->accept('application/json')->withHeaders([
+            'x-api-key' => env("MIDDLEWARE_KEY"),
+        ])->post($url, $data);
+
+        $data = json_decode($response, true);
+
+    }
+
+    /**
+     * bankOneDate
+     *
+     * @param mixed date
+     *
+     * @return void
+     */
+    public function bankOneDate($date)
+    {
+        $date    = str_replace('/', '-', $date);
+        $newDate = date('Y-m-d', strtotime($date));
+        return $newDate;
+    }
+
 }
