@@ -1618,47 +1618,47 @@ class SuperAdminController extends Controller
                 'AccountTier'               => 2,
             ];
 
-            // for ($i = 1; $i <= 10; $i++) {
-            $response = Http::post($url, $postData);
+            for ($i = 1; $i <= 10; $i++) {
+                $response = Http::post($url, $postData);
 
-            if ($response->failed()) {
-                // dd("Yesy");
-                toast('An Error Occured While Creating Account For Customer On Bank One Infrastructure', 'error');
-                return back();
-
-            } else {
-                $data = json_decode($response, true);
-                // dd($data);
-                if ($data["IsSuccessful"] === false) {
-                    toast($data["Message"], 'error');
+                if ($response->failed()) {
+                    // dd("Yesy");
+                    toast('An Error Occured While Creating Account For Customer On Bank One Infrastructure', 'error');
                     return back();
+
+                } else {
+                    $data = json_decode($response, true);
+                    // dd($data);
+                    if ($data["IsSuccessful"] === false) {
+                        toast($data["Message"], 'error');
+                        return back();
+                    }
+
+                    DB::beginTransaction();
+
+                    $guestAccount                       = new GuestAccounts;
+                    $guestAccount->last_name            = $postData["LastName"];
+                    $guestAccount->other_names          = $postData["OtherNames"];
+                    $guestAccount->email                = $postData["Email"];
+                    $guestAccount->phone_number         = $postData["PhoneNo"];
+                    $guestAccount->gender               = "Male";
+                    $guestAccount->dob                  = $this->formatDate($postData["DateOfBirth"]);
+                    $guestAccount->bvn                  = $postData["BVN"];
+                    $guestAccount->contact_address      = $postData["Address"];
+                    $guestAccount->account_number       = $data["Message"]["AccountNumber"];
+                    $guestAccount->bankOneBankId        = $data["Message"]["Id"];
+                    $guestAccount->bankOneCustomerId    = $data["Message"]["CustomerID"];
+                    $guestAccount->bankOneAccountNumber = $data["Message"]["BankoneAccountNumber"];
+                    $guestAccount->save();
+
+                    DB::commit();
+
+                    $accountName = $guestAccount->last_name . " " . $guestAccount->other_names;
+
+                    $this->logAccount($guestAccount->account_number, $accountName, $guestAccount->id);
+
                 }
-
-                DB::beginTransaction();
-
-                $guestAccount                       = new GuestAccounts;
-                $guestAccount->last_name            = $postData["LastName"];
-                $guestAccount->other_names          = $postData["OtherNames"];
-                $guestAccount->email                = $postData["Email"];
-                $guestAccount->phone_number         = $postData["PhoneNo"];
-                $guestAccount->gender               = "Male";
-                $guestAccount->dob                  = $this->formatDate($postData["DateOfBirth"]);
-                $guestAccount->bvn                  = $postData["BVN"];
-                $guestAccount->contact_address      = $postData["Address"];
-                $guestAccount->account_number       = $data["Message"]["AccountNumber"];
-                $guestAccount->bankOneBankId        = $data["Message"]["Id"];
-                $guestAccount->bankOneCustomerId    = $data["Message"]["CustomerID"];
-                $guestAccount->bankOneAccountNumber = $data["Message"]["BankoneAccountNumber"];
-                $guestAccount->save();
-
-                DB::commit();
-
-                $accountName = $guestAccount->last_name . " " . $guestAccount->other_names;
-
-                $this->logAccount($guestAccount->account_number, $accountName, $guestAccount->id);
-
             }
-            // }
 
             toast('Guest Accounts Created Successfully', 'success');
             return back();
