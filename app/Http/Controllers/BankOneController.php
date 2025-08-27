@@ -5,6 +5,7 @@ use App\Mail\BookingSuccessful as BookingSuccessful;
 use App\Mail\TopupSuccessful as TopupSuccessful;
 use App\Models\BankonePayments;
 use App\Models\GuestAccounts;
+use App\Models\GuestBooking;
 use App\Models\TravelBooking;
 use App\Models\User;
 use App\Models\WalletTransactions;
@@ -12,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Mail;
 
 class BankOneController extends Controller
@@ -68,44 +70,90 @@ class BankOneController extends Controller
 
                 if ($data->classification == "booking") {
 
-                    Log::channel('bankone')->info("Booking Transaction Found");
                     $trx = BankonePayments::where("account_number", $data->recipientAccountNumber)->where('handled', 0)->first();
 
                     Log::channel('bankone')->info($trx);
 
                     if (isset($trx) && $trx != null) {
-                        DB::beginTransaction();
 
-                        $trx->handled = 1;
-                        $trx->status  = "successful";
-                        $trx->save();
+                        if ($trx->trx_type == "booking") {
 
-                        $booking                  = TravelBooking::find($trx->transaction_id);
-                        $booking->payment_status  = "paid";
-                        $booking->payment_channel = "transfer";
-                        $booking->booking_status  = "booked";
-                        $booking->save();
+                            DB::beginTransaction();
 
-                        $gA               = GuestAccounts::where('account_number', $trx->account_number)->first();
-                        $gA->availability = 1;
-                        $gA->save();
+                            $trx->handled = 1;
+                            $trx->status  = "successful";
+                            $trx->save();
 
-                        DB::commit();
+                            $booking                  = TravelBooking::find($trx->transaction_id);
+                            $booking->payment_status  = "paid";
+                            $booking->payment_channel = "transfer";
+                            $booking->booking_status  = "booked";
+                            $booking->save();
 
-                        Mail::to($booking)->send(new BookingSuccessful($booking));
+                            $gA               = GuestAccounts::where('account_number', $trx->account_number)->first();
+                            $gA->availability = 1;
+                            $gA->save();
 
-                        return new JsonResponse([
-                            'statusCode' => (int) 200,
-                            'message'    => "Transaction with Reference: { $data->reference} Successfully Processed.",
-                        ]);
+                            DB::commit();
+
+                            Mail::to($booking)->send(new BookingSuccessful($booking));
+
+                            return new JsonResponse([
+                                'statusCode' => (int) 200,
+                                'message'    => "Transaction with Reference: { $data->reference} Successfully Processed.",
+                            ]);
+
+                        }
+
+                        if ($trx->trx_type == "guest") {
+
+                            $guest = GuestBooking::find($trx->transaction_id);
+
+                            DB::beginTransaction();
+
+                            $guest->payment_status  = "paid";
+                            $guest->payment_channel = "transfer";
+                            $guest->booking_status  = "booked";
+                            $guest->save();
+
+                            $booking                  = new TravelBooking;
+                            $booking->schedule_id     = $guest->schedule_id;
+                            $booking->departure       = $guest->departure;
+                            $booking->destination     = $guest->destination;
+                            $booking->vehicle         = $guest->vehicle;
+                            $booking->vehicle_type    = $guest->vehicle_type;
+                            $booking->travel_date     = $guest->travel_date;
+                            $booking->departure_time  = $guest->departure_time;
+                            $booking->full_name       = $guest->full_name;
+                            $booking->phone_number    = $guest->phone_number;
+                            $booking->nok             = $guest->nok;
+                            $booking->nok_phone       = $guest->nok_phone;
+                            $booking->email           = $guest->email;
+                            $booking->gender          = $guest->gender;
+                            $booking->seat            = $guest->seat;
+                            $booking->payment_channel = $guest->payment_channel;
+                            $booking->classification  = "booking";
+                            $booking->payment_status  = $guest->payment_status;
+                            $booking->travel_fare     = $guest->travel_fare;
+                            $booking->booking_number  = self::genBookingID();
+                            $booking->booking_method  = "online";
+                            $booking->booking_status  = $guest->booking_status;
+                            $booking->save();
+
+                            DB::commit();
+
+                            Session::forget('guestBookingID');
+
+                            Mail::to($booking)->send(new BookingSuccessful($booking));
+
+                            return new JsonResponse([
+                                'statusCode' => (int) 200,
+                                'message'    => "Transaction with Reference: { $data->reference} Successfully Processed.",
+                            ]);
+
+                        }
 
                     }
-
-                    Log::channel('bankone')->info("Booking Transaction Does not Exist");
-
-                }
-
-                if ($data->classification == "guest") {
 
                 }
 
@@ -137,5 +185,27 @@ class BankOneController extends Controller
                 'message'    => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * genBookingID
+     *
+     * @return void
+     */
+    public function genBookingID()
+    {
+        // Get the current timestamp
+        $timestamp = (string) (strtotime('now') . microtime(true));
+
+        // Remove any non-numeric characters (like dots)
+        $cleanedTimestamp = preg_replace('/[^0-9]/', '', $timestamp);
+
+        // Shuffle the digits
+        $shuffled = str_shuffle($cleanedTimestamp);
+
+        // Extract the first 12 characters
+        $code = substr($shuffled, 0, 12);
+
+        return "PMT-BK-" . $code;
     }
 }
