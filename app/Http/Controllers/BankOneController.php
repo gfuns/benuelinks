@@ -58,6 +58,11 @@ class BankOneController extends Controller
 
                     Mail::to($user)->send(new TopupSuccessful($user, $topup));
 
+                    return new JsonResponse([
+                        'statusCode' => (int) 200,
+                        'message'    => "Transaction with Reference: { $data->reference} Successfully Processed.",
+                    ]);
+
                 }
 
                 if ($data->classification == "booking") {
@@ -97,6 +102,11 @@ class BankOneController extends Controller
                 if ($data->classification == "guest") {
 
                 }
+
+                return new JsonResponse([
+                    'statusCode' => (int) 400,
+                    'message'    => "Either Transaction is failed or transaction cannot be settled",
+                ]);
 
             } else if ($data->trx_type == "debit" && $data->trx_status == "successful") {
 
