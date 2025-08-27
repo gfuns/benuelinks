@@ -1584,7 +1584,7 @@ class SuperAdminController extends Controller
     {
         $lastRecord    = GuestAccounts::count();
         $marker        = $this->getMarkers($lastRecord, request()->page);
-        $guestAccounts = GuestAccounts::all();
+        $guestAccounts = GuestAccounts::paginate(50);
 
         return view("superadmin.guest_accounts", compact("guestAccounts", "lastRecord", "marker"));
     }
