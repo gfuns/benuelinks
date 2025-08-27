@@ -1602,6 +1602,7 @@ class SuperAdminController extends Controller
                 'TransactionTrackingRef'    => Str::uuid(),
                 'AccountOpeningTrackingRef' => Str::uuid(),
                 'ProductCode'               => env("BANK_ONE_PRODUCT_CODE"),
+                'CustomerID'                => "057270",
                 'LastName'                  => "Peace",
                 'OtherNames'                => "Mass Transit",
                 'BVN'                       => "11234567890",
