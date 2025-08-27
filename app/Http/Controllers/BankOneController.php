@@ -62,7 +62,7 @@ class BankOneController extends Controller
 
                 if ($data->classification == "booking") {
 
-                    $trx = BankonePayments::where("reference", $data->reference)->where('handled', 0)->first();
+                    $trx = BankonePayments::where("account_number", $data->accountNumber)->where('handled', 0)->first();
 
                     if (isset($trx) && $trx != null) {
                         DB::beginTransaction();
@@ -85,6 +85,11 @@ class BankOneController extends Controller
 
                         Mail::to($booking)->send(new BookingSuccessful($booking));
 
+                        return new JsonResponse([
+                            'statusCode' => (int) 200,
+                            'message'    => "Transaction with Reference: { $data->reference} Successfully Processed.",
+                        ]);
+
                     }
 
                 }
@@ -92,11 +97,6 @@ class BankOneController extends Controller
                 if ($data->classification == "guest") {
 
                 }
-
-                return new JsonResponse([
-                    'statusCode' => (int) 200,
-                    'message'    => "Transaction with Reference: { $data->reference} Successfully Processed.",
-                ]);
 
             } else if ($data->trx_type == "debit" && $data->trx_status == "successful") {
 
