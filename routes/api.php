@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FrontEndController;
+use App\Http\Controllers\TSController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +26,6 @@ Route::group([
 
 ], function ($router) {
     Route::get('/destinations', [FrontEndController::class, 'apiBasedDestinations']);
+
+    Route::get('/tsAcctBal', [TSController::class, 'tsAcctBal']);
 });
