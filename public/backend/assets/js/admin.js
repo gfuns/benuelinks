@@ -89,6 +89,10 @@ $('#takeoff').select2({
     dropdownParent: $('#offcanvasRight')
 });
 
+$('#departure').select2({
+    dropdownParent: $('#offcanvasRight')
+});
+
 $('#destination').select2({
     dropdownParent: $('#offcanvasRight')
 });

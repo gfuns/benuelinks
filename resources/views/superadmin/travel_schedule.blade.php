@@ -259,16 +259,29 @@
                     <div class="row">
                         <!-- form group -->
                         <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Destination</strong> <span
+                            <label class="form-label"><strong>Departure Terminal</strong> <span
                                     class="text-danger">*</span></label>
-                            <select id="destination" name="destination" class="form-select" data-width="100%" required>
-                                <option value="all">Select Destination</option>
+                            <select id="departure" name="take_off_point" class="form-select" data-width="100%" required>
+                                <option value="all">Select Departure Terminal</option>
                                 @foreach ($terminals as $destination)
                                     <option value="{{ $destination->id }}">{{ $destination->terminal }}
                                     </option>
                                 @endforeach
                             </select>
-                            <div class="invalid-feedback">Please select destination.</div>
+                            <div class="invalid-feedback">Please select departure terminal.</div>
+                        </div>
+
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Destination Terminal</strong> <span
+                                    class="text-danger">*</span></label>
+                            <select id="destination" name="destination" class="form-select" data-width="100%" required>
+                                <option value="all">Select Destination Terminal</option>
+                                @foreach ($terminals as $destination)
+                                    <option value="{{ $destination->id }}">{{ $destination->terminal }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback">Please select destination terminal.</div>
                         </div>
 
                         <div class="mb-3 col-12">
@@ -322,10 +335,6 @@
 
                             </fieldset>
                         </div>
-
-
-                        <input type="hidden" name="take_off_point" value="{{ Auth::user()->station }}"
-                            class="form-control" required>
 
                         <div class="col-md-12 border-bottom"></div>
                         <!-- button -->
