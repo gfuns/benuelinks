@@ -8,6 +8,11 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center">
                                 <h4 class="card-title">Travel Schedule</h4>
+                                <button class="btn btn-primary btn-round ms-auto btn-sm" data-bs-toggle="offcanvas"
+                                    data-bs-target="#offcanvasRight">
+                                    <i class="fa fa-plus"></i>
+                                    Create New Schedule
+                                </button>
 
                             </div>
                         </div>
@@ -171,6 +176,53 @@
                                                                 </li>
                                                             @endif
 
+
+                                                            @if ($schedule->status != 'trip successful')
+                                                                <li>
+                                                                    <a class="dropdown-item mb-2" href="#"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#updateTripStatus"
+                                                                        data-backdrop="static"
+                                                                        data-myid="{{ $schedule->id }}"
+                                                                        data-status="{{ $schedule->status }}"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Update
+                                                                        Trip Status</a>
+                                                                </li>
+                                                            @endif
+
+                                                            @if ($schedule->status == 'scheduled')
+                                                                <li>
+                                                                    <a class="dropdown-item mb-2" href="#"
+                                                                        data-bs-toggle="offcanvas"
+                                                                        data-bs-target="#adjustDepartureTime"
+                                                                        data-backdrop="static"
+                                                                        data-myid="{{ $schedule->id }}"
+                                                                        data-time="{{ $schedule->scheduled_time }}"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Adjust
+                                                                        Departure
+                                                                        Time</a>
+                                                                </li>
+                                                                <li>
+
+                                                                    <a class="dropdown-item mb-2" href="#"
+                                                                        data-bs-toggle="offcanvas"
+                                                                        data-bs-target="#assignVehicle"
+                                                                        data-backdrop="static"
+                                                                        data-myid="{{ $schedule->id }}"
+                                                                        data-vehicle="{{ $schedule->vehicle }}"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Assign
+                                                                        Vehicle</a>
+                                                                </li>
+                                                                <li>
+
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ route('admin.suspendTrip', [$schedule->id]) }}"
+                                                                        onclick="return confirm('Are you sure you want to suspend this trip?');"><i
+                                                                            class="fe fe-trash dropdown-item-icon"></i>Suspend
+                                                                        Trip</a>
+                                                                </li>
+                                                            @endif
+
                                                         </ul>
                                                     </div>
                                                 </td>
@@ -186,6 +238,104 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" style="width: 600px;">
+        <div class="offcanvas-body" data-simplebar>
+            <div class="offcanvas-header px-2 pt-0">
+                <h3 class="offcanvas-title" id="offcanvasExampleLabel">Create New Travel Schedule</h3>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <!-- card body -->
+            <div class="container">
+                <!-- form -->
+                <form class="needs-validation" novalidate method="post"
+                    action="{{ route('admin.storeTravelSchedule') }}">
+                    @csrf
+                    <div class="row">
+                        <!-- form group -->
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Destination</strong> <span
+                                    class="text-danger">*</span></label>
+                            <select id="destination" name="destination" class="form-select" data-width="100%" required>
+                                <option value="all">Select Destination</option>
+                                @foreach ($terminals as $destination)
+                                    <option value="{{ $destination->id }}">{{ $destination->terminal }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback">Please select destination.</div>
+                        </div>
+
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Departure Time</strong> <span
+                                    class="text-danger">*</span></label>
+                            <input id="departureTime" type="text" name="departure_time" class="form-control"
+                                placeholder="Select Departure Time" required style="border: 1px solid #cbd5e1 !important">
+                            <div class="invalid-feedback">Please select departure time.</div>
+                        </div>
+
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Schedule Configuration</strong> <span
+                                    class="text-danger">*</span></label>
+                            <select id="scheduleConfig" name="schedule_configuration" class="form-select"
+                                data-width="100%" required>
+                                <option value="">Select Schedule Configuration</option>
+                                <option value="specific" data-configtype="specific">Schedule for a specific date</option>
+                                <option value="weekly" data-configtype="weekly">Schedule all through the week</option>
+                                {{-- <option value="monthly"  data-configtype="monthly">Schedule all through the month</option> --}}
+                            </select>
+                            <div class="invalid-feedback">Please select schedule configuration.</div>
+                        </div>
+
+                        <div id="showDate" class="mb-3 col-12" style="display: none">
+                            <label class="form-label"><strong>Scheduled Date</strong> <span
+                                    class="text-danger">*</span></label>
+                            <input type="date" name="scheduled_date" min="{{ date('Y-m-d') }}" class="form-control"
+                                placeholder="Enter Role" required>
+                            <div class="invalid-feedback">Please select scheduled date.</div>
+                        </div>
+
+                        <div id="showWeek" class="mb-3 col-12" style="display: none">
+                            <fieldset id="displayGrp" class="border rounded p-3 mb-5">
+                                <legend class="float-none w-auto px-2">Select Days of the Week <span
+                                        class="text-danger">*</span></legend>
+                                <label class="form-label"><strong>{{ $weekData }}</strong> </label>
+                                <div class="row mt-3">
+                                    @foreach ($weekDates as $wd)
+                                        <div class="col-md-3 col-3 mb-3">
+                                            <div class="input-item input-with-label">
+                                                <input class="gfuns input-checkbox input-checkbox-sm" name="week_date[]"
+                                                    id="wd_{{ $loop->index }}" value="{{ $wd['date'] }}"
+                                                    type="checkbox">
+                                                <label for="wd_{{ $loop->index }}"><strong>{{ $wd['label'] }}</strong>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+
+                                </div>
+
+                            </fieldset>
+                        </div>
+
+
+                        <input type="hidden" name="take_off_point" value="{{ Auth::user()->station }}"
+                            class="form-control" required>
+
+                        <div class="col-md-12 border-bottom"></div>
+                        <!-- button -->
+                        <div class="col-12 mt-4">
+                            <button class="btn btn-primary" type="submit">Create Travel Schedule</button>
+                            <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
+                                aria-label="Close">Close</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -250,7 +400,174 @@
     </div>
 
 
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="adjustDepartureTime" style="width: 600px;">
+        <div class="offcanvas-body" data-simplebar>
+            <div class="offcanvas-header px-2 pt-0">
+                <h3 class="offcanvas-title" id="offcanvasExampleLabel"> Adjust Departure Time</h3>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <!-- card body -->
+            <div class="container">
+                <!-- form -->
+                <form class="needs-validation" novalidate method="post"
+                    action="{{ route('admin.adjustDepartureTime') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row">
+                        <!-- form group -->
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Departure Time</strong> <span
+                                    class="text-danger">*</span></label>
+                            <input id="adepartureTime" type="text" name="departure_time" class="form-control"
+                                placeholder="Select Departure Time" required>
+                            <div class="invalid-feedback">Please select departure time.</div>
+                        </div>
+
+                        <input id="myid" type="hidden" name="schedule_id" class="form-control" required>
+
+                        <div class="col-md-12 border-bottom"></div>
+                        <!-- button -->
+                        <div class="col-12 mt-4">
+                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                            <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
+                                aria-label="Close">Close</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="assignVehicle" style="width: 600px;">
+        <div class="offcanvas-body" data-simplebar>
+            <div class="offcanvas-header px-2 pt-0">
+                <h3 class="offcanvas-title" id="offcanvasExampleLabel"> Assign Vehicle</h3>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <!-- card body -->
+            <div class="container">
+                <!-- form -->
+                <form class="needs-validation" novalidate method="post" action="{{ route('admin.assignVehicle') }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="row">
+                        <!-- form group -->
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Assign Vehicle</strong> <span
+                                    class="text-danger">*</span></label>
+                            <select id="vehicle" name="vehicle" class="form-select" data-width="100%" required>
+                                <option value="all">Select Vehicle</option>
+                                @foreach ($companyVehicles as $cv)
+                                    <option value="{{ $cv->id }}">{{ $cv->vehicle_number }} -
+                                        {{ $cv->manufacturer }} ({{ $cv->model }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback">Please select vehicle.</div>
+                        </div>
+
+                        <input id="myid" type="hidden" name="schedule_id" class="form-control" required>
+
+                        <div class="col-md-12 border-bottom"></div>
+                        <!-- button -->
+                        <div class="col-12 mt-4">
+                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                            <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
+                                aria-label="Close">Close</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="updateTripStatus" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mb-0" id="newCatgoryLabel">
+                        Update Trip Status
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <form class="needs-validation" novalidate method="post" action="{{ route('admin.updateTripStatus') }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- form group -->
+                            <div class="mb-3 col-12">
+                                <label class="form-label"><strong>Trip Status</strong></label>
+                                <select id="tripStatus" name="trip_status" class="form-select" data-width="100%">
+                                    <option value="">Select Trip Status</option>
+                                    <option value="boarding in progress">Boarding In Progress</option>
+                                    <option value="in transit">Vehicle In Transit</option>
+                                    <option value="trip successful">Trip Successful</option>
+                                </select>
+                                <div class="invalid-feedback">Please select trip status.</div>
+                            </div>
+
+                            <input id="myid" type="hidden" name="schedule_id" class="form-control" required>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Update Trip Status</button>
+                        <button type="button" class="btn btn-outline-primary ms-2"
+                            data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <script type="text/javascript">
         document.getElementById("schedules").classList.add('active');
+    </script>
+@endsection
+
+
+@section('customjs')
+    <script>
+        flatpickr("#departureTime", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K", // "K" = AM/PM
+            time_24hr: false,
+            defaultHour: 6,
+            defaultMinute: 30
+        });
+
+        flatpickr("#adepartureTime", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K", // "K" = AM/PM
+            time_24hr: false,
+            defaultHour: 6,
+            defaultMinute: 30
+        });
+
+
+        $("#scheduleConfig").change(function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var config = selectedOption.getAttribute("data-configtype");
+
+            if (config == "specific") {
+                $("#showDate").css("display", "block");
+                $("#showWeek").css("display", "none");
+            } else if (config == "weekly") {
+                $("#showDate").css("display", "none");
+                $("#showWeek").css("display", "block");
+            } else {
+                $("#showDate").css("display", "none");
+                $("#showWeek").css("display", "none");
+            }
+        });
     </script>
 @endsection

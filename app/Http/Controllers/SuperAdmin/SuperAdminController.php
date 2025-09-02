@@ -1076,14 +1076,18 @@ class SuperAdminController extends Controller
      */
     public function travelSchedule()
     {
+        $weekData  = $this->getWeekData();
+        $weekDates = $this->getWeekDates();
+
         $terminals       = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
         $travelSchedules = TravelSchedule::all();
+        $companyVehicles = CompanyVehicles::where("status", "active")->get();
 
         $departure   = null;
         $destination = null;
         $date        = null;
 
-        return view("superadmin.travel_schedule", compact("terminals", 'travelSchedules', "destination", "departure", "date"));
+        return view("superadmin.travel_schedule", compact("terminals", 'travelSchedules', "destination", "departure", "date", "weekData", "weekDates", "companyVehicles"));
     }
 
     /**
@@ -1741,6 +1745,46 @@ class SuperAdminController extends Controller
         }
 
         return $marker;
+    }
+
+    /**
+     * getWeekData
+     *
+     * @return void
+     */
+    public function getWeekData()
+    {
+        $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
+        $endOfWeek   = Carbon::now()->endOfWeek(Carbon::SUNDAY);
+
+        $weekNumber = $startOfWeek->format('W'); // ISO-8601 week number
+
+        $formatted = "Week {$weekNumber}: " . $startOfWeek->format('jS F, Y') . " - " . $endOfWeek->format('jS F, Y');
+
+        return $formatted;
+    }
+
+    /**
+     * getWeekDates
+     *
+     * @return void
+     */
+
+    public function getWeekDates()
+    {
+
+        $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
+        $datesOfWeek = [];
+
+        for ($i = 0; $i < 7; $i++) {
+            $date          = $startOfWeek->copy()->addDays($i);
+            $datesOfWeek[] = [
+                'date'  => $date->toDateString(),          // e.g. "2025-05-12"
+                'label' => strtoupper($date->format('D')), // e.g. "MON"
+            ];
+        }
+
+        return $datesOfWeek;
     }
 
 }
