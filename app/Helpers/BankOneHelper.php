@@ -19,14 +19,12 @@ class BankOneHelper
             $response = Http::Get($url);
 
             if ($response->failed()) {
-                dd("Na here e dey fail");
                 return 0;
             } else {
-                // dd("It didn't fail");
                 $data = json_decode($response, true);
                 // \Log::info($data["AvailableBalance"]);
                 if (isset($data["AvailableBalance"])) {
-                    // dd("Preparing To Render");
+
                     $balance = preg_replace("/,/", "", $data["AvailableBalance"]);
                     // $balance = $data["WithdrawableBalance"];
 
@@ -34,21 +32,19 @@ class BankOneHelper
                     $user->wallet_balance = $balance;
                     $user->save();
 
-                    dd($balance);
                     return $balance;
 
                 }
-                dd("Rendering Zero");
+
                 return 0;
 
             }
-            dd("Rendering Zero value");
+
             return 0;
 
         } catch (\Exception $e) {
 
             report($e);
-            dd($e->getMessage());
 
             return 0;
         }
