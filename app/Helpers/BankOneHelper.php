@@ -9,7 +9,7 @@ class BankOneHelper
     public static function accountBalance()
     {
         $user = Auth::user();
-        dd($user->account_number);
+
         try {
 
             $baseURL   = env("BANK_ONE_BASE_URL");
@@ -17,6 +17,8 @@ class BankOneHelper
             $url       = $baseURL . '/BankOneWebAPI/api/Account/GetAccountByAccountNumber/2?authToken=' . $authToken . '&accountNumber=' . $user->account_number;
 
             $response = Http::Get($url);
+
+            dd($response);
 
             if ($response->failed()) {
                 return 0;
