@@ -22,7 +22,7 @@ class BankOneHelper
                 dd("Na here e dey fail");
                 return 0;
             } else {
-                dd("It didn't fail");
+                // dd("It didn't fail");
                 $data = json_decode($response, true);
                 // \Log::info($data["AvailableBalance"]);
                 if (isset($data["AvailableBalance"])) {
