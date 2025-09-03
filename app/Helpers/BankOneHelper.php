@@ -27,7 +27,7 @@ class BankOneHelper
                 // \Log::info($data["AvailableBalance"]);
                 if (isset($data["AvailableBalance"])) {
                     // dd("Preparing To Render");
-                    $balance = preg_replace("/,/", $data["AvailableBalance"]);
+                    $balance = preg_replace("/,/", "", $data["AvailableBalance"]);
                     // $balance = $data["WithdrawableBalance"];
 
                     $user                 = Auth::user();
