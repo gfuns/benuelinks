@@ -126,20 +126,20 @@
                         <!-- form group -->
                         <div class="mb-3 col-12">
                             <label class="form-label">Surname <span class="text-danger">*</span></label>
-                            <input type="text" name="surname" class="form-control" placeholder="Enter Role" required>
+                            <input type="text" name="surname" class="form-control" placeholder="Enter Surname" required>
                             <div class="invalid-feedback">Please provide surname.</div>
                         </div>
 
                         <div class="mb-3 col-12">
                             <label class="form-label">Other Names <span class="text-danger">*</span></label>
-                            <input type="text" name="other_names" class="form-control" placeholder="Enter Role"
+                            <input type="text" name="other_names" class="form-control" placeholder="Enter Other Names"
                                 required>
                             <div class="invalid-feedback">Please provide other_names.</div>
                         </div>
 
                         <div class="mb-3 col-12">
                             <label class="form-label">Email <span class="text-danger">*</span></label>
-                            <input type="email" name="email" class="form-control" placeholder="Enter Role" required>
+                            <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
                             <div class="invalid-feedback">Please provide email.</div>
                         </div>
 

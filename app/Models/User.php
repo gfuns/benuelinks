@@ -82,17 +82,19 @@ class User extends Authenticatable implements Auditable
                 }
             }
 
-            $otp = CustomerOtp::updateOrCreate(
-                [
-                    'user_id'  => $user->id,
-                    'otp_type' => 'email',
-                ], [
-                    'otp'            => User::generateOtp(),
-                    'otp_expiration' => Carbon::now()->addMinutes(5),
-                ]);
+            if ($user->role_id == 2) {
+                $otp = CustomerOtp::updateOrCreate(
+                    [
+                        'user_id'  => $user->id,
+                        'otp_type' => 'email',
+                    ], [
+                        'otp'            => User::generateOtp(),
+                        'otp_expiration' => Carbon::now()->addMinutes(5),
+                    ]);
 
-            if ($otp) {
-                SendEmailVerificationCode::dispatch($otp);
+                if ($otp) {
+                    SendEmailVerificationCode::dispatch($otp);
+                }
             }
         });
     }

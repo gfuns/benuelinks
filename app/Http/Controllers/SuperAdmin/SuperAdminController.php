@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AccountCreationMail as AccountCreationMail;
 use App\Models\AuditTrails;
 use App\Models\AuthenticationLogs;
 use App\Models\CompanyRoutes;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Mail;
 use \Carbon\Carbon;
 
 class SuperAdminController extends Controller
@@ -453,8 +455,16 @@ class SuperAdminController extends Controller
         $user->role_id      = $request->role;
         $user->password     = Hash::make($request->phone_number);
         if ($user->save()) {
-            toast('User Account Created Successfully', 'success');
-            return back();
+
+            try {
+                Mail::to($user)->send(new AccountCreationMail($user));
+            } catch (\Exception $e) {
+                \Log::error($e->getMessage());
+            } finally {
+                toast('User Account Created Successfully', 'success');
+                return back();
+            }
+
         } else {
             toast('Something went wrong. Please try again', 'error');
             return back();
