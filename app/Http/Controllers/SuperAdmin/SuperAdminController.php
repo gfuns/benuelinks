@@ -1339,10 +1339,13 @@ class SuperAdminController extends Controller
             $travelSchedules = TravelSchedule::all();
         }
 
+        $weekData  = $this->getWeekData();
+        $weekDates = $this->getWeekDates();
+
         $terminals = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
 
         $companyVehicles = CompanyVehicles::where("status", "active")->get();
-        return view("superadmin.travel_schedule", compact("travelSchedules", "terminals", "companyVehicles", "departure", "destination", "date"));
+        return view("superadmin.travel_schedule", compact("travelSchedules", "terminals", "companyVehicles", "departure", "destination", "date", "weekData", "weekDates"));
     }
 
     /**
