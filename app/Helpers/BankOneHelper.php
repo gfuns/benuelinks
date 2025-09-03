@@ -18,7 +18,7 @@ class BankOneHelper
 
             $response = Http::Get($url);
 
-            dd($response);
+            dd(json_decode($response));
 
             if ($response->failed()) {
                 return 0;
