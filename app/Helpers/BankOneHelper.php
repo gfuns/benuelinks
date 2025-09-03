@@ -18,14 +18,15 @@ class BankOneHelper
 
             $response = Http::Get($url);
 
-            dd(json_decode($response));
-
             if ($response->failed()) {
+                dd("Na here e dey fail");
                 return 0;
             } else {
+                dd("It didn't fail");
                 $data = json_decode($response, true);
                 // \Log::info($data["AvailableBalance"]);
                 if (isset($data["AvailableBalance"])) {
+                    dd("Preparing To Render");
                     $balance = $data["AvailableBalance"];
                     // $balance = $data["WithdrawableBalance"];
 
@@ -36,14 +37,17 @@ class BankOneHelper
                     return $balance;
 
                 }
+                dd("Rendering Zero");
                 return 0;
 
             }
+            dd("Rendering Zero value");
             return 0;
 
         } catch (\Exception $e) {
 
             report($e);
+            dd($e->getMessage());
 
             return 0;
         }
