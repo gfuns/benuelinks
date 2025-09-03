@@ -26,7 +26,7 @@ class BankOneHelper
                 $data = json_decode($response, true);
                 // \Log::info($data["AvailableBalance"]);
                 if (isset($data["AvailableBalance"])) {
-                    dd("Preparing To Render");
+                    // dd("Preparing To Render");
                     $balance = $data["AvailableBalance"];
                     // $balance = $data["WithdrawableBalance"];
 
