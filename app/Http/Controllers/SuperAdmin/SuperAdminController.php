@@ -1101,6 +1101,197 @@ class SuperAdminController extends Controller
     }
 
     /**
+     * storeTravelSchedule
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function storeTravelSchedule(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'take_off_point'         => 'required',
+            'destination'            => 'required',
+            'departure_time'         => 'required',
+            'schedule_configuration' => 'required',
+            'scheduled_date'         => 'required_if:schedule_configuration,specific',
+            'week_date'              => 'required_if:schedule_configuration,weekly',
+            'month_date'             => 'required_if:schedule_configuration,monthly',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        try {
+            if ($request->schedule_configuration == "specific") {
+                $alreadyExist = TravelSchedule::where("departure", $request->take_off_point)->where("destination", $request->destination)->whereDate("scheduled_date", $request->scheduled_date)->where("scheduled_time", $request->departure_time)->first();
+                if (! isset($alreadyExist)) {
+                    $schedule                 = new TravelSchedule;
+                    $schedule->departure      = $request->take_off_point;
+                    $schedule->destination    = $request->destination;
+                    $schedule->scheduled_time = $request->departure_time;
+                    $schedule->scheduled_date = $request->scheduled_date;
+                    $schedule->save();
+                }
+
+            } else if ($request->schedule_configuration == "weekly") {
+                $selectedDates = $request->input('week_date', []);
+                foreach ($selectedDates as $swd) {
+                    $alreadyExist = TravelSchedule::where("departure", $request->take_off_point)->where("destination", $request->destination)->whereDate("scheduled_date", $swd)->where("scheduled_time", $request->departure_time)->first();
+                    if (! isset($alreadyExist)) {
+                        $schedule                 = new TravelSchedule;
+                        $schedule->departure      = $request->take_off_point;
+                        $schedule->destination    = $request->destination;
+                        $schedule->scheduled_time = $request->departure_time;
+                        $schedule->scheduled_date = $swd;
+                        $schedule->save();
+                    }
+                }
+            } else {
+                $selectedDates = $request->input('month_date', []);
+                foreach ($selectedDates as $smd) {
+                    $alreadyExist = TravelSchedule::where("departure", $request->take_off_point)->where("destination", $request->destination)->whereDate("scheduled_date", $smd)->where("scheduled_time", $request->departure_time)->first();
+                    if (! isset($alreadyExist)) {
+                        $schedule                 = new TravelSchedule;
+                        $schedule->departure      = $request->take_off_point;
+                        $schedule->destination    = $request->destination;
+                        $schedule->scheduled_time = $request->departure_time;
+                        $schedule->scheduled_date = $smd;
+                        $schedule->save();
+                    }
+                }
+            }
+
+            toast('Travel Schedule Created Successfully', 'success');
+            return back();
+        } catch (\Exception $e) {
+            toast('Somethint went wrong. Please try again later.', 'error');
+            return back();
+        }
+
+    }
+
+    /**
+     * adjustDepartureTime
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function adjustDepartureTime(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'schedule_id'    => 'required',
+            'departure_time' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $schedule                 = TravelSchedule::find($request->schedule_id);
+        $schedule->scheduled_time = $request->departure_time;
+        if ($schedule->save()) {
+            toast('Departure Time Adjusted Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * updateTripStatus
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function updateTripStatus(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'schedule_id' => 'required',
+            'trip_status' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $schedule         = TravelSchedule::find($request->schedule_id);
+        $schedule->status = $request->trip_status;
+        if ($schedule->save()) {
+            toast('Trip Status Updated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * assignVehicle
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function assignVehicle(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'schedule_id' => 'required',
+            'vehicle'     => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $schedule          = TravelSchedule::find($request->schedule_id);
+        $schedule->vehicle = $request->vehicle;
+        if ($schedule->save()) {
+            toast('Vehicle Assigned Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * suspendTrip
+     *
+     * @param mixed id
+     *
+     * @return void
+     */
+    public function suspendTrip($id)
+    {
+        $schedule         = TravelSchedule::find($id);
+        $schedule->status = "trip suspended";
+        if ($schedule->save()) {
+            toast('Trip Suspended Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
      * searchTravelSchedule
      *
      * @param Request request

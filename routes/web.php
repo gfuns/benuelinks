@@ -164,6 +164,16 @@ Route::group([
 
     Route::get('/travel-schedule', [SuperAdminController::class, 'travelSchedule'])->name('superadmin.travelSchedule');
 
+    Route::post('/storeTravelSchedule', [SuperAdminController::class, 'storeTravelSchedule'])->name('superadmin.storeTravelSchedule');
+
+    Route::post('/adjustDepartureTime', [SuperAdminController::class, 'adjustDepartureTime'])->name('superadmin.adjustDepartureTime');
+
+    Route::post('/updateTripStatus', [SuperAdminController::class, 'updateTripStatus'])->name('superadmin.updateTripStatus');
+
+    Route::post('/assignVehicle', [SuperAdminController::class, 'assignVehicle'])->name('superadmin.assignVehicle');
+
+    Route::get('/suspendTrip/{id}', [SuperAdminController::class, 'suspendTrip'])->name('superadmin.suspendTrip');
+
     Route::post('/searchTravelSchedule', [SuperAdminController::class, 'searchTravelSchedule'])->name('superadmin.searchTravelSchedule');
 
     Route::get('/filterTravelSchedule/{depa?}/{dest?}/{date?}', [SuperAdminController::class, 'filterTravelSchedule'])->name('superadmin.filterTravelSchedule');

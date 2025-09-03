@@ -254,7 +254,7 @@
             <div class="container">
                 <!-- form -->
                 <form class="needs-validation" novalidate method="post"
-                    action="{{ route('admin.storeTravelSchedule') }}">
+                    action="{{ route('superadmin.storeTravelSchedule') }}">
                     @csrf
                     <div class="row">
                         <!-- form group -->
@@ -420,7 +420,7 @@
             <div class="container">
                 <!-- form -->
                 <form class="needs-validation" novalidate method="post"
-                    action="{{ route('admin.adjustDepartureTime') }}" enctype="multipart/form-data">
+                    action="{{ route('superadmin.adjustDepartureTime') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <!-- form group -->
@@ -457,7 +457,7 @@
             <!-- card body -->
             <div class="container">
                 <!-- form -->
-                <form class="needs-validation" novalidate method="post" action="{{ route('admin.assignVehicle') }}"
+                <form class="needs-validation" novalidate method="post" action="{{ route('superadmin.assignVehicle') }}"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="row">
@@ -504,7 +504,7 @@
 
                     </button>
                 </div>
-                <form class="needs-validation" novalidate method="post" action="{{ route('admin.updateTripStatus') }}"
+                <form class="needs-validation" novalidate method="post" action="{{ route('superadmin.updateTripStatus') }}"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
