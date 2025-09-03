@@ -9,7 +9,6 @@ class BankOneHelper
     public static function accountBalance()
     {
         $user = Auth::user();
-        dd($user);
         dd($user->account_number);
         try {
 
