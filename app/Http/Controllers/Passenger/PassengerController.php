@@ -218,6 +218,9 @@ class PassengerController extends Controller
             "deposits" => BankOneHelper::accountBalance(),
             "bonuses"  => 0,
         ];
+
+        dd($balances);
+
         $transactions = WalletTransactions::orderBy("id", "desc")->where("user_id", Auth::user()->id)->get();
         return view("passenger.wallet", compact("transactions", "balances"));
     }
