@@ -34,7 +34,7 @@ class BankOneHelper
                     $user->wallet_balance = $balance;
                     $user->save();
 
-                    dd($balance);
+                    // dd($balance);
                     return $balance;
 
                 }
