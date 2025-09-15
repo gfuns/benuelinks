@@ -54,7 +54,7 @@
                         <div class="card-header m-4 pt-4  ps-4 d-flex align-items-center">
                             <div class="card-title" style="font-size: 16px">Search Result</div>
                         </div>
-                        <div class="m-4 pb-5">
+                        <div class="table-responsive m-4 pb-5">
 
                             <table class="table mb-0 table-hover table-centered">
                                 <thead>

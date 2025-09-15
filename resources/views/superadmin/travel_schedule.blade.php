@@ -190,6 +190,21 @@
                                                                 </li>
                                                             @endif
 
+
+                                                            @if ($schedule->status == 'scheduled' || $schedule->status == 'boarding in progress')
+                                                                <li>
+
+                                                                    <a class="dropdown-item mb-2" href="#"
+                                                                        data-bs-toggle="offcanvas"
+                                                                        data-bs-target="#assignVehicle"
+                                                                        data-backdrop="static"
+                                                                        data-myid="{{ $schedule->id }}"
+                                                                        data-vehicle="{{ $schedule->vehicle }}"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Assign
+                                                                        Vehicle</a>
+                                                                </li>
+                                                            @endif
+
                                                             @if ($schedule->status == 'scheduled')
                                                                 <li>
                                                                     <a class="dropdown-item mb-2" href="#"
@@ -201,17 +216,6 @@
                                                                             class="fe fe-eye dropdown-item-icon"></i>Adjust
                                                                         Departure
                                                                         Time</a>
-                                                                </li>
-                                                                <li>
-
-                                                                    <a class="dropdown-item mb-2" href="#"
-                                                                        data-bs-toggle="offcanvas"
-                                                                        data-bs-target="#assignVehicle"
-                                                                        data-backdrop="static"
-                                                                        data-myid="{{ $schedule->id }}"
-                                                                        data-vehicle="{{ $schedule->vehicle }}"><i
-                                                                            class="fe fe-eye dropdown-item-icon"></i>Assign
-                                                                        Vehicle</a>
                                                                 </li>
                                                                 <li>
 
@@ -457,8 +461,8 @@
             <!-- card body -->
             <div class="container">
                 <!-- form -->
-                <form class="needs-validation" novalidate method="post" action="{{ route('superadmin.assignVehicle') }}"
-                    enctype="multipart/form-data">
+                <form class="needs-validation" novalidate method="post"
+                    action="{{ route('superadmin.assignVehicle') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <!-- form group -->
@@ -504,8 +508,8 @@
 
                     </button>
                 </div>
-                <form class="needs-validation" novalidate method="post" action="{{ route('superadmin.updateTripStatus') }}"
-                    enctype="multipart/form-data">
+                <form class="needs-validation" novalidate method="post"
+                    action="{{ route('superadmin.updateTripStatus') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
