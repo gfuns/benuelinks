@@ -374,7 +374,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <form method="POST" action="{{ route('guest.payWithBankOne') }}">
+                            <form method="POST" action="{{ route('guest.payWithXtrapay') }}">
                                 @csrf
                                 <input id="myid" type="hidden" name="booking_id" value="{{ $booking->id }}"
                                     class="form-control" required>

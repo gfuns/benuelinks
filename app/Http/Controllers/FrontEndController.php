@@ -2,15 +2,14 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendPasswordResetMail;
-use App\Models\BankonePayments;
 use App\Models\CompanyTerminals;
 use App\Models\CustomerOtp;
-use App\Models\GuestAccounts;
 use App\Models\GuestBooking;
 use App\Models\NewsletterSubscription;
 use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
+use App\Models\XtrapayPayments;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\JsonResponse;
@@ -457,13 +456,13 @@ class FrontEndController extends Controller
     }
 
     /**
-     * payWithBankOne
+     * payWithXtrapay
      *
      * @param Request request
      *
      * @return void
      */
-    public function payWithBankOne(Request $request)
+    public function payWithXtrapay(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'booking_id' => 'required|numeric',
@@ -477,50 +476,55 @@ class FrontEndController extends Controller
         }
 
         try {
-            $booking = GuestBooking::find($request->booking_id);
+            DB::beginTransaction();
 
-            $guestAccount = DB::transaction(function () {
-                // Fetch one random available guest_account and lock it
-                $guest = GuestAccounts::where('availability', 1)
-                    ->inRandomOrder()
-                    ->lockForUpdate()
-                    ->first();
+            $booking   = GuestBooking::find($request->booking_id);
+            $reference = self::genInternalRef($booking->id);
 
-                if ($guest) {
-                    // Update availability inside the same transaction
-                    $guest->availability = 0;
-                    $guest->save();
-                }
+            $response = Http::accept('application/json')->withHeaders([
+                'authorization' => "Bearer " . env('XTRAPAY_TOKEN'),
+                'content_type'  => "Content-Type: application/json",
+            ])->post(env("XTRAPAY_BASE_URL") . "/peace/guest-va", [
+                "reference" => $reference, // required, unique per transaction
+                "amount"    => $booking->travel_fare,
+            ]);
 
-                return $guest;
-            });
+            // \Log::info($response);
 
-            if (! isset($guestAccount)) {
-                alert()->error('', "Could Not Find An Available Virtual Account For This Transaction. Please Try Again Later.");
+            if ($response->failed()) {
+                $data = json_decode($response, true);
+                toast($data["message"], 'error');
                 return back();
-            }
-
-            $bankOne                 = new BankonePayments;
-            $bankOne->transaction_id = $booking->id;
-            $bankOne->reference      = self::genMiddlewareRef($booking->id);
-            $bankOne->amount         = $booking->travel_fare;
-            $bankOne->trx_type       = "guest";
-            $bankOne->account_number = $guestAccount->account_number;
-            $bankOne->account_name   = $guestAccount->last_name . " " . $guestAccount->other_names;
-            $bankOne->bank           = $guestAccount->bank_name;
-            if ($bankOne->save()) {
-
-                return redirect()->route("guest.paymentDetails", [$bankOne->reference]);
 
             } else {
-                alert()->error('', "Failed to initialize payment gateway");
-                return back();
+                $data = json_decode($response, true);
+                // \Log::info($data);
+                if ($data["status"] === true) {
+
+                    $xtrapay                 = new XtrapayPayments;
+                    $xtrapay->transaction_id = $booking->id;
+                    $xtrapay->reference      = $data["data"]["reference"];
+                    $xtrapay->amount         = $booking->travel_fare;
+                    $xtrapay->trx_type       = "guest";
+                    $xtrapay->bank           = "Providus Bank";
+                    $xtrapay->account_name   = $data["data"]["account_name"];
+                    $xtrapay->account_number = $data["data"]["account_number"];
+                    $xtrapay->save();
+
+                    DB::commit();
+
+                    return redirect()->route("guest.paymentDetails", [$xtrapay->reference]);
+                } else {
+                    toast($data["message"], 'error');
+                    return back();
+                }
+
             }
 
         } catch (\Throwable $e) {
-
+            DB::rollback();
             report($e);
-            alert()->error('', "Failed to initialize payment gateway");
+            alert()->error('', $e->getMessage());
             return back();
         }
     }
@@ -534,7 +538,7 @@ class FrontEndController extends Controller
      */
     public function paymentDetails($reference)
     {
-        $paymentDetails = BankonePayments::where("reference", $reference)->first();
+        $paymentDetails = XtrapayPayments::where("reference", $reference)->first();
         if ($paymentDetails->status == "pending") {
 
             return view("payment_details", compact("paymentDetails"));
@@ -655,5 +659,31 @@ class FrontEndController extends Controller
         $reference = $data['response']['data'];
 
         return $reference;
+    }
+
+    /**
+     * genInternalRef
+     *
+     * @return void
+     */
+    public function genInternalRef($clientId)
+    {
+        // Get the current timestamp
+        $timestamp = (string) (strtotime('now') . microtime(true));
+
+        // Remove any non-numeric characters (like dots)
+        $cleanedTimestamp = preg_replace('/[^0-9]/', '', $timestamp);
+
+        $microtime = substr($cleanedTimestamp, -4);
+
+        // Shuffle the digits
+        $shuffled = str_shuffle($cleanedTimestamp);
+
+        // Extract the first 5 characters
+        $code = substr($shuffled, 0, 11);
+
+        $reference = $clientId . $microtime . $code;
+
+        return substr($reference, 0, 12);
     }
 }

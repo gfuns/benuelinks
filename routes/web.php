@@ -45,7 +45,7 @@ Route::group([
 
     Route::get('/booking-preview/{id}', [FrontEndController::class, 'bookingPreview'])->name('guest.bookingPreview');
 
-    Route::post('/payWithBankOne', [FrontEndController::class, 'payWithBankOne'])->name('guest.payWithBankOne');
+    Route::post('/payWithXtrapay', [FrontEndController::class, 'payWithXtrapay'])->name('guest.payWithXtrapay');
 
     Route::get('/payment-details/{reference}', [FrontEndController::class, 'paymentDetails'])->name('guest.paymentDetails');
 

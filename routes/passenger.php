@@ -4,6 +4,7 @@ use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\BankOneController;
 use App\Http\Controllers\Passenger\PassengerController;
 use App\Http\Controllers\PaystackController;
+use App\Http\Controllers\XtrapayController;
 use Illuminate\Support\Facades\Route;
 
 //Work Group Modules
@@ -60,5 +61,7 @@ Route::group([
 Route::get('/paystack/callback', [PaystackController::class, 'handlePaystackCallback']);
 
 Route::post('/bankone/webhook', [BankOneController::class, 'webhookNotification']);
+
+Route::post('/xtrapay/webhook', [XtrapayController::class, 'webhookNotification']);
 
 Route::get('/ajax/get-bookedSeats/{scheduleid}', [AjaxController::class, 'getBookedSeats'])->name('ajax.bookedSeats');
