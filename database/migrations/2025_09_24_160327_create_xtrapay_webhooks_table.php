@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("event");
             $table->string("reference");
+            $table->double("amount", 12, 2)->nullable();
             $table->string("account_number");
             $table->string("account_name");
             $table->string("status");
