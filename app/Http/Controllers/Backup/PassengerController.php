@@ -1,15 +1,17 @@
 <?php
-namespace App\Http\Controllers\Passenger;
+namespace App\Http\Controllers\Backup;
 
+use App\Helpers\BankOneHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\BookingSuccessful as BookingSuccessful;
+use App\Models\BankonePayments;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
+use App\Models\GuestAccounts;
 use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
 use App\Models\WalletTransactions;
-use App\Models\XtrapayPayments;
 use Auth;
 use Carbon\Carbon;
 use DateTime;
@@ -18,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Mail;
 
 class PassengerController extends Controller
@@ -212,7 +215,7 @@ class PassengerController extends Controller
     public function wallet()
     {
         $balances = [
-            "deposits" => Auth::user()->wallet_balance,
+            "deposits" => BankOneHelper::accountBalance(),
             "bonuses"  => 0,
         ];
 
@@ -249,44 +252,65 @@ class PassengerController extends Controller
         try {
             DB::beginTransaction();
 
-            $response = Http::accept('application/json')->withHeaders([
-                'authorization' => "Bearer " . env('XTRAPAY_TOKEN'),
-                'content_type'  => "Content-Type: application/json",
-            ])->post(env("XTRAPAY_BASE_URL") . "/peace/loyalty-va", [
-                'bvn'   => Auth::user()->bvn,
-                'email' => Auth::user()->email,
-                'name'  => Auth::user()->last_name . " " . Auth::user()->other_names,
-            ]);
+            $baseURL   = env("BANK_ONE_BASE_URL");
+            $authToken = env("MY_BANK_ONE_AUTH_TOKEN");
+            $url       = $baseURL . '/BankOneWebAPI/api/Account/CreateAccountQuick/2?authToken=' . $authToken;
 
+            // dd($url);
+
+            $postData = [
+                'TransactionTrackingRef'    => Str::uuid(),
+                'AccountOpeningTrackingRef' => Str::uuid(),
+                'ProductCode'               => env("BANK_ONE_PRODUCT_CODE"),
+                'LastName'                  => Auth::user()->last_name,
+                'OtherNames'                => Auth::user()->other_names,
+                'BVN'                       => Auth::user()->bvn,
+                'PhoneNo'                   => Auth::user()->phone_number,
+                'Gender'                    => Auth::user()->gender === 'male' ? 0 : 1,
+                'DateOfBirth'               => $this->bankOneDate(Auth::user()->dob),
+                'Address'                   => Auth::user()->contact_address,
+                'AccountOfficerCode'        => env("BANK_ONE_ACCOUNT_OFFICER"),
+                'Email'                     => Auth::user()->email,
+                'AccountTier'               => 2,
+            ];
+
+            // dd($postData);
+
+            $response = Http::post($url, $postData);
             // \Log::info($response);
+            // dd($response);
 
             if ($response->failed()) {
-                $data = json_decode($response, true);
-                toast($data["message"], 'error');
+                // dd("Yesy");
+                toast('An Error Occured While Creating Account For Customer On Bank One Infrastructure', 'error');
                 return back();
 
             } else {
+
                 $data = json_decode($response, true);
                 // \Log::info($data);
                 // dd($data);
-                if ($data["status"] === true) {
-
-                    $user                 = Auth::user();
-                    $user->wallet_pin     = Hash::make($request->wallet_pin);
-                    $user->account_number = $data["data"]["account_number"];
-                    $user->account_name   = $data["data"]["account_name"];
-                    $user->bank           = "Providus Bank";
-                    $user->save();
-
-                    DB::commit();
-
-                    alert()->success('', 'Wallet PIN Setup Successfully.');
-                    return back();
-                } else {
-                    toast($data["message"], 'error');
+                if ($data["IsSuccessful"] === false) {
+                    toast($data["Message"], 'error');
                     return back();
                 }
 
+                $user                       = Auth::user();
+                $user->wallet_pin           = Hash::make($request->wallet_pin);
+                $user->account_number       = $data["Message"]["AccountNumber"];
+                $user->bankOneCustomerId    = $data["Message"]["CustomerID"];
+                $user->bankOneBankId        = $data["Message"]["Id"];
+                $user->bankOneAccountNumber = $data["Message"]["BankoneAccountNumber"];
+                $user->save();
+
+                DB::commit();
+
+                $accountName = $user->last_name . " " . $user->other_names;
+
+                $this->logAccount($user->account_number, $accountName, $user->id);
+
+                alert()->success('', 'Wallet PIN Setup Successfully.');
+                return back();
             }
         } catch (\Exception $e) {
 
@@ -518,7 +542,7 @@ class PassengerController extends Controller
     public function bookingPreview($id)
     {
         $booking        = TravelBooking::find($id);
-        $accountBalance = Auth::user()->wallet_balance;
+        $accountBalance = BankOneHelper::accountBalance();
         return view("passenger.booking_preview", compact("booking", "accountBalance"));
     }
 
@@ -534,29 +558,35 @@ class PassengerController extends Controller
         try {
             $booking = TravelBooking::find($id);
 
-            $accountBalance = Auth::user()->wallet_balance;
+            $accountBalance = BankOneHelper::accountBalance();
 
             if ($accountBalance < $booking->travel_fare) {
                 alert()->error('', 'Insufficient Wallet Balance');
                 return back();
             }
 
+            $debitAccount = BankOneHelper::debitAccount($booking->travel_fare, $booking->booking_number);
+
+            if ($debitAccount["status"] === false) {
+                alert()->error('', $debitAccount["message"]);
+                return back();
+            }
+
             DB::beginTransaction();
-
-            $user                 = Auth::user();
-            $user->wallet_balance = (double) ($accountBalance - $booking->travel_fare);
-            $user->save();
-
             $walletTrx                 = new WalletTransactions;
             $walletTrx->user_id        = Auth::user()->id;
             $walletTrx->trx_type       = "debit";
-            $walletTrx->reference      = self::genInternalRef(Auth::user()->id);
+            $walletTrx->reference      = $debitAccount["message"];
             $walletTrx->amount         = $booking->travel_fare;
             $walletTrx->balance_before = $accountBalance;
             $walletTrx->balance_after  = ($accountBalance - $booking->travel_fare);
             $walletTrx->description    = "Payment for Trip with Booking No: {$booking->booking_number}";
             $walletTrx->status         = "successful";
             $walletTrx->save();
+
+            $user                 = Auth::user();
+            $user->wallet_balance = (double) ($accountBalance - $booking->travel_fare);
+            $user->save();
 
             $booking->payment_status  = "paid";
             $booking->payment_channel = "wallet";
@@ -587,13 +617,13 @@ class PassengerController extends Controller
     }
 
     /**
-     * payWithXtrapay
+     * payWithBankOne
      *
      * @param Request request
      *
      * @return void
      */
-    public function payWithXtrapay(Request $request)
+    public function payWithBankOne(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'booking_id' => 'required|numeric',
@@ -607,61 +637,52 @@ class PassengerController extends Controller
         }
 
         try {
-            DB::beginTransaction();
+            $booking = TravelBooking::find($request->booking_id);
 
-            $booking   = TravelBooking::find($request->booking_id);
-            $reference = self::genInternalRef(Auth::user()->id);
+            $guestAccount = DB::transaction(function () {
+                // Fetch one random available guest_account and lock it
+                $guest = GuestAccounts::where('availability', 1)
+                    ->inRandomOrder()
+                    ->lockForUpdate()
+                    ->first();
 
-            $response = Http::accept('application/json')->withHeaders([
-                'authorization' => "Bearer " . env('XTRAPAY_TOKEN'),
-                'content_type'  => "Content-Type: application/json",
-            ])->post(env("XTRAPAY_BASE_URL") . "/peace/guest-va", [
-                "reference" => $reference, // required, unique per transaction
-                "amount"    => $booking->travel_fare,
-                "meta"      => [
-                    "customerId" => Auth::user()->id,
-                    "note"       => "Passenger Booking",
-                ],
-            ]);
-
-            // \Log::info($response);
-
-            if ($response->failed()) {
-                $data = json_decode($response, true);
-                toast($data["message"], 'error');
-                return back();
-
-            } else {
-                $data = json_decode($response, true);
-                // \Log::info($data);
-                if ($data["status"] === true) {
-
-                    $xtrapay                 = new XtrapayPayments;
-                    $xtrapay->transaction_id = $booking->id;
-                    $xtrapay->reference      = $data["data"]["reference"];
-                    $xtrapay->amount         = $booking->travel_fare;
-                    $xtrapay->trx_type       = "booking";
-                    $xtrapay->bank           = "Providus Bank";
-                    $xtrapay->account_name   = $data["data"]["account_name"];
-                    $xtrapay->account_number = $data["data"]["account_number"];
-                    $xtrapay->save();
-
-                    DB::commit();
-
-                    return redirect()->route("passenger.paymentDetails", [$xtrapay->reference]);
-                } else {
-                    toast($data["message"], 'error');
-                    return back();
+                if ($guest) {
+                    // Update availability inside the same transaction
+                    $guest->availability = 0;
+                    $guest->save();
                 }
 
+                return $guest;
+            });
+
+            if (! isset($guestAccount)) {
+                alert()->error('', "Could Not Find An Available Virtual Account For This Transaction. Please Try Again Later.");
+                return back();
             }
 
+            $bankOne                 = new BankonePayments;
+            $bankOne->transaction_id = $booking->id;
+            $bankOne->reference      = self::genMiddlewareRef(Auth::user()->id);
+            $bankOne->amount         = $booking->travel_fare;
+            $bankOne->trx_type       = "booking";
+            $bankOne->account_number = $guestAccount->account_number;
+            $bankOne->account_name   = $guestAccount->last_name . " " . $guestAccount->other_names;
+            $bankOne->bank           = $guestAccount->bank_name;
+            if ($bankOne->save()) {
+
+                return redirect()->route("passenger.paymentDetails", [$bankOne->reference]);
+
+            } else {
+                alert()->error('', "Failed to initialize payment gateway");
+                return back();
+            }
         } catch (\Throwable $e) {
-            DB::rollback();
+
             report($e);
-            alert()->error('', $e->getMessage());
+            alert()->error('', "Failed to initialize payment gateway");
             return back();
         }
+
     }
 
     /**
@@ -673,7 +694,7 @@ class PassengerController extends Controller
      */
     public function paymentDetails($reference)
     {
-        $paymentDetails = XtrapayPayments::where("reference", $reference)->first();
+        $paymentDetails = BankonePayments::where("reference", $reference)->first();
         if ($paymentDetails->status == "pending") {
 
             return view("passenger.payment_details", compact("paymentDetails"));
@@ -770,32 +791,6 @@ class PassengerController extends Controller
         $reference = $data['response']['data'];
 
         return $reference;
-    }
-
-    /**
-     * genInternalRef
-     *
-     * @return void
-     */
-    public function genInternalRef($clientId)
-    {
-        // Get the current timestamp
-        $timestamp = (string) (strtotime('now') . microtime(true));
-
-        // Remove any non-numeric characters (like dots)
-        $cleanedTimestamp = preg_replace('/[^0-9]/', '', $timestamp);
-
-        $microtime = substr($cleanedTimestamp, -4);
-
-        // Shuffle the digits
-        $shuffled = str_shuffle($cleanedTimestamp);
-
-        // Extract the first 5 characters
-        $code = substr($shuffled, 0, 11);
-
-        $reference = $clientId . $microtime . $code;
-
-        return substr($reference, 0, 12);
     }
 
     /**

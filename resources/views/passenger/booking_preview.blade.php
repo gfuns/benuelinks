@@ -168,7 +168,7 @@
                                 </table>
 
                                 <div class="mt-4">
-                                    <form method="POST" action="{{ route("passenger.payWithBankOne") }}">
+                                    <form method="POST" action="{{ route("passenger.payWithXtrapay") }}">
                                         @csrf
                                         <input id="myid" type="hidden" name="booking_id"
                                             value="{{ $booking->id }}" class="form-control" required>

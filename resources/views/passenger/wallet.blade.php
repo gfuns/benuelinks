@@ -281,8 +281,8 @@
                             <div class="input-item input-with-label">
                                 <table style="font-size:16px !important;">
                                     <tr>
-                                        <td width="50%"><strong>Bank:</strong></td>
-                                        <td>Peace Microfinace Bank</td>
+                                        <td width="40%"><strong>Bank:</strong></td>
+                                        <td>{{ Auth::user()->bank }}</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Account Number:</strong></td>
@@ -290,7 +290,7 @@
                                     </tr>
                                     <tr>
                                         <td><strong>Account Name:</strong></td>
-                                        <td>{{ Auth::user()->last_name . ' ' . Auth::user()->other_names }}</td>
+                                        <td>{{ Auth::user()->account_name }}</td>
                                     </tr>
                                 </table>
 

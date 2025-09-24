@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('referral_code')->nullable();
             $table->string('referral_id')->nullable();
             $table->string('account_number')->nullable();
+            $table->string('account_name')->nullable();
+            $table->string('bank')->nullable();
             $table->string('wallet_pin')->nullable();
             $table->double('wallet_balance', 12, 2)->default(0.00);
             $table->string('nok')->nullable();

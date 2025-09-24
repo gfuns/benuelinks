@@ -48,7 +48,7 @@ Route::group([
 
     Route::post('/bookingPayment', [PassengerController::class, 'bookingPayment'])->name('passenger.bookingPayment');
 
-    Route::post('/payWithBankOne', [PassengerController::class, 'payWithBankOne'])->name('passenger.payWithBankOne');
+    Route::post('/payWithXtrapay', [PassengerController::class, 'payWithXtrapay'])->name('passenger.payWithXtrapay');
 
     Route::get('/payment-details/{reference}', [PassengerController::class, 'paymentDetails'])->name('passenger.paymentDetails');
 
