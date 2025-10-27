@@ -93,8 +93,9 @@
         <!-- Header Section -->
         <div class="header">
             <div class="header">
-                <img src="https://portal.peacextracomfort.com/images/logo.png" alt="Logo" class="logo"
-                    style="max-width:200px; margin-bottom: 10px">
+                <h2>Peace Xtra Comfort</h2>
+                {{-- <img src="https://portal.peacextracomfort.com/images/logo.png" alt="Logo" class="logo"
+                    style="max-width:200px; margin-bottom: 10px"> --}}
                 <div class="title">
                     PASSENGER BOARDING TICKET
                 </div>
