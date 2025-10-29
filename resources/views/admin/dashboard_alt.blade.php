@@ -461,7 +461,7 @@
 @section('customjs')
     <script type="text/javascript">
         $('#travDate').change(function() {
-            var terminal = {{ Js::from(Auth::user()->id) }};
+            var terminal = {{ Js::from(Auth::user()->terminal->id) }};
             var date = $(this).val();
             $('#destination').html(
                 '<option value="">Fetching data, please wait...</option>'); // Show "Fetching data" message
@@ -480,7 +480,7 @@
         });
 
         $('#destination').change(function() {
-            var terminal = {{ Js::from(Auth::user()->id) }};
+            var terminal = {{ Js::from(Auth::user()->terminal->id) }};
             var destination = $(this).val();
             var date = $('#travDate').val();
             $('#depTime').html(

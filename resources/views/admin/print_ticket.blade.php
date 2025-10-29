@@ -3,151 +3,155 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peace Mass Transit (PMT) | Passenger Boarding Ticket</title>
-
+    <title>Peace Mass Transit | Boarding Ticket</title>
     <style>
-        /* Basic reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Container styling */
+        body {
+            width: 80mm;
+            font-family: 'Arial', sans-serif;
+            font-size: 11px;
+            color: #000;
+        }
+
         .container {
-            /* max-width: 800px; */
-            margin: 0 auto;
-            padding: 20px;
-            font-family: Arial, sans-serif;
+            padding: 5px 8px;
         }
 
-        /* Header section */
         .header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             text-align: center;
-            margin-bottom: 2px;
-            padding-bottom: 2px;
+            margin-bottom: 15px;
         }
 
-        /* Image styling */
-        .logo {
-            max-height: 100px;
-        }
-
-        /* Title styling */
-        .title {
-            text-align: center;
-            font-size: 18px;
+        .header h2 {
+            font-size: 14px;
             font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .title {
+            font-size: 12px;
+            font-weight: bold;
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            padding: 3px 0;
             margin-bottom: 5px;
         }
 
-        /* School info section */
-        .info {
-            text-align: left;
-            font-size: 13px;
-        }
-
-        .info strong {
-            display: inline-block;
-            width: 130px;
-            padding: 5px;
-        }
-
-        /* Dotted underline styling */
-        .dotted-underline {
-            text-decoration: underline;
-            text-decoration-style: dotted;
-            text-decoration-thickness: 2px;
-            text-underline-offset: 3px;
-            font-size: 13px;
-        }
-
-        /* Table styling */
-        .table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            /* margin-top: 20px; */
             font-size: 12px;
         }
 
-        .table th,
-        .table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+        tr.pad td {
+            padding-bottom: 7px;
         }
 
-        .table th {
-            background-color: #f2f2f2;
+        td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+
+        /* td:first-child {
+            width: 42%;
             font-weight: bold;
+        }
+
+        td:last-child {
+            text-align: right;
+            width: 58%;
+        } */
+
+        .footer {
+            text-align: center;
+            margin-top: 8px;
+            border-top: 1px dashed #000;
+            padding-top: 3px;
+            font-size: 12px;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                padding: 0 5px;
+            }
         }
     </style>
 </head>
 
 <body onload="window.print();">
     <div class="container">
-        <!-- Header Section -->
         <div class="header">
-            <div class="header">
-                <img src="{{ asset('images/logo.png') }}"
-                    alt="Logo" class="logo" style="max-width:200px; margin-bottom: 10px">
-                <div class="title">
-                    PASSENGER BOARDING TICKET
-                </div>
-            </div>
-
+            <h2>Peace Xtra Comfort</h2>
+            <div class="title">PASSENGER BOARDING TICKET</div>
         </div>
 
-        <!-- Main Content (Table) -->
-        <table class="table table-bordered">
-            <tbody>
 
-                <tr>
-                    <td class=""><strong>Booking Number</strong></td>
-                    <td class=""><span>{{ $booking->booking_number }}</span></td>
-                </tr>
-
-                <tr>
-                    <td class=""><strong>Travel Route:</strong></td>
-                    <td class=""><span>{{ $booking->travelRoute() }}</span></td>
-                </tr>
-
-                <tr>
-                    <td class=""><strong>Selected Vehicle:</strong></td>
-                    <td class=""><span>{{ $booking->vehicle_type }}</span></td>
-                </tr>
-
-                <tr>
-                    <td class=""><strong>Departure Date/Time:</strong></td>
-                    <td class=""><span>{{ date_format(new DateTime($booking->travel_date), 'l jS M, Y') }}
-                            {{ $booking->departure_time }}</span></td>
-                </tr>
-
-                <tr>
-                    <td class=""><strong>Passenger Name:</strong></td>
-                    <td class=""><span>{{ $booking->full_name }}</span></td>
-                </tr>
-
-                <tr>
-                    <td class=""><strong>Passenger Phone Number:</strong></td>
-                    <td class=""><span>{{ $booking->phone_number }}</span></td>
-                </tr>
-
-                <tr>
-                    <td class=""><strong>Seat Number:</strong></td>
-                    <td class=""><span>Seat {{ $booking->seat }}</span></td>
-                </tr>
-
-                <tr>
-                    <td class=""><strong>Amount Paid:</strong></td>
-                    <td class=""><span>&#8358; {{ number_format($booking->travel_fare, 2) }}</span></td>
-                </tr>
-            </tbody>
+        <table>
+            <tr>
+                <td><strong>Booking Number:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ $booking->booking_number }}</td>
+            </tr>
+            <tr>
+                <td><strong>Travel Route:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ $booking->travelRoute() }}</td>
+            </tr>
+            <tr>
+                <td><strong>Vehicle:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ $booking->vehicle_type }}</td>
+            </tr>
+            <tr>
+                <td><strong>Departure:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ date_format(new DateTime($booking->travel_date), 'l jS M, Y') }} {{ $booking->departure_time }}
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Passenger:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ $booking->full_name }}</td>
+            </tr>
+            <tr>
+                <td><strong>Phone:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ $booking->phone_number }}</td>
+            </tr>
+            <tr>
+                <td><strong>Seat No.:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>Seat {{ $booking->seat }}</td>
+            </tr>
+            <tr>
+                <td><strong>Amount Paid:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>&#8358; {{ number_format($booking->travel_fare, 2) }}</td>
+            </tr>
         </table>
+
+        <div class="footer">
+            Thank you for choosing<br>
+            Peace Xtra Comfort
+        </div>
     </div>
 </body>
 
