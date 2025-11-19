@@ -89,8 +89,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <img class="logo" src="{{ $message->embed(public_path('images/logo.png')) }}"
-                alt="{{ env('APP_NAME') }} Logo">
+            <h2>Peace Xtra Comfort</h2>
+            {{-- <img class="logo" src="{{ $message->embed(public_path('images/logo.png')) }}"
+                alt="{{ env('APP_NAME') }} Logo"> --}}
         </div>
 
         <h2>Booking Successful</h2>
@@ -143,7 +144,7 @@
         <p>If you have any questions or need further assistance, please feel free to contact our support team.</p>
 
         <div class="">
-            <p>Best regards,<br>Peace Mass Transit Team</p>
+            <p>Best regards,<br>Peace Xtra Comfort Team</p>
         </div>
 
 

@@ -89,8 +89,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <img class="logo" src="{{ $message->embed(public_path('images/logo.png')) }}"
-                alt="{{ env('APP_NAME') }} Logo">
+            <h2>Peace Xtra Comfort</h2>
+            {{-- <img class="logo" src="{{ $message->embed(public_path('images/logo.png')) }}"
+                alt="{{ env('APP_NAME') }} Logo"> --}}
         </div>
 
         <h2>Notification Of Account Creation</h2>
@@ -104,7 +105,7 @@
         <p>Please ensure that you change your default password to a more secured password after your first login.</p>
 
         <div class="">
-            <p>Best regards,<br>Peace Mass Transit Team</p>
+            <p>Best regards,<br>Peace Xtra Comfort Team</p>
         </div>
 
 

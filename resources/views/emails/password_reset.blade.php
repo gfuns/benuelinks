@@ -48,14 +48,15 @@
 <body>
   <div class="container">
     <div class="logo">
-      <img src="{{ $message->embed(public_path("images/logo.png"))}}" alt="Peace Mass Transit Logo">
+        <h2>Peace Xtra Comfort</h2>
+      {{-- <img src="{{ $message->embed(public_path("images/logo.png"))}}" alt="Peace Mass Transit Logo"> --}}
     </div>
     <h1>Password Reset</h1>
     <p>Dear {{ $name }},</p>
     <p>We have received a request to reset your password. Please use the following code to proceed:</p>
     <div class="code">{{ $otp }}</div>
     <p>If you didn't request a password reset, you can safely ignore this email.</p>
-    <p>Thank you,<br>Peace Mass Transit Team</p>
+    <p>Thank you,<br>Peace Xtra Comfort Team</p>
   </div>
 </body>
 </html>

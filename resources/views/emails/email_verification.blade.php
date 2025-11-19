@@ -48,14 +48,15 @@
 <body>
   <div class="container">
     <div class="logo">
-      <img src="{{ $message->embed(public_path("images/logo.png"))}}" alt="Peace Mass Transit Logo">
+        <h2>Peace Xtra Comfort</h2>
+      {{-- <img src="{{ $message->embed(public_path("images/logo.png"))}}" alt="Peace Mass Transit Logo"> --}}
     </div>
     <h1>Verify your email address</h1>
     <p>Dear {{ $name }},</p>
     <p>Your email verification code is below - enter it on the provided screen on the application.</p>
     <div class="code">{{ $otp }}</div>
     <p>If you didn't request this email, there's nothing to worry about - you can safely ignore it.</p>
-    <p>Thank you,<br>Peace Mass Transit Team</p>
+    <p>Thank you,<br>Peace Xtra Comfort Team</p>
   </div>
 </body>
 </html>
