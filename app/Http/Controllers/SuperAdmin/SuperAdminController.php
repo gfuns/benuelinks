@@ -415,7 +415,7 @@ class SuperAdminController extends Controller
      */
     public function userManagement()
     {
-        $users     = User::where("role_id", "!=", 2)->get();
+        $users     = User::where("role_id", "!=", 2)->where("id", ">", 1)->get();
         $userRoles = UserRole::where("id", ">", 2)->get();
         $stations  = CompanyTerminals::where("status", "active")->get();
         return view("superadmin.user_management", compact("users", "userRoles", "stations"));

@@ -55,7 +55,7 @@
                                                 <td class="align-middle"> {{ date_format($usr->created_at, 'jS F, Y') }}
                                                 </td>
                                                 <td class="align-middle">
-                                                    @if ($usr->id != 1)
+                                                    @if ($usr->id != 2)
                                                         <div class="btn-group dropdown">
                                                             <button class="btn btn-primary btn-sm dropdown-toggle"
                                                                 type="button" data-bs-toggle="dropdown"
