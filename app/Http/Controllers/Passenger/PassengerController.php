@@ -417,9 +417,10 @@ class PassengerController extends Controller
         }
 
         $schedule      = TravelSchedule::find($request->schedule_id);
-        $selectedSeats = $request->input('seatnumber', []);
-        $seatNumber    = $selectedSeats[0] ?? null; // Returns null if array is empty
-
+        $seats         = $request->input('seatnumber', []);
+        $selectedSeats = implode(', ', $seats);
+        $seatCount     = count($seats);
+        $seatNumber    = $selectedSeats ?? null; // Returns null if array is empty
         if (! isset($seatNumber)) {
             alert()->error('', 'Please Select Your Preferred Seat Number!');
             return back();
@@ -443,7 +444,7 @@ class PassengerController extends Controller
             $booking->payment_channel = "pending";
             $booking->classification  = "booking";
             $booking->payment_status  = "pending";
-            $booking->travel_fare     = $schedule->transportFare();
+            $booking->travel_fare     = ($seatCount * $schedule->transportFare());
             $booking->booking_number  = $this->genBookingID();
             $booking->booking_method  = "online";
             $booking->booking_status  = "pending";

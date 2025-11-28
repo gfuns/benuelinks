@@ -243,7 +243,7 @@
                                         </div>
                                         <div class="col-3 vertical-text"><strong>Road</strong></div>
                                         <div class="col-3">
-                                            <div class="mb-2" style="font-size: 18px"><strong>Road</strong></div>
+                                            <div class="mb-2" style="font-size: 16px"><strong>Road</strong></div>
                                             <input id="seat-9" name="seatnumber[]" type="checkbox"
                                                 value="9" /><label for="seat-9" class="seat-nine">
                                                 <div class="seat-numbers">
