@@ -68,6 +68,10 @@ function numberToWord(num) {
         "10": "ten",
         "11": "eleven",
         "12": "twelve",
+        "13": "thirteen",
+        "14": "fourteen",
+        "15": "fifteen",
+        "16": "sixteen",
         // Add more mappings as needed
     };
 

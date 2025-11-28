@@ -114,6 +114,14 @@
             border: #6A6DFD;
         }
 
+        .vertical-text {
+            writing-mode: vertical-rl;
+            /* makes text vertical */
+            transform: rotate(180deg);
+            font-size:15px;
+            /* flips it so it reads bottom to top */
+        }
+
 
         @media (max-width: 575px) {
             .cstnavbar {
@@ -356,7 +364,7 @@
                 <div class="modal-body">
                     <form method="POST" action="{{ route('guest.seatSelection') }}">
                         @csrf
-                        <div class="seats-select pt-2 pb-2">
+                         <div class="seats-select pt-2 pb-2">
                             <div class="row text-center">
                                 <div class="col-4">
                                     <h1 class="titles-seat">
@@ -381,11 +389,11 @@
                             <div class="row">
                                 <div class="col-sm-12 col-md-10 offset-md-1">
                                     <div class="row">
-                                        <div class="col-9">
+                                        <div class="col-6">
                                             <img src="{{ asset('images/steering-wheel.svg') }}" alt=""
                                                 style="width: 40px" />
                                         </div>
-                                        <div class="col-3 align-self-center">
+                                        <div class="col-3 ">
                                             <input id="seat-1" name="seatnumber[]" type="checkbox"
                                                 value="1" /><label for="seat-1" class="seat-one">
                                                 <div class="seat-numbers">
@@ -395,9 +403,6 @@
                                                 </div>
                                             </label>
                                         </div>
-                                    </div>
-                                    <br />
-                                    <div class="row">
                                         <div class="col-3">
                                             <input id="seat-2" name="seatnumber[]" type="checkbox"
                                                 value="2" /><label for="seat-2" class="seat-two">
@@ -408,6 +413,9 @@
                                                 </div>
                                             </label>
                                         </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
                                         <div class="col-3">
                                             <input id="seat-3" name="seatnumber[]" type="checkbox"
                                                 value="3" /><label for="seat-3" class="seat-three">
@@ -418,9 +426,6 @@
                                                 </div>
                                             </label>
                                         </div>
-                                    </div>
-                                    <br />
-                                    <div class="row">
                                         <div class="col-3">
                                             <input id="seat-4" name="seatnumber[]" type="checkbox"
                                                 value="4" /><label for="seat-4" class="seat-four">
@@ -441,7 +446,6 @@
                                                 </div>
                                             </label>
                                         </div>
-                                        <div class="col-3"></div>
                                         <div class="col-3">
                                             <input id="seat-6" name="seatnumber[]" type="checkbox"
                                                 value="6" /><label for="seat-6" class="seat-six">
@@ -453,9 +457,10 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <br />
+                                    {{-- <br /> --}}
                                     <div class="row">
                                         <div class="col-3">
+                                             <div class="mb-3">&nbsp;</div>
                                             <input id="seat-7" name="seatnumber[]" type="checkbox"
                                                 value="7" /><label for="seat-7" class="seat-seven">
                                                 <div class="seat-numbers">
@@ -466,6 +471,7 @@
                                             </label>
                                         </div>
                                         <div class="col-3">
+                                            <div class="mb-3">&nbsp;</div>
                                             <input id="seat-8" name="seatnumber[]" type="checkbox"
                                                 value="8" /><label for="seat-8" class="seat-eight">
                                                 <div class="seat-numbers">
@@ -475,8 +481,9 @@
                                                 </div>
                                             </label>
                                         </div>
-                                        <div class="col-3"></div>
+                                        <div class="col-3 vertical-text"><strong>Road</strong></div>
                                         <div class="col-3">
+                                            <div class="mb-3 mt-2" style="font-size: 14px"><strong>Road</strong></div>
                                             <input id="seat-9" name="seatnumber[]" type="checkbox"
                                                 value="9" /><label for="seat-9" class="seat-nine">
                                                 <div class="seat-numbers">
@@ -486,6 +493,7 @@
                                                 </div>
                                             </label>
                                         </div>
+
                                     </div>
                                     <br />
                                     <div class="row">
@@ -509,7 +517,8 @@
                                                 </div>
                                             </label>
                                         </div>
-                                        <div class="col-3"></div>
+
+                                        <div class="col-3 vertical-text"><strong>Road</strong></div>
                                         <div class="col-3">
                                             <input id="seat-12" name="seatnumber[]" type="checkbox"
                                                 value="12" /><label for="seat-12" class="seat-twelve">
@@ -517,6 +526,49 @@
                                                     <img src="{{ asset('images/seat.svg') }}" alt=""
                                                         style="max-width: 40px !important" />
                                                     <h1 class="number">12</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <input id="seat-13" name="seatnumber[]" type="checkbox"
+                                                value="13" /><label for="seat-13" class="seat-thirteen">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
+                                                    <h1 class="number">13</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-3">
+                                            <input id="seat-14" name="seatnumber[]" type="checkbox"
+                                                value="14" /><label for="seat-14" class="seat-fourten">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
+                                                    <h1 class="number">14</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-3">
+                                            <input id="seat-15" name="seatnumber[]" type="checkbox"
+                                                value="15" /><label for="seat-15" class="seat-fifteen">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
+                                                    <h1 class="number">15</h1>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-3">
+                                            <input id="seat-16" name="seatnumber[]" type="checkbox"
+                                                value="16" /><label for="seat-16" class="seat-sixteen">
+                                                <div class="seat-numbers">
+                                                    <img src="{{ asset('images/seat.svg') }}" alt=""
+                                                        style="max-width: 40px !important" />
+                                                    <h1 class="number">16</h1>
                                                 </div>
                                             </label>
                                         </div>
