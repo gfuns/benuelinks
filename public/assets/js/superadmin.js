@@ -23,6 +23,7 @@ $("#viewSeats").on("show.bs.modal", function (event) {
         method: 'GET',
         success: function(data) {
              bookedSeats = data.bookedSeats;
+             console.log(bookedSeats);
                // Reset all seats before applying booked logic
                 modal.find('input[name="seatnumber[]"]').each(function () {
                     this.disabled = false;

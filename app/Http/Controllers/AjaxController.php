@@ -31,7 +31,14 @@ class AjaxController extends Controller
 
     public function getBookedSeats($scheduleId)
     {
-        $bookedSeats = TravelBooking::where("schedule_id", $scheduleId)->where("payment_status", "paid")->pluck("seat")->map(fn($seat) => (int) $seat) // ensure they are integers
+        $bookedSeats = TravelBooking::where("schedule_id", $scheduleId)
+            ->where("payment_status", "paid")
+            ->pluck("seat")
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->unique()
             ->values()
             ->toArray();
 
