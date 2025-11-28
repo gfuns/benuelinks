@@ -149,7 +149,7 @@ class SuperAdminController extends Controller
      */
     public function manageRoles()
     {
-        $userRoles = UserRole::all();
+        $userRoles = UserRole::where("id", "!=", 2)->get();
         return view("superadmin.manage_roles", compact("userRoles"));
     }
 
