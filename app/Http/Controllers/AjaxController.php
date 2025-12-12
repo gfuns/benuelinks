@@ -23,9 +23,7 @@ class AjaxController extends Controller
 
     public function getDepatureTimes($terminal, $destination, $date)
     {
-        \Log::info("Pick Up Time");
         $departureTimes = TravelSchedule::where('departure', $terminal)->where("destination", $destination)->whereDate("scheduled_date", $date)->pluck('scheduled_time', 'id');
-        \Log::info($departureTimes);
 
         return response()->json($departureTimes);
     }
