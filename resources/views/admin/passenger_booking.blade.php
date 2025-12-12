@@ -480,7 +480,7 @@
         });
 
         $('#destination').change(function() {
-            var terminal = {{ Js::from(Auth::user()->id) }};
+            var terminal = {{ Js::from(Auth::user()->terminal->id) }};
             var destination = $(this).val();
             var date = $('#travDate').val();
             $('#depTime').html(

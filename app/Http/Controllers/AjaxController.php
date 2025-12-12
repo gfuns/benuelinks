@@ -10,29 +10,22 @@ class AjaxController extends Controller
 {
     public function getSchedules($terminal, $date)
     {
-
-        \Log::info("I got here");
-        \Log::info($date);
-        \Log::info($terminal);
         $destinationIds = TravelSchedule::where('departure', $terminal)
             ->whereDate('scheduled_date', $date)
             ->distinct()
             ->pluck('destination');
 
-        \Log::info("Destination Ids");
-        \Log::info($destinationIds);
-
         $schedules = CompanyTerminals::whereIn('id', $destinationIds)
             ->pluck('terminal', 'id');
-        \Log::info("Schedules");
-        \Log::info($schedules);
 
         return response()->json($schedules);
     }
 
     public function getDepatureTimes($terminal, $destination, $date)
     {
+        \Log::info("Pick Up Time");
         $departureTimes = TravelSchedule::where('departure', $terminal)->where("destination", $destination)->whereDate("scheduled_date", $date)->pluck('scheduled_time', 'id');
+        \Log::info($departureTimes);
 
         return response()->json($departureTimes);
     }
