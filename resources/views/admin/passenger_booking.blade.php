@@ -323,18 +323,24 @@
                                     class="text-danger">*</span></label>
                             <select id="seat" name="seat_number" class="form-select" data-width="100%" required>
                                 <option value="">Select Seat Number</option>
-                                <option value="1">Seat 1</option>
-                                <option value="2">Seat 2</option>
-                                <option value="3">Seat 3</option>
-                                <option value="4">Seat 4</option>
-                                <option value="5">Seat 5</option>
-                                <option value="6">Seat 6</option>
-                                <option value="7">Seat 7</option>
-                                <option value="8">Seat 8</option>
-                                <option value="9">Seat 9</option>
-                                <option value="10">Seat 10</option>
-                                <option value="11">Seat 11</option>
-                                <option value="12">Seat 12</option>
+                                {{-- @foreach ($availableSeats as $as) --}}
+                                    <option value="1">Seat 1</option>
+                                    <option value="2">Seat 2</option>
+                                    <option value="3">Seat 3</option>
+                                    <option value="4">Seat 4</option>
+                                    <option value="5">Seat 5</option>
+                                    <option value="6">Seat 6</option>
+                                    <option value="7">Seat 7</option>
+                                    <option value="8">Seat 8</option>
+                                    <option value="9">Seat 9</option>
+                                    <option value="10">Seat 10</option>
+                                    <option value="11">Seat 11</option>
+                                    <option value="12">Seat 12</option>
+                                    <option value="13">Seat 13</option>
+                                    <option value="14">Seat 14</option>
+                                    <option value="15">Seat 15</option>
+                                    <option value="16">Seat 16</option>
+                                {{-- @endforeach --}}
                             </select>
                             <div class="invalid-feedback">Please select seat number.</div>
                         </div>

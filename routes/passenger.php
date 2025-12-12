@@ -65,3 +65,5 @@ Route::post('/bankone/webhook', [BankOneController::class, 'webhookNotification'
 Route::post('/xtrapay/webhook', [XtrapayController::class, 'webhookNotification']);
 
 Route::get('/ajax/get-bookedSeats/{scheduleid}', [AjaxController::class, 'getBookedSeats'])->name('ajax.bookedSeats');
+
+Route::get('/ajax/get-availableSeats/{scheduleid}', [AjaxController::class, 'getAvailableSeats'])->name('ajax.availableSeats');
