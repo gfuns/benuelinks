@@ -924,6 +924,9 @@ class AdminController extends Controller
             'passenger_name'  => 'required',
             'phone_number'    => 'required',
             'payment_channel' => 'required',
+            'gender'          => 'nullable',
+            'nok'             => 'nullable',
+            'nok_phone'       => 'nullable',
         ]);
 
         if ($validator->fails()) {
@@ -954,6 +957,9 @@ class AdminController extends Controller
             $booking->payment_status  = "paid";
             $booking->travel_fare     = $route->transport_fare;
             $booking->booking_number  = $this->genBookingID();
+            $booking->gender          = $request->gender;
+            $booking->nok             = $request->nok;
+            $booking->nok_phone       = $request->nok_phone;
             if ($booking->save()) {
                 toast('Booking Successful', 'success');
                 return back();

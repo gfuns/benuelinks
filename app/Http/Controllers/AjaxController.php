@@ -46,9 +46,11 @@ class AjaxController extends Controller
         ]);
     }
 
-    public function getAvailableSeats($scheduleId)
+    public function getAvailableSeats($terminal, $destination, $date, $time)
     {
-        $bookedSeats = TravelBooking::where("schedule_id", $scheduleId)
+        $schedule = TravelSchedule::where("departure", $terminal)->where("destination", $destination)->whereDate("scheduled_date", $date)->where("scheduled_time", $time)->first();
+
+        $bookedSeats = TravelBooking::where("schedule_id", $schedule->id)
             ->where("payment_status", "paid")
             ->pluck("seat")
             ->flatMap(function ($seat) {

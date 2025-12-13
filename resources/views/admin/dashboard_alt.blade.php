@@ -293,18 +293,6 @@
                                     class="text-danger">*</span></label>
                             <select id="seat" name="seat_number" class="form-select" data-width="100%" required>
                                 <option value="">Select Seat Number</option>
-                                <option value="1">Seat 1</option>
-                                <option value="2">Seat 2</option>
-                                <option value="3">Seat 3</option>
-                                <option value="4">Seat 4</option>
-                                <option value="5">Seat 5</option>
-                                <option value="6">Seat 6</option>
-                                <option value="7">Seat 7</option>
-                                <option value="8">Seat 8</option>
-                                <option value="9">Seat 9</option>
-                                <option value="10">Seat 10</option>
-                                <option value="11">Seat 11</option>
-                                <option value="12">Seat 12</option>
                             </select>
                             <div class="invalid-feedback">Please select seat number.</div>
                         </div>
@@ -317,12 +305,22 @@
                             <div class="invalid-feedback">Please enter passenger name.</div>
                         </div>
 
-                        <div class="mb-3 col-12">
+                        <div class="mb-3 col-md-6 col-12">
                             <label class="form-label"><strong>Passenger Phone Number</strong> <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="phone_number" class="form-control"
                                 placeholder="Enter Passenger Phone Number" required>
                             <div class="invalid-feedback">Please enter passenger phone number.</div>
+                        </div>
+
+                        <div class="mb-3 col-md-6 col-12">
+                            <label class="form-label"><strong>Gender</strong> </label>
+                            <select id="gender" name="gender" class="form-select" data-width="100%" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                            <div class="invalid-feedback">Please select gender.</div>
                         </div>
 
                         <div class="mb-3 col-12">
@@ -331,11 +329,25 @@
                             <select id="channel" name="payment_channel" class="form-select" data-width="100%"
                                 required>
                                 <option value="">Select Payment Channel</option>
-                                <option value="Cash">Cash</option>
+                                {{-- <option value="Cash">Cash</option> --}}
                                 <option value="Card Payment">Card Payment</option>
                                 <option value="Transfer">Transfer</option>
                             </select>
                             <div class="invalid-feedback">Please select payment channel.</div>
+                        </div>
+
+                        <div class="mb-3 col-md-6 col-12">
+                            <label class="form-label"><strong>Emergency Contact</strong> </label>
+                            <input type="text" name="nok" class="form-control"
+                                placeholder="Enter Emergency Contact">
+                            <div class="invalid-feedback">Please enter emergency contact.</div>
+                        </div>
+
+                        <div class="mb-3 col-md-6 col-12">
+                            <label class="form-label"><strong>Emergency Contact's Number</strong> </label>
+                            <input type="text" name="nok_phone" class="form-control"
+                                placeholder="Enter Emergency Contact's Number">
+                            <div class="invalid-feedback">Please enter emergency contact's number.</div>
                         </div>
 
                         <div class="col-md-12 border-bottom"></div>
@@ -495,6 +507,28 @@
                         options += "<option value='" + value + "'>" + value + "</option>";
                     });
                     $('#depTime').html(options);
+                }
+            });
+        });
+
+
+        $('#depTime').change(function() {
+            var terminal = {{ Js::from(Auth::user()->terminal->id) }};
+            var destination = $('#destination').val();
+            var date = $('#travDate').val();
+            var time = $(this).val();
+            $('#seat').html(
+                '<option value="">Fetching data, please wait...</option>'); // Show "Fetching data" message
+            $.ajax({
+                url: "/ajax/get-seats/" + terminal + "/" + destination + "/" + date + "/" + time,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var options = "<option value=''>Available Seats</option>";
+                    $.each(data.availableSeats, function(index, value) {
+                        options += "<option value='" + value + "'> Seat " + value + "</option>";
+                    });
+                    $('#seat').html(options);
                 }
             });
         });
