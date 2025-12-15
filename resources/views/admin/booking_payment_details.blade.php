@@ -13,7 +13,7 @@
                         <div class="card-body">
 
                             <div class="row m-4">
-                                <h5 style="font-size: 16px">Hey ,</h5>
+                                <h5 style="font-size: 16px"><b>Hi {{ $booking->full_name }},</b></h5>
                                 <h5 style="font-size: 16px">To complete your booking, Please make a transfer of
                                     <b>&#8358;{{ number_format($paymentDetails->amount, 2) }}</b> to the account details
                                     shown below:</h5>

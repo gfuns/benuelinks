@@ -1049,9 +1049,10 @@ class AdminController extends Controller
     public function bookingPaymentDetails($reference)
     {
         $paymentDetails = XtrapayPayments::where("reference", $reference)->first();
+        $booking        = TravelBooking::find($paymentDetails->transaction_id);
         if ($paymentDetails->status == "pending") {
 
-            return view("admin.booking_payment_details", compact("paymentDetails"));
+            return view("admin.booking_payment_details", compact("paymentDetails", "booking"));
 
         } else if ($paymentDetails->status == "successful") {
 
