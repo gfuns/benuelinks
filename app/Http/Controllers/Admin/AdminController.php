@@ -12,6 +12,7 @@ use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Models\XtrapayPayments;
 use Auth;
 use DateTime;
 use Illuminate\Http\Request;
@@ -1036,6 +1037,32 @@ class AdminController extends Controller
             alert()->error('', $e->getMessage());
             return back();
         }
+    }
+
+    /**
+     * bookingPaymentDetails
+     *
+     * @param mixed reference
+     *
+     * @return void
+     */
+    public function bookingPaymentDetails($reference)
+    {
+        $paymentDetails = XtrapayPayments::where("reference", $reference)->first();
+        if ($paymentDetails->status == "pending") {
+
+            return view("admin.booking_payment_details", compact("paymentDetails"));
+
+        } else if ($paymentDetails->status == "successful") {
+
+            alert()->success('', 'Trip Booked Successfully!');
+            return redirect()->route("admin.bookPassengers");
+
+        } else {
+            alert()->error('', 'This transaction has timed out and your payment was not received!');
+            return redirect()->route("admin.bookPassengers");
+        }
+
     }
 
     /**
