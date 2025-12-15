@@ -69,6 +69,10 @@ Route::group([
 
     Route::post('/processBooking', [AdminController::class, 'processBooking'])->name('admin.processBooking');
 
+    Route::get('/pay-with-xtrapay/{id}', [AdminController::class, 'payWithXtrapay'])->name('admin.payWithXtrapay');
+
+    Route::get('/booking-payment-details/{reference}', [AdminController::class, 'bookingPaymentDetails'])->name('admin.bookingPaymentDetails');
+
     Route::get('/searchBooking', [AdminController::class, 'searchBooking'])->name('admin.searchBooking');
 
     Route::post('/filterBookings', [AdminController::class, 'filterBookings'])->name('admin.filterBookings');

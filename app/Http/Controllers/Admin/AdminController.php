@@ -17,6 +17,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Mail;
 use \Carbon\Carbon;
@@ -954,15 +955,14 @@ class AdminController extends Controller
             $booking->seat            = $request->seat_number;
             $booking->payment_channel = $request->payment_channel;
             $booking->classification  = "booking";
-            $booking->payment_status  = "paid";
+            $booking->payment_status  = "pending";
             $booking->travel_fare     = $route->transport_fare;
             $booking->booking_number  = $this->genBookingID();
             $booking->gender          = $request->gender;
             $booking->nok             = $request->nok;
             $booking->nok_phone       = $request->nok_phone;
             if ($booking->save()) {
-                toast('Booking Successful', 'success');
-                return back();
+                return redirect()->route("admin.payWithXtrapay", [$booking->id]);
             } else {
                 toast('Something went wrong. Please try again', 'error');
                 return back();
@@ -973,6 +973,69 @@ class AdminController extends Controller
             return back();
         }
 
+    }
+
+    /**
+     * payWithXtrapay
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function payWithXtrapay($bookingId)
+    {
+        try {
+
+            $booking   = TravelBooking::find($bookingId);
+            $reference = self::genInternalRef(Auth::user()->id);
+
+            $response = Http::accept('application/json')->withHeaders([
+                'authorization' => "Bearer " . env('XTRAPAY_TOKEN'),
+                'content_type'  => "Content-Type: application/json",
+            ])->post(env("XTRAPAY_BASE_URL") . "/peace/guest-va", [
+                "reference" => $reference, // required, unique per transaction
+                "amount"    => $booking->travel_fare,
+                "meta"      => [
+                    "customerId" => Auth::user()->id,
+                    "note"       => "Passenger Booking",
+                ],
+            ]);
+
+            // \Log::info($response);
+
+            if ($response->failed()) {
+                $data = json_decode($response, true);
+                toast($data["message"], 'error');
+                return back();
+
+            } else {
+                $data = json_decode($response, true);
+                // \Log::info($data);
+                if ($data["status"] === true) {
+
+                    $xtrapay                 = new XtrapayPayments;
+                    $xtrapay->transaction_id = $booking->id;
+                    $xtrapay->reference      = $data["data"]["reference"];
+                    $xtrapay->amount         = $booking->travel_fare;
+                    $xtrapay->trx_type       = "booking";
+                    $xtrapay->bank           = "Providus Bank";
+                    $xtrapay->account_name   = $data["data"]["account_name"];
+                    $xtrapay->account_number = $data["data"]["account_number"];
+                    $xtrapay->save();
+
+                    return redirect()->route("admin.bookingPaymentDetails", [$xtrapay->reference]);
+                } else {
+                    toast($data["message"], 'error');
+                    return back();
+                }
+
+            }
+
+        } catch (\Throwable $e) {
+            report($e);
+            alert()->error('', $e->getMessage());
+            return back();
+        }
     }
 
     /**
@@ -1319,6 +1382,32 @@ class AdminController extends Controller
         $newDate       = date('Y-m-d', strtotime($date));
         $formattedDate = new DateTime($newDate);
         return $formattedDate;
+    }
+
+    /**
+     * genInternalRef
+     *
+     * @return void
+     */
+    public function genInternalRef($clientId)
+    {
+        // Get the current timestamp
+        $timestamp = (string) (strtotime('now') . microtime(true));
+
+        // Remove any non-numeric characters (like dots)
+        $cleanedTimestamp = preg_replace('/[^0-9]/', '', $timestamp);
+
+        $microtime = substr($cleanedTimestamp, -4);
+
+        // Shuffle the digits
+        $shuffled = str_shuffle($cleanedTimestamp);
+
+        // Extract the first 5 characters
+        $code = substr($shuffled, 0, 11);
+
+        $reference = $clientId . $microtime . $code;
+
+        return substr($reference, 0, 12);
     }
 
 }
