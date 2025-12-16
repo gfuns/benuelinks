@@ -227,7 +227,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div style="color: #000; font-weight:bold; font-size: 20px;">
-                                            <strong>Toyota (Hummer Bumper Bus)</strong>
+                                            <strong>KINGLONG BUS</strong>
                                         </div>
                                         <div class="mt-3" style="color: #000; font-size: 12px;">
                                             <strong><u>Departure:</u>
