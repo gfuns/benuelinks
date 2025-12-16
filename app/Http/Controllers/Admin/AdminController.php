@@ -956,14 +956,20 @@ class AdminController extends Controller
             $booking->seat            = $request->seat_number;
             $booking->payment_channel = $request->payment_channel;
             $booking->classification  = "booking";
-            $booking->payment_status  = "pending";
+            $booking->payment_status  = $request->payment_channel == "Transfer" ? "pending" : "paid";
+            $booking->booking_status  = $request->payment_channel == "Transfer" ? "pending" : "booked";
             $booking->travel_fare     = $route->transport_fare;
             $booking->booking_number  = $this->genBookingID();
             $booking->gender          = $request->gender;
             $booking->nok             = $request->nok;
             $booking->nok_phone       = $request->nok_phone;
             if ($booking->save()) {
-                return redirect()->route("admin.payWithXtrapay", [$booking->id]);
+                if ($booking->payment_channel == "Transfer") {
+                    return redirect()->route("admin.payWithXtrapay", [$booking->id]);
+                } else {
+                    alert()->success('', 'Trip Booked Successfully!');
+                    return redirect()->route("admin.bookPassengers");
+                }
             } else {
                 toast('Something went wrong. Please try again', 'error');
                 return back();

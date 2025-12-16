@@ -330,8 +330,8 @@
                                 required>
                                 <option value="">Select Payment Channel</option>
                                 {{-- <option value="Cash">Cash</option> --}}
-                                <option value="Card Payment">Card Payment</option>
                                 <option value="Transfer">Transfer</option>
+                                <option value="Card Payment">Card Payment</option>
                             </select>
                             <div class="invalid-feedback">Please select payment channel.</div>
                         </div>
