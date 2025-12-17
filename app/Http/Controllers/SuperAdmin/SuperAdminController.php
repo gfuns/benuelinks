@@ -48,13 +48,10 @@ class SuperAdminController extends Controller
     public function dashboard()
     {
         $terminal   = Auth::user()->station;
-        $tickets    = TravelBooking::where("payment_status", "paid")->whereDate("created_at", today())->count();
+        $tickets    = TravelBooking::where("payment_status", "paid")->whereDate("travel_date", today())->count();
         $revenue    = TravelBooking::where("payment_status", "paid")->whereDate("travel_date", today())->sum("travel_fare");
         $trips      = TravelSchedule::where("status", "trip successful")->whereDate("scheduled_date", today())->count();
         $passengers = TravelBooking::where("payment_status", "paid")->whereDate("travel_date", today())->count();
-
-        \Log::info(today());
-        \Log::info($revenue);
 
         $param = [
             "tickets"    => $tickets,
@@ -1777,11 +1774,9 @@ class SuperAdminController extends Controller
         $stats = [];
 
         for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::today()->subDays($i);
-            \Log::info($date);
+            $date       = Carbon::today()->subDays($i);
             $dailySales = TravelBooking::where("payment_status", "paid")->whereDate('travel_date', $date)->sum('travel_fare');
-            \Log::info($dailySales);
-            $stats[] = $dailySales;
+            $stats[]    = $dailySales;
         }
 
         $revenue = implode(', ', $stats);
