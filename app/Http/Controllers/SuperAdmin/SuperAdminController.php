@@ -1731,6 +1731,7 @@ class SuperAdminController extends Controller
             ->groupBy('schedule_id')
             ->orderByDesc('tickets_sold')
             ->where("payment_status", "paid")
+            ->whereDate('travel_date', today())
             ->limit(5)
             ->get();
 
@@ -1778,8 +1779,7 @@ class SuperAdminController extends Controller
         for ($i = 6; $i >= 0; $i--) {
             $date = Carbon::today()->subDays($i);
             \Log::info($date);
-            $dailySales = TravelBooking::where("payment_status", "paid")->whereDate('created_at', $date)
-                ->sum('travel_fare');
+            $dailySales = TravelBooking::where("payment_status", "paid")->whereDate('travel_date', $date)->sum('travel_fare');
             \Log::info($dailySales);
             $stats[] = $dailySales;
         }

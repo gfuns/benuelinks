@@ -59,7 +59,7 @@
                             </div>
                             <div class="col col-stats ms-3 ms-sm-0">
                                 <div class="numbers">
-                                    <p class="card-category text-dark"><strong>Trips Completed</strong></p>
+                                    <p class="card-category text-dark"><strong>Trips Completed Today</strong></p>
                                     <h4 class="card-title" style="font-size:18px">{{ number_format($param['trips'], 0) }}
                                     </h4>
                                 </div>
@@ -119,7 +119,7 @@
             <div class="col-sm-12 col-md-12">
                 <div class="card card-stats card-round">
                     <div class="card-header">
-                        <div class="card-title" style="font-size: 14px">Scheduled Trips</div>
+                        <div class="card-title" style="font-size: 14px">Today's Scheduled Trips</div>
                     </div>
                     <div class="card-body">
 
