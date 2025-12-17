@@ -48,7 +48,7 @@ class SuperAdminController extends Controller
     public function dashboard()
     {
         $terminal   = Auth::user()->station;
-        $tickets    = TravelBooking::whereDate("created_at", today())->count();
+        $tickets    = TravelBooking::where("payment_status", "paid")->whereDate("created_at", today())->count();
         $revenue    = TravelBooking::where("payment_status", "paid")->whereDate("travel_date", today())->sum("travel_fare");
         $trips      = TravelSchedule::where("status", "trip successful")->whereDate("scheduled_date", today())->count();
         $passengers = TravelBooking::where("payment_status", "paid")->whereDate("travel_date", today())->count();
@@ -1727,6 +1727,7 @@ class SuperAdminController extends Controller
             ->with(['schedule.departurePoint', 'schedule.destinationPoint'])
             ->groupBy('schedule_id')
             ->orderByDesc('tickets_sold')
+            ->where("payment_status", "paid")
             ->limit(5)
             ->get();
 
@@ -1773,7 +1774,7 @@ class SuperAdminController extends Controller
 
         for ($i = 6; $i >= 0; $i--) {
             $date       = Carbon::today()->subDays($i);
-            $dailySales = TravelBooking::whereDate('created_at', $date)
+            $dailySales = TravelBooking::where("payment_status", "paid")->whereDate('created_at', $date)
                 ->sum('travel_fare');
             $stats[] = $dailySales;
         }
