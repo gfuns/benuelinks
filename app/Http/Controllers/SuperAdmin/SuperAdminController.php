@@ -53,6 +53,9 @@ class SuperAdminController extends Controller
         $trips      = TravelSchedule::where("status", "trip successful")->whereDate("scheduled_date", today())->count();
         $passengers = TravelBooking::where("payment_status", "paid")->whereDate("travel_date", today())->count();
 
+        \Log::info(today());
+        \Log::info($revenue);
+
         $param = [
             "tickets"    => $tickets,
             "revenue"    => $revenue,
@@ -1773,9 +1776,11 @@ class SuperAdminController extends Controller
         $stats = [];
 
         for ($i = 6; $i >= 0; $i--) {
-            $date       = Carbon::today()->subDays($i);
+            $date = Carbon::today()->subDays($i);
+            \Log::info($date);
             $dailySales = TravelBooking::where("payment_status", "paid")->whereDate('created_at', $date)
                 ->sum('travel_fare');
+            \Log::info($dailySales);
             $stats[] = $dailySales;
         }
 
