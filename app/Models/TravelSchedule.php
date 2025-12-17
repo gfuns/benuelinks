@@ -71,7 +71,7 @@ class TravelSchedule extends Model implements Auditable
     {
         $route = CompanyRoutes::where("departure", $this->departure)->where("destination", $this->destination)->first();
 
-        return $route->transport_fare;
+        return $route->transport_fare ?? 0;
     }
 
     public function bookedSeats()

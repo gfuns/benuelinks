@@ -565,10 +565,10 @@ class FrontEndController extends Controller
      *
      * @return void
      */
-    public function bookingReceipt($bookingId)
+    public function bookingReceipt($bookingNumber)
     {
         Session::forget('guestBookingID');
-        $booking = TravelBooking::where("booking_number", $bookingId)->first();
+        $booking = TravelBooking::where("booking_number", $bookingNumber)->first();
         return view("booking_receipt", compact("booking"));
     }
 

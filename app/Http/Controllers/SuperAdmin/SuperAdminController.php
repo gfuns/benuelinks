@@ -49,9 +49,9 @@ class SuperAdminController extends Controller
     {
         $terminal   = Auth::user()->station;
         $tickets    = TravelBooking::whereDate("created_at", today())->count();
-        $revenue    = TravelBooking::where("boarding_status", "boarded")->whereDate("travel_date", today())->sum("travel_fare");
+        $revenue    = TravelBooking::where("payment_status", "paid")->whereDate("travel_date", today())->sum("travel_fare");
         $trips      = TravelSchedule::where("status", "trip successful")->whereDate("scheduled_date", today())->count();
-        $passengers = TravelBooking::where("boarding_status", "boarded")->whereDate("travel_date", today())->count();
+        $passengers = TravelBooking::where("payment_status", "paid")->whereDate("travel_date", today())->count();
 
         $param = [
             "tickets"    => $tickets,
