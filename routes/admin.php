@@ -96,3 +96,4 @@ Route::group([
 Route::get('/ajax/get-schedules/{terminal}/{date}', [AjaxController::class, 'getSchedules'])->name('ajax.getSchedules');
 Route::get('/ajax/get-times/{terminal}/{destination}/{date}', [AjaxController::class, 'getDepatureTimes'])->name('ajax.getDepatureTimes');
 Route::get('/ajax/get-seats/{terminal}/{destination}/{date}/{time}', [AjaxController::class, 'getAvailableSeats'])->name('ajax.availableSeats');
+Route::get('/ajax/get-ticketers/{terminal}', [AjaxController::class, 'getTicketers'])->name('ajax.getTicketers');

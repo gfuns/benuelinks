@@ -194,13 +194,11 @@ Route::group([
 
     Route::get('/transactions-report', [SuperAdminController::class, 'financialReport'])->name('superadmin.financialReport');
 
-    Route::post('/filterTransactions', [SuperAdminController::class, 'filterTransactions'])->name('superadmin.filterTransactions');
+    Route::get('/luggages-report', [SuperAdminController::class, 'extraLuggageReport'])->name('superadmin.extraLuggageReport');
 
-    Route::get('/transactions-report/{sd?}/{ed?}', [SuperAdminController::class, 'processTransactionFilter'])->name('superadmin.processTransactionFilter');
+    Route::get('/extra-luggage-config', [SuperAdminController::class, 'extraLuggageConfig'])->name('superadmin.extraLuggageConfig');
 
-    Route::get('/guest-accounts', [SuperAdminController::class, 'guestAccounts'])->name('superadmin.guestAccounts');
-
-    Route::get('/generateGuestAccount', [SuperAdminController::class, 'generateGuestAccount'])->name('superadmin.generateGuestAccount');
+    Route::get('/endOfDay-report', [SuperAdminController::class, 'endOfDayReport'])->name('superadmin.endOfDayReport');
 
 });
 

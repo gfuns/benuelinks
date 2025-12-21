@@ -5,6 +5,7 @@ use App\Http\Controllers\AjaxController;
 use App\Models\CompanyTerminals;
 use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
+use App\Models\User;
 
 class AjaxController extends Controller
 {
@@ -68,5 +69,15 @@ class AjaxController extends Controller
         return response()->json([
             'availableSeats' => $availableSeats,
         ]);
+    }
+
+    public function getTicketers($terminal)
+    {
+        $ticketers = User::where('role_id', 4)
+            ->whereDate('station', $terminal)
+            ->get()
+            ->pluck('full_name', 'id');
+
+        return response()->json($ticketers);
     }
 }

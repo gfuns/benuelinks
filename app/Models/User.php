@@ -31,6 +31,13 @@ class User extends Authenticatable implements Auditable
         }
     }
 
+    protected $appends = ['full_name'];
+
+    public function getFullNameAttribute()
+    {
+        return trim($this->last_name . ' ' . $this->other_names);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

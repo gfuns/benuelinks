@@ -60,6 +60,12 @@
                                     </a>
                                 </li>
 
+                                <li id="roles">
+                                    <a href="{{ route('superadmin.extraLuggageConfig') }}">
+                                        <span class="sub-item">Extra Luggages Config</span>
+                                    </a>
+                                </li>
+
                             </ul>
                         </div>
                     </li>
@@ -127,7 +133,23 @@
                                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
                                     <li id="financial">
                                         <a href="{{ route('superadmin.financialReport') }}">
-                                            <span class="sub-item">Transactions</span>
+                                            <span class="sub-item">Ticket Sales Transactions</span>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
+                                    <li id="luggages">
+                                        <a href="{{ route('superadmin.extraLuggageReport') }}">
+                                            <span class="sub-item">Extra Luggages Transactions</span>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
+                                    <li id="luggages">
+                                        <a href="{{ route('superadmin.endOfDayReport') }}">
+                                            <span class="sub-item">End Of Day Report</span>
                                         </a>
                                     </li>
                                 @endif
@@ -152,13 +174,6 @@
                         </div>
                     </li>
                 @endif
-
-                <li id="guestAcounts" class="nav-item mb-3">
-                    <a href="{{ route('superadmin.guestAccounts') }}">
-                        <i class="fas fa-recycle"></i>
-                        <p>Guest Virtual Accounts</p>
-                    </a>
-                </li>
 
                 <li id="logout" class="nav-item">
                     <a href="{{ route('logout') }}"

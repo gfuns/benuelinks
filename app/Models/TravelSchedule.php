@@ -59,6 +59,12 @@ class TravelSchedule extends Model implements Auditable
 
     }
 
+    public function ticketerdetail()
+    {
+        return $this->belongsTo('App\Models\User', "ticketer");
+
+    }
+
     public function travelRoute()
     {
         $terminal    = $this->departurePoint->terminal;

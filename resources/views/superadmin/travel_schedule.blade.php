@@ -107,7 +107,9 @@
                                             <th scope="col">Assigned Vehicle</th>
                                             <th scope="col">Scheduled Date</th>
                                             <th scope="col">Time of Departure</th>
+                                            <th scope="col">Ticketer</th>
                                             <th scope="col">Status</th>
+                                            <th scope="col">Date Created</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -122,6 +124,7 @@
                                                     {{ date_format(new DateTime($schedule->scheduled_date), 'l - jS M, Y') }}
                                                 </td>
                                                 <td class="align-middle">{{ $schedule->scheduled_time }}</td>
+                                                <td>{{ isset($schedule->ticketerdetail) ? ucwords(strtolower($schedule->ticketerdetail->last_name . ' ' . $schedule->ticketerdetail->other_names)) : 'Nil' }}</td>
                                                 <td>
                                                     @if ($schedule->status == 'scheduled')
                                                         <span class="badge badge-warning p-2"
@@ -139,6 +142,9 @@
                                                         <span class="badge badge-success p-2"
                                                             style="font-size: 10px">{{ ucwords($schedule->status) }}</span>
                                                     @endif
+                                                </td>
+                                                <td class="align-middle">
+                                                    {{ date_format($schedule->created_at, 'l - jS M, Y g:i a') }}
                                                 </td>
 
                                                 <td class="align-middle">
@@ -294,6 +300,14 @@
                             <input id="departureTime" type="text" name="departure_time" class="form-control"
                                 placeholder="Select Departure Time" required style="border: 1px solid #cbd5e1 !important">
                             <div class="invalid-feedback">Please select departure time.</div>
+                        </div>
+
+                        <div class="mb-3 col-12">
+                            <label class="form-label"><strong>Ticketer</strong> <span class="text-danger">*</span></label>
+                            <select id="booker" name="ticketer" class="form-select" data-width="100%" required>
+                                <option value="">Select Ticketer</option>
+                            </select>
+                            <div class="invalid-feedback">Please select ticketer.</div>
                         </div>
 
                         <div class="mb-3 col-12">
@@ -582,5 +596,25 @@
                 $("#showWeek").css("display", "none");
             }
         });
+
+         $('#departure').change(function() {
+            var terminal = $(this).val();
+            $('#booker').html(
+                '<option value="">Fetching data, please wait...</option>'); // Show "Fetching data" message
+            $.ajax({
+                url: "/ajax/get-ticketers/" + terminal,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var options = "<option value=''>Select Ticketer</option>";
+                    $.each(data, function(key, value) {
+                        options += "<option value='" + value + "'>" + value + "</option>";
+                    });
+                    $('#booker').html(options);
+                }
+            });
+        });
+
+
     </script>
 @endsection

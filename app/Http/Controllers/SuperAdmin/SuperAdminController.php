@@ -1090,7 +1090,7 @@ class SuperAdminController extends Controller
         $weekDates = $this->getWeekDates();
 
         $terminals       = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
-        $travelSchedules = TravelSchedule::all();
+        $travelSchedules = TravelSchedule::whereDate('scheduled_date', '>=', now()->toDateString())->orderBy('id', 'desc')->get();
         $companyVehicles = CompanyVehicles::where("status", "active")->get();
 
         $departure   = null;
@@ -1113,6 +1113,7 @@ class SuperAdminController extends Controller
             'take_off_point'         => 'required',
             'destination'            => 'required',
             'departure_time'         => 'required',
+            'ticketer'               => 'required',
             'schedule_configuration' => 'required',
             'scheduled_date'         => 'required_if:schedule_configuration,specific',
             'week_date'              => 'required_if:schedule_configuration,weekly',
@@ -1127,6 +1128,12 @@ class SuperAdminController extends Controller
         }
 
         try {
+            $route = CompanyRoutes::where("departure", $request->take_off_point)->where("destination", $request->destination)->first();
+            if (! isset($route)) {
+                toast('No Route Found For The Departure To Destination. Please Create Route.', 'error');
+                return back();
+            }
+
             if ($request->schedule_configuration == "specific") {
                 $alreadyExist = TravelSchedule::where("departure", $request->take_off_point)->where("destination", $request->destination)->whereDate("scheduled_date", $request->scheduled_date)->where("scheduled_time", $request->departure_time)->first();
                 if (! isset($alreadyExist)) {
@@ -1169,7 +1176,7 @@ class SuperAdminController extends Controller
             toast('Travel Schedule Created Successfully', 'success');
             return back();
         } catch (\Exception $e) {
-            toast('Somethint went wrong. Please try again later.', 'error');
+            toast('Something went wrong. Please try again later.', 'error');
             return back();
         }
 
@@ -1584,10 +1591,36 @@ class SuperAdminController extends Controller
      */
     public function financialReport()
     {
-        $startDate    = Carbon::today()->startOfMonth();
-        $endDate      = Carbon::today()->endOfMonth();
-        $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
-        return view("superadmin.financial_report", compact("transactions", 'startDate', 'endDate'));
+        $startDate = request()->start_date ?? Carbon::today()->startOfMonth();
+
+        $endDate  = request()->end_date ?? Carbon::today()->endOfMonth();
+        $terminal = request()->terminal;
+        $bus      = request()->bus;
+        $ticketer = request()->ticketer;
+
+        $query = TravelSchedule::query();
+
+        $query->orderBy("id", "desc");
+
+        $query->whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate]);
+
+        if (isset(request()->terminal)) {
+            $query->where("departure", $terminal);
+        }
+
+        if (isset(request()->bus)) {
+            $query->where("vehicle", $bus);
+        }
+
+        if (isset(request()->ticketer)) {
+            $query->where("ticketer", $ticketer);
+        }
+
+        $transactions = $query->get();
+        $terminals    = CompanyTerminals::where("status", "active")->get();
+        $vehicles     = CompanyVehicles::where("status", "active")->get();
+        $ticketers    = User::where("role_id", 4)->get();
+        return view("superadmin.financial_report", compact("transactions", 'startDate', 'endDate', 'bus', 'terminal', 'ticketer', 'terminals', 'vehicles', 'ticketers'));
     }
 
     /**
@@ -1603,6 +1636,9 @@ class SuperAdminController extends Controller
             $validator = Validator::make($request->all(), [
                 'start_date' => 'required',
                 'end_date'   => 'required',
+                'terminal'   => 'nullable',
+                'bus'        => 'nullable',
+                'ticketer'   => 'nullable',
             ]);
 
             if ($validator->fails()) {
@@ -1621,7 +1657,7 @@ class SuperAdminController extends Controller
             return back();
         }
 
-        return redirect()->route("superadmin.processTransactionFilter", [$startDate, $endDate]);
+        return redirect()->route("superadmin.processTransactionFilter", [$startDate, $endDate, $terminal, $bus, $ticketer]);
     }
 
     /**
@@ -1632,7 +1668,7 @@ class SuperAdminController extends Controller
      *
      * @return void
      */
-    public function processTransactionFilter($startDate = null, $endDate = null)
+    public function processTransactionFilter($startDate = null, $endDate = null, $terminal = null, $bus = null, $ticketer = null)
     {
         if (isset($startDate) && isset($endDate)) {
             $transactions = TravelSchedule::whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
@@ -1643,6 +1679,39 @@ class SuperAdminController extends Controller
         }
 
         return view("superadmin.financial_report", compact("transactions", 'startDate', 'endDate'));
+    }
+
+    /**
+     * endOfDayReport
+     *
+     * @return void
+     */
+    public function endOfDayReport()
+    {
+        alert()->info('Coming Soon.');
+        return back();
+    }
+
+    /**
+     * extraLuggageReport
+     *
+     * @return void
+     */
+    public function extraLuggageReport()
+    {
+        alert()->info('Coming Soon.');
+        return back();
+    }
+
+    /**
+     * extraLuggageConfig
+     *
+     * @return void
+     */
+    public function extraLuggageConfig()
+    {
+        alert()->info('Coming Soon.');
+        return back();
     }
 
     /**
