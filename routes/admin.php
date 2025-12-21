@@ -45,6 +45,14 @@ Route::group([
 
     Route::get('/transactions-report', [AdminController::class, 'financialReport'])->name('admin.financialReport');
 
+    Route::get('/luggages-report', [AdminController::class, 'extraLuggageReport'])->name('admin.extraLuggageReport');
+
+    Route::get('/endOfDay-report', [AdminController::class, 'endOfDayReport'])->name('admin.endOfDayReport');
+
+    Route::get('/ticketer/endOfDay-report', [AdminController::class, 'ticketerEndOfDayReport'])->name('admin.ticketerEndOfDayReport');
+
+    Route::get('/luggage-billing', [AdminController::class, 'luggageBilling'])->name('admin.luggagebilling');
+
     Route::post('/filterTransactions', [AdminController::class, 'filterTransactions'])->name('admin.filterTransactions');
 
     Route::get('/transactions-report/{sd?}/{ed?}', [AdminController::class, 'processTransactionFilter'])->name('admin.processTransactionFilter');

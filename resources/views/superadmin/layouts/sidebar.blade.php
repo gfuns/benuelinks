@@ -147,7 +147,7 @@
                                 @endif
 
                                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
-                                    <li id="luggages">
+                                    <li id="eod">
                                         <a href="{{ route('superadmin.endOfDayReport') }}">
                                             <span class="sub-item">End Of Day Report</span>
                                         </a>

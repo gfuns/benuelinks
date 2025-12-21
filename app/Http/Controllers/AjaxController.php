@@ -73,10 +73,7 @@ class AjaxController extends Controller
 
     public function getTicketers($terminal)
     {
-        $ticketers = User::where('role_id', 4)
-            ->whereDate('station', $terminal)
-            ->get()
-            ->pluck('full_name', 'id');
+        $ticketers = User::where('role_id', 4)->where('station', $terminal)->get()->pluck('full_name', 'id');
 
         return response()->json($ticketers);
     }

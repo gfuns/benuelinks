@@ -538,12 +538,59 @@ class AdminController extends Controller
      *
      * @return void
      */
-    public function financialReport()
+    public function financialReport(Request $request)
     {
-        $startDate    = Carbon::today()->startOfMonth();
-        $endDate      = Carbon::today()->endOfMonth();
-        $transactions = TravelSchedule::where("departure", Auth::user()->station)->whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate])->get();
-        return view("admin.financial_report", compact("transactions", 'startDate', 'endDate'));
+
+        if (isset($request->start_date) || isset($request->end_date)) {
+            $validator = Validator::make($request->all(), [
+                'start_date' => 'required',
+                'end_date'   => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors()->all();
+                $errors = implode("<br>", $errors);
+                toast($errors, 'error');
+                return back();
+            }
+        }
+
+        $startDate = request()->start_date ?? Carbon::today()->startOfMonth();
+        $endDate   = request()->end_date ?? Carbon::today()->endOfMonth();
+
+        if ($startDate > $endDate) {
+            toast('End Date must be a date after Start Date.', 'error');
+            return back();
+        }
+
+        $terminal = request()->terminal;
+        $bus      = request()->bus;
+        $ticketer = request()->ticketer;
+
+        $query = TravelSchedule::query();
+
+        $query->orderBy("id", "desc");
+
+        $query->where("departure", Auth::user()->station)->whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate]);
+
+        if (isset(request()->terminal)) {
+            $query->where("destination", $terminal);
+        }
+
+        if (isset(request()->bus)) {
+            $query->where("vehicle", $bus);
+        }
+
+        if (isset(request()->ticketer)) {
+            $query->where("ticketer", $ticketer);
+        }
+
+        $transactions = $query->get();
+
+        $terminals = CompanyTerminals::where("status", "active")->get();
+        $vehicles  = CompanyVehicles::where("status", "active")->get();
+        $ticketers = User::where("role_id", 4)->where("station", Auth::user()->station)->get();
+        return view("admin.financial_report", compact("transactions", 'startDate', 'endDate', 'bus', 'terminal', 'ticketer', 'terminals', 'vehicles', 'ticketers'));
     }
 
     /**
@@ -612,13 +659,14 @@ class AdminController extends Controller
         $weekDates = $this->getWeekDates();
 
         $terminals       = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
-        $travelSchedules = TravelSchedule::orderBy("id", "desc")->where("departure", Auth::user()->station)->orWhere("destination", Auth::user()->station)->get();
+        $travelSchedules = TravelSchedule::orderBy('id', 'desc')->whereDate('scheduled_date', '>=', now()->toDateString())->where("departure", Auth::user()->station)->orWhere("destination", Auth::user()->station)->get();
         $companyVehicles = CompanyVehicles::where("status", "active")->get();
 
         $departure   = null;
         $destination = null;
         $date        = null;
-        return view("admin.travel_schedule", compact("travelSchedules", "terminals", "weekData", "weekDates", "companyVehicles", "departure", "destination", "date"));
+        $ticketers   = User::where('role_id', 4)->where('station', Auth::user()->station)->get();
+        return view("admin.travel_schedule", compact("travelSchedules", "terminals", "weekData", "weekDates", "companyVehicles", "departure", "destination", "date", "ticketers"));
     }
 
     /**
@@ -634,6 +682,7 @@ class AdminController extends Controller
             'take_off_point'         => 'required',
             'destination'            => 'required',
             'departure_time'         => 'required',
+            'ticketer'               => 'required',
             'schedule_configuration' => 'required',
             'scheduled_date'         => 'required_if:schedule_configuration,specific',
             'week_date'              => 'required_if:schedule_configuration,weekly',
@@ -648,6 +697,13 @@ class AdminController extends Controller
         }
 
         try {
+
+            $route = CompanyRoutes::where("departure", $request->take_off_point)->where("destination", $request->destination)->first();
+            if (! isset($route)) {
+                toast('No Route Found For The Departure To Destination. Please Create Route.', 'error');
+                return back();
+            }
+
             if ($request->schedule_configuration == "specific") {
                 $alreadyExist = TravelSchedule::where("departure", $request->take_off_point)->where("destination", $request->destination)->whereDate("scheduled_date", $request->scheduled_date)->where("scheduled_time", $request->departure_time)->first();
                 if (! isset($alreadyExist)) {
@@ -1119,6 +1175,50 @@ class AdminController extends Controller
         $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
         return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam', "date", "status", "route", 'travelRoutes'));
 
+    }
+
+    /**
+     * endOfDayReport
+     *
+     * @return void
+     */
+    public function endOfDayReport()
+    {
+        alert()->info('Coming Soon.');
+        return back();
+    }
+
+    /**
+     * ticketerEndOfDayReport
+     *
+     * @return void
+     */
+    public function ticketerEndOfDayReport()
+    {
+        alert()->info('Coming Soon.');
+        return back();
+    }
+
+    /**
+     * luggageBilling
+     *
+     * @return void
+     */
+    public function luggageBilling()
+    {
+        alert()->info('Coming Soon.');
+        return back();
+    }
+
+    /**
+     * extraLuggageReport
+     *
+     * @return void
+     */
+    public function extraLuggageReport()
+    {
+        alert()->info('Coming Soon.');
+        return back();
     }
 
     /**

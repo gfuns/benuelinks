@@ -1589,11 +1589,30 @@ class SuperAdminController extends Controller
      *
      * @return void
      */
-    public function financialReport()
+    public function financialReport(Request $request)
     {
-        $startDate = request()->start_date ?? Carbon::today()->startOfMonth();
+        if (isset($request->start_date) || isset($request->end_date)) {
+            $validator = Validator::make($request->all(), [
+                'start_date' => 'required',
+                'end_date'   => 'required',
+            ]);
 
-        $endDate  = request()->end_date ?? Carbon::today()->endOfMonth();
+            if ($validator->fails()) {
+                $errors = $validator->errors()->all();
+                $errors = implode("<br>", $errors);
+                toast($errors, 'error');
+                return back();
+            }
+        }
+
+        $startDate = request()->start_date ?? Carbon::today()->startOfMonth();
+        $endDate   = request()->end_date ?? Carbon::today()->endOfMonth();
+
+        if ($startDate > $endDate) {
+            toast('End Date must be a date after Start Date.', 'error');
+            return back();
+        }
+
         $terminal = request()->terminal;
         $bus      = request()->bus;
         $ticketer = request()->ticketer;

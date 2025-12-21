@@ -6,16 +6,15 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Transactions Report</div>
+                            <div class="card-title">Ticket Sales Transactions Report</div>
                         </div>
 
                         <div class="card-body">
                             <div class="col-md-12">
-                                <form method="POST" action="{{ route('admin.filterTransactions') }}">
-                                    @csrf
+                                <form method="get" action="">
 
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Start Date</strong></label>
                                                 <input type="date" name="start_date" class="form-control"
@@ -30,7 +29,7 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>End Date</strong></label>
                                                 <input type="date" name="end_date" class="form-control"
@@ -45,7 +44,74 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-3 filterButton">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="currentPassword"><strong>Terminal</strong></label>
+                                                <select id="fterminal" name="terminal" class="form-select"
+                                                    data-width="100%">
+                                                    <option value="">All Terminals</option>
+                                                    @foreach ($terminals as $dp)
+                                                        <option value="{{ $dp->id }}"
+                                                            @if ($terminal == $dp->id) selected @endif>
+                                                            {{ $dp->terminal }}</option>
+                                                    @endforeach
+                                                </select>
+
+                                                @error('terminal')
+                                                    <span class="" role="alert">
+                                                        <strong
+                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="currentPassword"><strong>Vehicle</strong></label>
+                                                <select id="event" name="bus" class="form-select" data-width="100%">
+                                                    <option value="">All Vehicles</option>
+                                                    @foreach ($vehicles as $veh)
+                                                        <option value="{{ $veh->id }}"
+                                                            @if ($bus == $veh->id) selected @endif>
+                                                            {{ $veh->manufacturer }} ({{ $veh->vehicle_number }})</option>
+                                                    @endforeach
+                                                </select>
+
+                                                @error('bus')
+                                                    <span class="" role="alert">
+                                                        <strong
+                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="currentPassword"><strong>Ticketer</strong></label>
+                                                <select id="ticketer" name="ticketer" class="form-select"
+                                                    data-width="100%">
+                                                    <option value="">All Ticketers</option>
+                                                    @foreach ($ticketers as $tker)
+                                                        <option value="{{ $tker->id }}"
+                                                            @if ($ticketer == $tker->id) selected @endif>
+                                                            {{ ucwords(strtolower($tker->last_name . ' ' . $tker->other_names)) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                                @error('ticketer')
+                                                    <span class="" role="alert">
+                                                        <strong
+                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-2 filterButton">
                                             <button type="submit" class="btn btn-primary btn-md">Filter Report</button>
                                         </div>
                                     </div>
@@ -58,11 +124,11 @@
                             <hr />
                             <h6 class="mt-4 mb-4 ms-4"><strong>
 
-                                    @if (isset($startDate) && isset($endDate))
+                                    {{-- @if (isset($startDate) && isset($endDate))
                                         Filtered Transactions Report For The Period:
                                         {{ date_format(new DateTime($startDate), 'jS M, Y') }} And
                                         {{ date_format(new DateTime($endDate), 'jS M, Y') }}
-                                    @endif
+                                    @endif --}}
                                 </strong></h6>
                             <div class="table-responsive mb-5" style="padding-bottom: 100px">
                                 <table class="table mb-0 text-nowrap table-hover table-centered">
@@ -73,6 +139,8 @@
                                             <td class="th">Route</td>
                                             <td class="th">Travel Fare</td>
                                             <td class="th">Passengers</td>
+                                            <td class="th">Vehicle Details</td>
+                                            <td class="th">Ticketer</td>
                                             <td class="th">Revenue Generated</td>
                                         </tr>
                                     </thead>
@@ -82,10 +150,21 @@
                                         @foreach ($transactions as $trx)
                                             <tr>
                                                 <td>{{ $loop->index + 1 }}</td>
-                                                <td>{{  date_format(new DateTime($trx->scheduled_date), 'l - jS M, Y') }}</td>
+                                                <td>{{ date_format(new DateTime($trx->scheduled_date), 'l - jS M, Y') }}
+                                                </td>
                                                 <td>{{ $trx->travelRoute() }}</td>
                                                 <td>&#8358;{{ $trx->travelFare() }}</td>
                                                 <td>{{ $trx->passengers() }}</td>
+                                                <td>
+                                                    @if (isset($trx->vehicledetail))
+                                                        {{ $trx->vehicledetail->manufacturer }}
+                                                        ({{ $trx->vehicledetail->vehicle_number }})
+                                                    @else
+                                                        Nil
+                                                    @endif
+                                                </td>
+                                                <td>{{ isset($trx->ticketerdetail) ? ucwords(strtolower($trx->ticketerdetail->last_name . ' ' . $trx->ticketerdetail->other_names)) : 'Nil' }}
+                                                </td>
                                                 <td>&#8358;{{ $trx->generatedRevenue() }}</td>
                                             </tr>
                                         @endforeach

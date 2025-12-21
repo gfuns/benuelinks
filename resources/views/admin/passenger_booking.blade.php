@@ -8,11 +8,13 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center">
                                 <h4 class="card-title">Passenger Bookings</h4>
-                                <button class="btn btn-primary btn-round ms-auto btn-sm" data-bs-toggle="offcanvas"
-                                    data-bs-target="#offcanvasRight">
-                                    <i class="fa fa-plus"></i>
-                                    Book Passenger
-                                </button>
+                                @if (\App\Http\Controllers\MenuController::canCreate(Auth::user()->role_id, 7) == true)
+                                    <button class="btn btn-primary btn-round ms-auto btn-sm" data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasRight">
+                                        <i class="fa fa-plus"></i>
+                                        Book Passenger
+                                    </button>
+                                @endif
                             </div>
                         </div>
                         <div class="card-body">
@@ -135,14 +137,17 @@
                                                                         Receipt</a>
                                                                 </li>
                                                             @endif
-                                                            @if ($bk->booking_status == 'booked')
-                                                                <li>
-                                                                    <a class="dropdown-item"
-                                                                        href="{{ route('admin.validateTicket', [$bk->id]) }}"
-                                                                        onclick="return confirm('Are you sure you want to validate this ticket?');"><i
-                                                                            class="fe fe-trash dropdown-item-icon"></i>Validate
-                                                                        Ticket</a>
-                                                                </li>
+
+                                                            @if (\App\Http\Controllers\MenuController::canEdit(Auth::user()->role_id, 7) == true)
+                                                                @if ($bk->booking_status == 'booked')
+                                                                    <li>
+                                                                        <a class="dropdown-item"
+                                                                            href="{{ route('admin.validateTicket', [$bk->id]) }}"
+                                                                            onclick="return confirm('Are you sure you want to validate this ticket?');"><i
+                                                                                class="fe fe-trash dropdown-item-icon"></i>Validate
+                                                                            Ticket</a>
+                                                                    </li>
+                                                                @endif
                                                             @endif
                                                         </ul>
                                                     </div>
@@ -264,136 +269,139 @@
         </div>
     </div>
 
+    @if (\App\Http\Controllers\MenuController::canCreate(Auth::user()->role_id, 7) == true)
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" style="width: 600px;">
+            <div class="offcanvas-body" data-simplebar>
+                <div class="offcanvas-header px-2 pt-0">
+                    <h3 class="offcanvas-title" id="offcanvasExampleLabel"> New Passenger Booking</h3>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <!-- card body -->
+                <div class="container">
+                    <!-- form -->
+                    <form class="needs-validation" novalidate method="post"
+                        action="{{ route('admin.processBooking') }}" enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <!-- form group -->
+                            <div class="mb-3 col-12">
+                                <label class="form-label"><strong>Travel Date</strong> <span
+                                        class="text-danger">*</span></label>
+                                <input id="travDate" type="date" name="travel_date" class="form-control"
+                                    placeholder="Select Travel Date" required>
+                                <div class="invalid-feedback">Please select travel date.</div>
+                            </div>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" style="width: 600px;">
-        <div class="offcanvas-body" data-simplebar>
-            <div class="offcanvas-header px-2 pt-0">
-                <h3 class="offcanvas-title" id="offcanvasExampleLabel"> New Passenger Booking</h3>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                    aria-label="Close"></button>
-            </div>
-            <!-- card body -->
-            <div class="container">
-                <!-- form -->
-                <form class="needs-validation" novalidate method="post" action="{{ route('admin.processBooking') }}"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <div class="row">
-                        <!-- form group -->
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Travel Date</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input id="travDate" type="date" name="travel_date" class="form-control"
-                                placeholder="Select Travel Date" required>
-                            <div class="invalid-feedback">Please select travel date.</div>
-                        </div>
+                            <div class="mb-3 col-md-6 col-12">
+                                <label class="form-label"><strong>Destination</strong> <span
+                                        class="text-danger">*</span></label>
+                                <select id="destination" name="destination" class="form-select" data-width="100%"
+                                    required>
+                                    <option value="">Select Destination</option>
+                                </select>
+                                <div class="invalid-feedback">Please select destination.</div>
+                            </div>
 
-                        <div class="mb-3 col-md-6 col-12">
-                            <label class="form-label"><strong>Destination</strong> <span
-                                    class="text-danger">*</span></label>
-                            <select id="destination" name="destination" class="form-select" data-width="100%" required>
-                                <option value="">Select Destination</option>
-                            </select>
-                            <div class="invalid-feedback">Please select destination.</div>
-                        </div>
+                            <div class="mb-3 col-md-6 col-12">
+                                <label class="form-label"><strong>Preferred Departure Time</strong> <span
+                                        class="text-danger">*</span></label>
+                                <select id="depTime" name="departure_time" class="form-select" data-width="100%"
+                                    required>
+                                    <option value="">Select Departure Time</option>
+                                </select>
+                                <div class="invalid-feedback">Please select departure time.</div>
+                            </div>
 
-                        <div class="mb-3 col-md-6 col-12">
-                            <label class="form-label"><strong>Preferred Departure Time</strong> <span
-                                    class="text-danger">*</span></label>
-                            <select id="depTime" name="departure_time" class="form-select" data-width="100%" required>
-                                <option value="">Select Departure Time</option>
-                            </select>
-                            <div class="invalid-feedback">Please select departure time.</div>
-                        </div>
+                            <div class="mb-3 col-md-6 col-12">
+                                <label class="form-label"><strong>Choice of Vehicle</strong> <span
+                                        class="text-danger">*</span></label>
+                                <select id="vehChoice" name="vehicle_choice" class="form-select" data-width="100%"
+                                    required>
+                                    <option value="">Select Choice Of Vehicle</option>
+                                    @foreach ($vehicleTypes as $vt)
+                                        <option value="{{ $vt->model }}">{{ $vt->model }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback">Please select choice of vehicle.</div>
+                            </div>
 
-                        <div class="mb-3 col-md-6 col-12">
-                            <label class="form-label"><strong>Choice of Vehicle</strong> <span
-                                    class="text-danger">*</span></label>
-                            <select id="vehChoice" name="vehicle_choice" class="form-select" data-width="100%" required>
-                                <option value="">Select Choice Of Vehicle</option>
-                                @foreach ($vehicleTypes as $vt)
-                                    <option value="{{ $vt->model }}">{{ $vt->model }}</option>
-                                @endforeach
-                            </select>
-                            <div class="invalid-feedback">Please select choice of vehicle.</div>
-                        </div>
+                            <div class="mb-3 col-md-6 col-12">
+                                <label class="form-label"><strong>Seat Number</strong> <span
+                                        class="text-danger">*</span></label>
+                                <select id="seat" name="seat_number" class="form-select" data-width="100%"
+                                    required>
+                                    <option value="">Select Seat Number</option>
+                                </select>
+                                <div class="invalid-feedback">Please select seat number.</div>
+                            </div>
 
-                        <div class="mb-3 col-md-6 col-12">
-                            <label class="form-label"><strong>Seat Number</strong> <span
-                                    class="text-danger">*</span></label>
-                            <select id="seat" name="seat_number" class="form-select" data-width="100%" required>
-                                <option value="">Select Seat Number</option>
-                            </select>
-                            <div class="invalid-feedback">Please select seat number.</div>
-                        </div>
+                            <div class="mb-3 col-12">
+                                <label class="form-label"><strong>Passenger Name</strong> <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="passenger_name" class="form-control"
+                                    placeholder="Enter Passenger Name" required>
+                                <div class="invalid-feedback">Please enter passenger name.</div>
+                            </div>
 
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Passenger Name</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="passenger_name" class="form-control"
-                                placeholder="Enter Passenger Name" required>
-                            <div class="invalid-feedback">Please enter passenger name.</div>
-                        </div>
+                            <div class="mb-3 col-md-6 col-12">
+                                <label class="form-label"><strong>Passenger Phone Number</strong> <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="phone_number" class="form-control"
+                                    placeholder="Enter Passenger Phone Number" required>
+                                <div class="invalid-feedback">Please enter passenger phone number.</div>
+                            </div>
 
-                        <div class="mb-3 col-md-6 col-12">
-                            <label class="form-label"><strong>Passenger Phone Number</strong> <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="phone_number" class="form-control"
-                                placeholder="Enter Passenger Phone Number" required>
-                            <div class="invalid-feedback">Please enter passenger phone number.</div>
-                        </div>
+                            <div class="mb-3 col-md-6 col-12">
+                                <label class="form-label"><strong>Gender</strong> </label>
+                                <select id="gender" name="gender" class="form-select" data-width="100%" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                                <div class="invalid-feedback">Please select gender.</div>
+                            </div>
 
-                        <div class="mb-3 col-md-6 col-12">
-                            <label class="form-label"><strong>Gender</strong> </label>
-                            <select id="gender" name="gender" class="form-select" data-width="100%"
-                                required>
-                                <option value="">Select Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
-                            <div class="invalid-feedback">Please select gender.</div>
-                        </div>
+                            <div class="mb-3 col-12">
+                                <label class="form-label"><strong>Payment Channel</strong> <span
+                                        class="text-danger">*</span></label>
+                                <select id="channel" name="payment_channel" class="form-select" data-width="100%"
+                                    required>
+                                    <option value="">Select Payment Channel</option>
+                                    {{-- <option value="Cash">Cash</option> --}}
+                                    <option value="Transfer">Transfer</option>
+                                    <option value="Card Payment">Card Payment</option>
+                                </select>
+                                <div class="invalid-feedback">Please select payment channel.</div>
+                            </div>
 
-                        <div class="mb-3 col-12">
-                            <label class="form-label"><strong>Payment Channel</strong> <span
-                                    class="text-danger">*</span></label>
-                            <select id="channel" name="payment_channel" class="form-select" data-width="100%"
-                                required>
-                                <option value="">Select Payment Channel</option>
-                                {{-- <option value="Cash">Cash</option> --}}
-                                <option value="Transfer">Transfer</option>
-                                <option value="Card Payment">Card Payment</option>
-                            </select>
-                            <div class="invalid-feedback">Please select payment channel.</div>
-                        </div>
+                            <div class="mb-3 col-md-6 col-12">
+                                <label class="form-label"><strong>Emergency Contact</strong> </label>
+                                <input type="text" name="nok" class="form-control"
+                                    placeholder="Enter Emergency Contact">
+                                <div class="invalid-feedback">Please enter emergency contact.</div>
+                            </div>
 
-                        <div class="mb-3 col-md-6 col-12">
-                            <label class="form-label"><strong>Emergency Contact</strong> </label>
-                            <input type="text" name="nok" class="form-control"
-                                placeholder="Enter Emergency Contact">
-                            <div class="invalid-feedback">Please enter emergency contact.</div>
-                        </div>
+                            <div class="mb-3 col-md-6 col-12">
+                                <label class="form-label"><strong>Emergency Contact's Number</strong> </label>
+                                <input type="text" name="nok_phone" class="form-control"
+                                    placeholder="Enter Emergency Contact's Number">
+                                <div class="invalid-feedback">Please enter emergency contact's number.</div>
+                            </div>
 
-                        <div class="mb-3 col-md-6 col-12">
-                            <label class="form-label"><strong>Emergency Contact's Number</strong> </label>
-                            <input type="text" name="nok_phone" class="form-control"
-                                placeholder="Enter Emergency Contact's Number">
-                            <div class="invalid-feedback">Please enter emergency contact's number.</div>
+                            <div class="col-md-12 border-bottom"></div>
+                            <!-- button -->
+                            <div class="col-12 mt-4">
+                                <button class="btn btn-primary" type="submit">Submit Details</button>
+                                <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
+                                    aria-label="Close">Close</button>
+                            </div>
                         </div>
-
-                        <div class="col-md-12 border-bottom"></div>
-                        <!-- button -->
-                        <div class="col-12 mt-4">
-                            <button class="btn btn-primary" type="submit">Submit Details</button>
-                            <button type="button" class="btn btn-outline-primary ms-2" data-bs-dismiss="offcanvas"
-                                aria-label="Close">Close</button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-
+    @endif
     <div class="modal fade" id="filterBookings" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-md">

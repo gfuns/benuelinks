@@ -46,6 +46,24 @@
                     </li>
                 @endif
 
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 5) == true)
+                    <li id="routes" class="nav-item mb-3">
+                        <a href="{{ route('admin.travelRoutes') }}">
+                            <i class="fas fa-road"></i>
+                            <p>Travel Routes</p>
+                        </a>
+                    </li>
+                @endif
+
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 6) == true)
+                    <li id="schedules" class="nav-item mb-3">
+                        <a href="{{ route('admin.travelSchedule') }}">
+                            <i class="fas fa-calendar-alt"></i>
+                            <p>Travel Schedule</p>
+                        </a>
+                    </li>
+                @endif
+
                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 7) == true)
                     <li id="ticketing" class="nav-item mb-3">
                         <a href="{{ route('admin.bookPassengers') }}">
@@ -64,20 +82,20 @@
                     </li>
                 @endif
 
-                @if (app('Menu')->allowAccess(Auth::user()->role_id, 6) == true)
-                    <li id="schedules" class="nav-item mb-3">
-                        <a href="{{ route('admin.travelSchedule') }}">
-                            <i class="fas fa-calendar-alt"></i>
-                            <p>Travel Schedule</p>
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 14) == true)
+                    <li id="elb" class="nav-item mb-3">
+                        <a href="{{ route('admin.luggagebilling') }}">
+                            <i class="fas fa-briefcase"></i>
+                            <p>Extra Luggage Billing</p>
                         </a>
                     </li>
                 @endif
 
-                @if (app('Menu')->allowAccess(Auth::user()->role_id, 5) == true)
-                    <li id="routes" class="nav-item mb-3">
-                        <a href="{{ route('admin.travelRoutes') }}">
-                            <i class="fas fa-road"></i>
-                            <p>Travel Routes</p>
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 13) == true && Auth::user()->role_id == 4)
+                    <li id="teod" class="nav-item mb-3">
+                        <a href="{{ route('admin.ticketerEndOfDayReport') }}">
+                            <i class="fas fa-clipboard-list"></i>
+                            <p>End Of Day Report</p>
                         </a>
                     </li>
                 @endif
@@ -95,7 +113,23 @@
                                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
                                     <li id="financial">
                                         <a href="{{ route('admin.financialReport') }}">
-                                            <span class="sub-item">Transactions</span>
+                                            <span class="sub-item">Ticket Sales Transactions</span>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
+                                    <li id="luggages">
+                                        <a href="{{ route('admin.extraLuggageReport') }}">
+                                            <span class="sub-item">Extra Luggages Transactions</span>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
+                                    <li id="eod">
+                                        <a href="{{ route('admin.endOfDayReport') }}">
+                                            <span class="sub-item">End Of Day Report</span>
                                         </a>
                                     </li>
                                 @endif
