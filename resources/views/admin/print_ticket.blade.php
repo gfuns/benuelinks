@@ -146,6 +146,97 @@
             <tr class="pad">
                 <td>&#8358; {{ number_format($booking->travel_fare, 2) }}</td>
             </tr>
+            <tr>
+                <td><strong>Payment Channel:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ ucwords($booking->payment_channel) }}</td>
+            </tr>
+            <tr>
+                <td><strong>Booking Method:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ ucwords($booking->booking_method) }} Booking</td>
+            </tr>
+        </table>
+
+        <div class="footer">
+            Thank you for choosing<br>
+            Peace Xtra Comfort
+        </div>
+    </div>
+
+    <div style="margin-bottom: 20px">&nbsp;</div>
+
+    <div class="container">
+        <div class="header">
+            <h2>Peace Xtra Comfort</h2>
+            <div class="title">CASHIER RECEIPT</div>
+        </div>
+
+
+        <table>
+            <tr>
+                <td><strong>Booking Number:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ $booking->booking_number }}</td>
+            </tr>
+            <tr>
+                <td><strong>Travel Route:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ $booking->travelRoute() }}</td>
+            </tr>
+            <tr>
+                <td><strong>Vehicle:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ $booking->vehicle_type }}</td>
+            </tr>
+            <tr>
+                <td><strong>Departure:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ date_format(new DateTime($booking->travel_date), 'l jS M, Y') }} {{ $booking->departure_time }}
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Passenger:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ $booking->full_name }}</td>
+            </tr>
+            <tr>
+                <td><strong>Phone:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ $booking->phone_number }}</td>
+            </tr>
+            <tr>
+                <td><strong>Seat No.:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>Seat {{ $booking->seat }}</td>
+            </tr>
+            <tr>
+                <td><strong>Amount Paid:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>&#8358; {{ number_format($booking->travel_fare, 2) }}</td>
+            </tr>
+            <tr>
+                <td><strong>Payment Channel:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ ucwords($booking->payment_channel) }}</td>
+            </tr>
+            <tr>
+                <td><strong>Booking Method:</strong></td>
+            </tr>
+            <tr class="pad">
+                <td>{{ ucwords($booking->booking_method) }} Booking</td>
+            </tr>
         </table>
 
         <div class="footer">
