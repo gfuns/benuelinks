@@ -1292,6 +1292,7 @@ class AdminController extends Controller
             }
 
             $booking->booking_status = "validated";
+            $booking->ticketer       = $schedule->ticketer;
             if ($booking->save()) {
                 toast('Ticket Validated Successfully', 'success');
                 return back();
