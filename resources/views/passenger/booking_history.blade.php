@@ -90,6 +90,7 @@
                                     <th class="data-col">Booking Number</th>
                                     <th class="data-col">Travel Route</th>
                                     <th class="data-col">Travel Date/Time</th>
+                                    <th class="data-col">Seat</th>
                                     <th class="data-col">Fare Paid</th>
                                     <th class="data-col">Trip Status</th>
                                 </tr>
@@ -111,6 +112,10 @@
                                             <span
                                                 class="sub sub-s2 sub-email">{{ date_format(new DateTime($bk->travel_date), 'l - jS M, Y') }}
                                                 {{ $bk->departure_time }}</span>
+                                        </td>
+                                        <td class="data-col">
+                                            <span
+                                                class="sub sub-s2 sub-email">Seat {{ $bk->seat }}</span>
                                         </td>
                                         <td class="data-col">
                                             <span

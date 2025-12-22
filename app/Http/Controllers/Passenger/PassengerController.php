@@ -427,27 +427,29 @@ class PassengerController extends Controller
         }
 
         if (isset($schedule)) {
-            $booking                  = new TravelBooking;
-            $booking->user_id         = Auth::user()->id;
-            $booking->schedule_id     = $schedule->id;
-            $booking->departure       = $schedule->departure;
-            $booking->destination     = $schedule->destination;
-            $booking->vehicle         = $schedule->vehicle;
-            $booking->vehicle_type    = $request->vehicle_type;
-            $booking->travel_date     = $schedule->scheduled_date;
-            $booking->departure_time  = $schedule->scheduled_time;
-            $booking->full_name       = Auth::user()->last_name . ", " . Auth::user()->other_names;
-            $booking->phone_number    = Auth::user()->phone_number;
-            $booking->nok             = Auth::user()->nok;
-            $booking->nok_phone       = Auth::user()->nok_phone;
-            $booking->seat            = $seatNumber;
-            $booking->payment_channel = "pending";
-            $booking->classification  = "booking";
-            $booking->payment_status  = "pending";
-            $booking->travel_fare     = ($seatCount * $schedule->transportFare());
-            $booking->booking_number  = $this->genBookingID();
-            $booking->booking_method  = "online";
-            $booking->booking_status  = "pending";
+            $booking                    = new TravelBooking;
+            $booking->user_id           = Auth::user()->id;
+            $booking->schedule_id       = $schedule->id;
+            $booking->departure         = $schedule->departure;
+            $booking->destination       = $schedule->destination;
+            $booking->vehicle           = $schedule->vehicle;
+            $booking->vehicle_type      = $request->vehicle_type;
+            $booking->travel_date       = $schedule->scheduled_date;
+            $booking->departure_time    = $schedule->scheduled_time;
+            $booking->full_name         = Auth::user()->last_name . ", " . Auth::user()->other_names;
+            $booking->phone_number      = Auth::user()->phone_number;
+            $booking->nok               = Auth::user()->nok;
+            $booking->nok_phone         = Auth::user()->nok_phone;
+            $booking->seat              = $seatNumber;
+            $booking->payment_channel   = "pending";
+            $booking->classification    = "booking";
+            $booking->payment_status    = "pending";
+            $booking->travel_fare       = ($seatCount * $schedule->transportFare());
+            $booking->booking_number    = $this->genBookingID();
+            $booking->booking_method    = "online";
+            $booking->booking_status    = "pending";
+            $booking->ticketer          = $schedule->ticketer;
+            $booking->assigned_ticketer = $schedule->ticketer;
             if ($booking->save()) {
                 return redirect()->route("passenger.passengerDetails", [$booking->id]);
             } else {
