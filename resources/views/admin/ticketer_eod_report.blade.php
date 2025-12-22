@@ -17,8 +17,10 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Travel Date</strong></label>
-                                                <input type="date" name="travel_date" value="{{ $date }}" max="{{ now()->toDateString() }}"
-                                                    class="form-control" placeholder="Travel Date" required>
+                                                <input type="date" name="travel_date" value="{{ $date }}"
+                                                    max="{{ now()->toDateString() }}" class="form-control"
+                                                    placeholder="Travel Date" onkeydown="return false"
+                                                    onpaste="return false" ondrop="return false" required>
 
                                                 @error('travel_date')
                                                     <span class="" role="alert">
@@ -30,7 +32,7 @@
 
                                         </div>
 
-                                         <div class="col-md-5">
+                                        <div class="col-md-5">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Travel Route</strong></label>
                                                 <select id="fdestination" name="travel_route" class="form-select"

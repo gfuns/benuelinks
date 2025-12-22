@@ -312,7 +312,8 @@
                                 <label class="form-label"><strong>Travel Date</strong> <span
                                         class="text-danger">*</span></label>
                                 <input id="travDate" type="date" name="travel_date" class="form-control"
-                                    placeholder="Select Travel Date" min="{{ $minDate }}" required>
+                                    placeholder="Select Travel Date" min="{{ $minDate }}" onkeydown="return false"
+                                    onpaste="return false" ondrop="return false" required>
                                 <div class="invalid-feedback">Please select travel date.</div>
                             </div>
 
