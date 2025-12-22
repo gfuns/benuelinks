@@ -1245,23 +1245,33 @@ class AdminController extends Controller
      */
     public function ticketerEndOfDayReport()
     {
-        $date        = request()->travel_date ?? date("Y-m-d");
-        $route       = request()->travel_route;
-        $destination = null;
+        $date      = request()->travel_date ?? date("Y-m-d");
+        $route     = request()->travel_route;
+        $routeData = null;
 
         if (isset(request()->travel_route)) {
-            $destination = CompanyRoutes::find($route);
+            $routeData = CompanyRoutes::find($route);
+        }
+
+        $baseQuery = TravelBooking::where('payment_status', 'paid')
+            ->where('ticketer', Auth::user()->id)
+            ->whereDate('travel_date', $date);
+
+        if (isset($routeData)) {
+            $baseQuery->where('departure', $routeData->departure)
+                ->where('destination', $routeData->destination);
         }
 
         $params = [
-            "tickets"         => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->count(),
-            "revenue"         => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->sum("travel_fare"),
-            "onlinebooking"   => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->where("booking_method", "online")->count(),
-            "physicalbooking" => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->where("booking_method", "physical")->count(),
-            "transfer"        => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->where("payment_channel", "transfer")->sum("travel_fare"),
-            "card"            => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->where("payment_channel", "card payment")->sum("travel_fare"),
-            "wallet"          => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->where("payment_channel", "wallet")->sum("travel_fare"),
+            "tickets"         => (clone $baseQuery)->count(),
+            "revenue"         => (clone $baseQuery)->sum("travel_fare"),
+            "onlinebooking"   => (clone $baseQuery)->where("booking_method", "online")->count(),
+            "physicalbooking" => (clone $baseQuery)->where("booking_method", "physical")->count(),
+            "transfer"        => (clone $baseQuery)->where("payment_channel", "transfer")->sum("travel_fare"),
+            "card"            => (clone $baseQuery)->where("payment_channel", "card payment")->sum("travel_fare"),
+            "wallet"          => (clone $baseQuery)->where("payment_channel", "wallet")->sum("travel_fare"),
         ];
+
         $totals = [
             "bookingmethod"  => $params['onlinebooking'] + $params['physicalbooking'],
             "paymentchannel" => $params['transfer'] + $params['card'] + $params['wallet'],
@@ -1269,7 +1279,7 @@ class AdminController extends Controller
 
         $travelRoutes = CompanyRoutes::where("departure", Auth::user()->station)->where("status", "active")->get();
 
-        return view("admin.ticketer_eod_report", compact("params", "totals", "date", "travelRoutes", "route", "destination"));
+        return view("admin.ticketer_eod_report", compact("params", "totals", "date", "travelRoutes", "route", "routeData"));
     }
 
     /**

@@ -68,9 +68,9 @@
 
                             <hr />
                             <h6 class="mt-4 mb-4"><strong>
-                                    End Of Day Report For: {{ date_format(new DateTime($date), 'jS F, Y') }} @if (isset($destination))
+                                    End Of Day Report For: {{ date_format(new DateTime($date), 'jS F, Y') }} @if (isset($routeData))
                                         ,
-                                        {{ $destination->departurePoint->terminal . ' => ' . $destination->destinationPoint->terminal }}
+                                        {{ $routeData->departurePoint->terminal . ' => ' . $routeData->destinationPoint->terminal }}
                                     @endif
                                 </strong></h6>
 
