@@ -955,6 +955,8 @@ class AdminController extends Controller
 
         if (isset(request()->travel_date)) {
             $query->where("travel_date", $date);
+        } else {
+            $query->whereDate('travel_date', '>=', now()->toDateString());
         }
 
         if (isset(request()->travel_route)) {
@@ -993,8 +995,11 @@ class AdminController extends Controller
         $status       = null;
         $date         = null;
         $route        = null;
+        $payment      = null;
+        $channel      = null;
+        $method       = null;
         $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
-        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam', "status", "date", "travelRoutes", "route"));
+        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam', "status", "date", "travelRoutes", "route", "method", "channel", "payment"));
     }
 
     /**
