@@ -1711,8 +1711,47 @@ class SuperAdminController extends Controller
      */
     public function endOfDayReport()
     {
-        alert()->info('Coming Soon.');
-        return back();
+        $date         = request()->travel_date ?? date("Y-m-d");
+        $route        = request()->travel_route;
+        $ticketer     = request()->ticketer;
+        $ticketerData = null;
+        $routeData    = null;
+
+        if (isset(request()->travel_route)) {
+            $routeData = CompanyRoutes::find($route);
+        }
+
+        $baseQuery = TravelBooking::where('payment_status', 'paid')
+            ->whereDate('travel_date', $date);
+
+        if (isset(request()->ticketer)) {
+            $baseQuery->where('ticketer', $ticketer);
+            $ticketerData = User::find($ticketer);
+        }
+
+        if (isset($routeData)) {
+            $baseQuery->where('departure', $routeData->departure)
+                ->where('destination', $routeData->destination);
+        }
+
+        $params = [
+            "tickets"         => (clone $baseQuery)->count(),
+            "revenue"         => (clone $baseQuery)->sum("travel_fare"),
+            "onlinebooking"   => (clone $baseQuery)->where("booking_method", "online")->count(),
+            "physicalbooking" => (clone $baseQuery)->where("booking_method", "physical")->count(),
+            "transfer"        => (clone $baseQuery)->where("payment_channel", "transfer")->sum("travel_fare"),
+            "card"            => (clone $baseQuery)->where("payment_channel", "card payment")->sum("travel_fare"),
+            "wallet"          => (clone $baseQuery)->where("payment_channel", "wallet")->sum("travel_fare"),
+        ];
+
+        $totals = [
+            "bookingmethod"  => $params['onlinebooking'] + $params['physicalbooking'],
+            "paymentchannel" => $params['transfer'] + $params['card'] + $params['wallet'],
+        ];
+
+        $travelRoutes = CompanyRoutes::where("status", "active")->get();
+        $ticketers    = User::where("role_id", 4)->get();
+        return view("superadmin.eod_report", compact("params", "totals", "date", "travelRoutes", "ticketers", "route", "routeData", "ticketer", "ticketerData"));
     }
 
     /**
