@@ -659,7 +659,14 @@ class AdminController extends Controller
         $weekDates = $this->getWeekDates();
 
         $terminals       = CompanyTerminals::where("id", ">", 1)->where("status", "active")->get();
-        $travelSchedules = TravelSchedule::orderBy('id', 'desc')->whereDate('scheduled_date', '>=', now()->toDateString())->where("departure", Auth::user()->station)->orWhere("destination", Auth::user()->station)->get();
+        $travelSchedules = TravelSchedule::whereDate('scheduled_date', '>=', now()->toDateString())
+            ->where(function ($query) {
+                $query->where('departure', Auth::user()->station)
+                    ->orWhere('destination', Auth::user()->station);
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+
         $companyVehicles = CompanyVehicles::where("status", "active")->get();
 
         $departure   = null;
