@@ -1245,7 +1245,13 @@ class AdminController extends Controller
      */
     public function ticketerEndOfDayReport()
     {
-        $date = request()->travel_date ?? date("Y-m-d");
+        $date        = request()->travel_date ?? date("Y-m-d");
+        $route       = request()->travel_route;
+        $destination = null;
+
+        if (isset(request()->travel_route)) {
+            $destination = CompanyRoutes::find($route);
+        }
 
         $params = [
             "tickets"         => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->count(),
@@ -1261,7 +1267,9 @@ class AdminController extends Controller
             "paymentchannel" => $params['transfer'] + $params['card'] + $params['wallet'],
         ];
 
-        return view("admin.ticketer_eod_report", compact("params", "totals", "date"));
+        $travelRoutes = CompanyRoutes::where("departure", Auth::user()->station)->where("status", "active")->get();
+
+        return view("admin.ticketer_eod_report", compact("params", "totals", "date", "travelRoutes", "route", "destination"));
     }
 
     /**

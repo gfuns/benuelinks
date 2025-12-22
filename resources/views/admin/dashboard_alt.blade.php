@@ -238,6 +238,10 @@
             </div>
             <!-- card body -->
             <div class="container">
+                @php
+                    $today = now()->toDateString();
+                    $minDate = now()->hour >= 12 ? now()->addDay()->toDateString() : $today;
+                @endphp
                 <!-- form -->
                 <form class="needs-validation" novalidate method="post" action="{{ route('admin.processBooking') }}"
                     enctype="multipart/form-data">
@@ -248,7 +252,7 @@
                             <label class="form-label"><strong>Travel Date</strong> <span
                                     class="text-danger">*</span></label>
                             <input id="travDate" type="date" name="travel_date" class="form-control"
-                                placeholder="Select Travel Date" required>
+                                placeholder="Select Travel Date" min="{{ $minDate }}" required>
                             <div class="invalid-feedback">Please select travel date.</div>
                         </div>
 

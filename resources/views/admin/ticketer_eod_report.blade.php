@@ -17,10 +17,34 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="currentPassword"><strong>Travel Date</strong></label>
-                                                <input type="date" name="travel_date" value="{{ $date }}"
+                                                <input type="date" name="travel_date" value="{{ $date }}" max="{{ now()->toDateString() }}"
                                                     class="form-control" placeholder="Travel Date" required>
 
                                                 @error('travel_date')
+                                                    <span class="" role="alert">
+                                                        <strong
+                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                        </div>
+
+                                         <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="currentPassword"><strong>Travel Route</strong></label>
+                                                <select id="fdestination" name="travel_route" class="form-select"
+                                                    data-width="100%">
+                                                    <option value="">All Routes</option>
+                                                    @foreach ($travelRoutes as $trvroute)
+                                                        <option value="{{ $trvroute->id }}"
+                                                            @if ($trvroute->id == $route) selected @endif>
+                                                            {{ $trvroute->departurePoint->terminal . ' => ' . $trvroute->destinationPoint->terminal }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                                @error('travel_route')
                                                     <span class="" role="alert">
                                                         <strong
                                                             style="color: #b02a37; font-size:12px">{{ $message }}</strong>
@@ -42,7 +66,10 @@
 
                             <hr />
                             <h6 class="mt-4 mb-4"><strong>
-                                    End Of Day Report For: {{ date_format(new DateTime($date), 'jS F, Y') }}
+                                    End Of Day Report For: {{ date_format(new DateTime($date), 'jS F, Y') }} @if (isset($destination))
+                                        ,
+                                        {{ $destination->departurePoint->terminal . ' => ' . $destination->destinationPoint->terminal }}
+                                    @endif
                                 </strong></h6>
 
                             <div class="table-responsive">

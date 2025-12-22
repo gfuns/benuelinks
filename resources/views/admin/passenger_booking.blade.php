@@ -297,6 +297,11 @@
                 </div>
                 <!-- card body -->
                 <div class="container">
+                    @php
+                        $today = now()->toDateString();
+                        $minDate = now()->hour >= 12 ? now()->addDay()->toDateString() : $today;
+                    @endphp
+
                     <!-- form -->
                     <form class="needs-validation" novalidate method="post"
                         action="{{ route('admin.processBooking') }}" enctype="multipart/form-data">
@@ -307,7 +312,7 @@
                                 <label class="form-label"><strong>Travel Date</strong> <span
                                         class="text-danger">*</span></label>
                                 <input id="travDate" type="date" name="travel_date" class="form-control"
-                                    placeholder="Select Travel Date" required>
+                                    placeholder="Select Travel Date" min="{{ $minDate }}" required>
                                 <div class="invalid-feedback">Please select travel date.</div>
                             </div>
 
@@ -467,9 +472,11 @@
                                 <label class="form-label"><strong>Booking Method</strong></label>
                                 <select id="bkMethod" name="booking_method" class="form-select" data-width="100%">
                                     <option value="">Select Booking Method</option>
-                                    <option value="online" @if ($method == 'online') selected @endif>Online Booking
+                                    <option value="online" @if ($method == 'online') selected @endif>Online
+                                        Booking
                                     </option>
-                                    <option value="physical" @if ($method == 'physical') selected @endif>Physical Booking
+                                    <option value="physical" @if ($method == 'physical') selected @endif>Physical
+                                        Booking
                                     </option>
                                 </select>
                                 <div class="invalid-feedback">Please select booking method.</div>
@@ -491,11 +498,14 @@
                                 <label class="form-label"><strong>Payment Channel</strong></label>
                                 <select id="payChannel" name="payment_channel" class="form-select" data-width="100%">
                                     <option value="">Select Payment Channel</option>
-                                    <option value="transfer" @if ($channel == 'transfer') selected @endif>Funds Transfer
+                                    <option value="transfer" @if ($channel == 'transfer') selected @endif>Funds
+                                        Transfer
                                     </option>
-                                    <option value="card payment" @if ($channel == 'card payment') selected @endif>Card Payment
+                                    <option value="card payment" @if ($channel == 'card payment') selected @endif>Card
+                                        Payment
                                     </option>
-                                    <option value="wallet" @if ($channel == 'wallet') selected @endif>Wallet Payment
+                                    <option value="wallet" @if ($channel == 'wallet') selected @endif>Wallet
+                                        Payment
                                     </option>
                                 </select>
                                 <div class="invalid-feedback">Please select payment channel.</div>
