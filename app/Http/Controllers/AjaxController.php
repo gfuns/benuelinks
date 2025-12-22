@@ -6,15 +6,24 @@ use App\Models\CompanyTerminals;
 use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
+use Auth;
 
 class AjaxController extends Controller
 {
     public function getSchedules($terminal, $date)
     {
-        $destinationIds = TravelSchedule::where('departure', $terminal)
-            ->whereDate('scheduled_date', $date)
-            ->distinct()
-            ->pluck('destination');
+        if (Auth::user()->role_id == 4) {
+            $destinationIds = TravelSchedule::where('departure', $terminal)
+                ->where("ticketer", Auth::user()->id)
+                ->whereDate('scheduled_date', $date)
+                ->distinct()
+                ->pluck('destination');
+        } else {
+            $destinationIds = TravelSchedule::where('departure', $terminal)
+                ->whereDate('scheduled_date', $date)
+                ->distinct()
+                ->pluck('destination');
+        }
 
         $schedules = CompanyTerminals::whereIn('id', $destinationIds)
             ->pluck('terminal', 'id');

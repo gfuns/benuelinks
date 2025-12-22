@@ -608,7 +608,7 @@
                 success: function(data) {
                     var options = "<option value=''>Select Ticketer</option>";
                     $.each(data, function(key, value) {
-                        options += "<option value='" + value + "'>" + value + "</option>";
+                        options += "<option value='" + key + "'>" + value + "</option>";
                     });
                     $('#booker').html(options);
                 }

@@ -1142,6 +1142,7 @@ class SuperAdminController extends Controller
                     $schedule->destination    = $request->destination;
                     $schedule->scheduled_time = $request->departure_time;
                     $schedule->scheduled_date = $request->scheduled_date;
+                    $schedule->ticketer       = $request->ticketer;
                     $schedule->save();
                 }
 
@@ -1155,6 +1156,7 @@ class SuperAdminController extends Controller
                         $schedule->destination    = $request->destination;
                         $schedule->scheduled_time = $request->departure_time;
                         $schedule->scheduled_date = $swd;
+                        $schedule->ticketer       = $request->ticketer;
                         $schedule->save();
                     }
                 }
@@ -1168,6 +1170,7 @@ class SuperAdminController extends Controller
                         $schedule->destination    = $request->destination;
                         $schedule->scheduled_time = $request->departure_time;
                         $schedule->scheduled_date = $smd;
+                        $schedule->ticketer       = $request->ticketer;
                         $schedule->save();
                     }
                 }
@@ -1176,6 +1179,7 @@ class SuperAdminController extends Controller
             toast('Travel Schedule Created Successfully', 'success');
             return back();
         } catch (\Exception $e) {
+            report($e);
             toast('Something went wrong. Please try again later.', 'error');
             return back();
         }

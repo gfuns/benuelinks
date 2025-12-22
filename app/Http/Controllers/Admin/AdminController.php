@@ -80,10 +80,10 @@ class AdminController extends Controller
             $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
             if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
                 $period         = "Tomorrow";
-                $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", Carbon::tomorrow())->limit(5)->get();
+                $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", Carbon::tomorrow())->where("ticketer", Auth::user()->id)->limit(5)->get();
             } else {
                 $period         = "Today";
-                $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->limit(5)->get();
+                $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->where("ticketer", Auth::user()->id)->limit(5)->get();
             }
             return view("admin.dashboard_alt", compact("scheduledTrips", "searchParam", "vehicleTypes", "travelRoutes", "period", "searchResults"));
         }
@@ -719,6 +719,7 @@ class AdminController extends Controller
                     $schedule->destination    = $request->destination;
                     $schedule->scheduled_time = $request->departure_time;
                     $schedule->scheduled_date = $request->scheduled_date;
+                    $schedule->ticketer       = $request->ticketer;
                     $schedule->save();
                 }
 
@@ -732,6 +733,7 @@ class AdminController extends Controller
                         $schedule->destination    = $request->destination;
                         $schedule->scheduled_time = $request->departure_time;
                         $schedule->scheduled_date = $swd;
+                        $schedule->ticketer       = $request->ticketer;
                         $schedule->save();
                     }
                 }
@@ -745,6 +747,7 @@ class AdminController extends Controller
                         $schedule->destination    = $request->destination;
                         $schedule->scheduled_time = $request->departure_time;
                         $schedule->scheduled_date = $smd;
+                        $schedule->ticketer       = $request->ticketer;
                         $schedule->save();
                     }
                 }
@@ -954,7 +957,7 @@ class AdminController extends Controller
 
         $query = TravelBooking::query();
 
-        $query->orderBy("id", "desc")->where("classification", "booking")->where("departure", $terminal);
+        $query->orderBy("id", "desc")->where("classification", "booking")->where("departure", $terminal)->where("assigned_ticketer", Auth::user()->id);
 
         if (isset(request()->booking_status)) {
             $query->where("booking_status", $status);
@@ -1044,26 +1047,28 @@ class AdminController extends Controller
         $route = CompanyRoutes::where("departure", Auth::user()->station)->where("destination", $request->destination)->first();
 
         if (isset($schedule) && isset($route)) {
-            $booking                  = new TravelBooking;
-            $booking->schedule_id     = $schedule->id;
-            $booking->departure       = Auth::user()->station;
-            $booking->destination     = $request->destination;
-            $booking->vehicle         = $schedule->vehicle;
-            $booking->vehicle_type    = $request->vehicle_choice;
-            $booking->travel_date     = $request->travel_date;
-            $booking->departure_time  = $request->departure_time;
-            $booking->full_name       = $request->passenger_name;
-            $booking->phone_number    = $request->phone_number;
-            $booking->seat            = $request->seat_number;
-            $booking->payment_channel = $request->payment_channel;
-            $booking->classification  = "booking";
-            $booking->payment_status  = $request->payment_channel == "Transfer" ? "pending" : "paid";
-            $booking->booking_status  = $request->payment_channel == "Transfer" ? "pending" : "booked";
-            $booking->travel_fare     = $route->transport_fare;
-            $booking->booking_number  = $this->genBookingID();
-            $booking->gender          = $request->gender;
-            $booking->nok             = $request->nok;
-            $booking->nok_phone       = $request->nok_phone;
+            $booking                    = new TravelBooking;
+            $booking->schedule_id       = $schedule->id;
+            $booking->departure         = Auth::user()->station;
+            $booking->destination       = $request->destination;
+            $booking->vehicle           = $schedule->vehicle;
+            $booking->vehicle_type      = $request->vehicle_choice;
+            $booking->travel_date       = $request->travel_date;
+            $booking->departure_time    = $request->departure_time;
+            $booking->full_name         = $request->passenger_name;
+            $booking->phone_number      = $request->phone_number;
+            $booking->seat              = $request->seat_number;
+            $booking->payment_channel   = $request->payment_channel;
+            $booking->classification    = "booking";
+            $booking->payment_status    = $request->payment_channel == "Transfer" ? "pending" : "paid";
+            $booking->booking_status    = $request->payment_channel == "Transfer" ? "pending" : "booked";
+            $booking->travel_fare       = $route->transport_fare;
+            $booking->booking_number    = $this->genBookingID();
+            $booking->gender            = $request->gender;
+            $booking->nok               = $request->nok;
+            $booking->nok_phone         = $request->nok_phone;
+            $booking->ticketer          = Auth::user()->id;
+            $booking->assigned_ticketer = $schedule->ticketer;
             if ($booking->save()) {
                 if ($booking->payment_channel == "Transfer") {
                     return redirect()->route("admin.payWithXtrapay", [$booking->id]);
@@ -1275,11 +1280,25 @@ class AdminController extends Controller
      */
     public function validateTicket($id)
     {
-        $booking                 = TravelBooking::find($id);
-        $booking->booking_status = "validated";
-        if ($booking->save()) {
-            toast('Ticket Validated Successfully', 'success');
-            return back();
+
+        $booking = TravelBooking::find($id);
+        if (isset($booking)) {
+
+            $schedule = TravelSchedule::find($booking->schedule_id);
+
+            if ($schedule->ticketer != Auth::user()->id) {
+                toast('You are not assigned to this travel schedule. Contact Administrator', 'error');
+                return back();
+            }
+
+            $booking->booking_status = "validated";
+            if ($booking->save()) {
+                toast('Ticket Validated Successfully', 'success');
+                return back();
+            } else {
+                toast('Something went wrong. Please try again', 'error');
+                return back();
+            }
         } else {
             toast('Something went wrong. Please try again', 'error');
             return back();
