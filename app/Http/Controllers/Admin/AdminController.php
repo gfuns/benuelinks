@@ -79,11 +79,13 @@ class AdminController extends Controller
             $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
             $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
             if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
-                $period         = "Tomorrow";
-                $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", Carbon::tomorrow())->where("ticketer", Auth::user()->id)->limit(5)->get();
+                $period = "Tomorrow";
+                // $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", Carbon::tomorrow())->where("ticketer", Auth::user()->id)->limit(5)->get();
+                $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", Carbon::tomorrow())->limit(5)->get();
             } else {
-                $period         = "Today";
-                $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->where("ticketer", Auth::user()->id)->limit(5)->get();
+                $period = "Today";
+                // $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->where("ticketer", Auth::user()->id)->limit(5)->get();
+                $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->limit(5)->get();
             }
             return view("admin.dashboard_alt", compact("scheduledTrips", "searchParam", "vehicleTypes", "travelRoutes", "period", "searchResults"));
         }
@@ -957,7 +959,9 @@ class AdminController extends Controller
 
         $query = TravelBooking::query();
 
-        $query->orderBy("id", "desc")->where("classification", "booking")->where("departure", $terminal)->where("assigned_ticketer", Auth::user()->id);
+        // $query->orderBy("id", "desc")->where("classification", "booking")->where("departure", $terminal)->where("assigned_ticketer", Auth::user()->id);
+
+        $query->orderBy("id", "desc")->where("classification", "booking")->where("departure", $terminal);
 
         if (isset(request()->booking_status)) {
             $query->where("booking_status", $status);
@@ -1293,7 +1297,7 @@ class AdminController extends Controller
         }
 
         $baseQuery = TravelBooking::where('payment_status', 'paid')
-            ->where('ticketer', Auth::user()->id)
+        // ->where('ticketer', Auth::user()->id)
             ->whereDate('travel_date', $date);
 
         if (isset($routeData)) {

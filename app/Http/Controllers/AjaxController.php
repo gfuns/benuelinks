@@ -14,7 +14,7 @@ class AjaxController extends Controller
     {
         if (Auth::user()->role_id == 4) {
             $destinationIds = TravelSchedule::where('departure', $terminal)
-                ->where("ticketer", Auth::user()->id)
+            // ->where("ticketer", Auth::user()->id)
                 ->whereDate('scheduled_date', $date)
                 ->distinct()
                 ->pluck('destination');
