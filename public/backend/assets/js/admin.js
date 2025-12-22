@@ -69,6 +69,18 @@ $('#bkStatus').select2({
     dropdownParent: $('#filterBookings')
 });
 
+$('#payStatus').select2({
+    dropdownParent: $('#filterBookings')
+});
+
+$('#payChannel').select2({
+    dropdownParent: $('#filterBookings')
+});
+
+$('#bkMethod').select2({
+    dropdownParent: $('#filterBookings')
+});
+
 $('#tripStatus').select2({
     dropdownParent: $('#updateTripStatus')
 });

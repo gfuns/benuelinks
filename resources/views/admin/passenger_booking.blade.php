@@ -72,6 +72,7 @@
                                             <th scope="col">Departure Date/Time</th>
                                             <th scope="col">Booking Date</th>
                                             <th scope="col">Payment Channel</th>
+                                            <th scope="col">Booking Method</th>
                                             <th scope="col">Payment Status</th>
                                             <th scope="col">Booking Status</th>
                                             <th scope="col">Action</th>
@@ -94,6 +95,9 @@
                                                 </td>
                                                 <td class="align-middle">
                                                     {{ ucwords($bk->payment_channel) }}
+                                                </td>
+                                                <td class="align-middle">
+                                                    {{ ucwords($bk->booking_method) }} Booking
                                                 </td>
                                                 <td>
                                                     @if ($bk->payment_status == 'paid')
@@ -428,9 +432,7 @@
 
                     </button>
                 </div>
-                <form class="needs-validation" novalidate method="post" action="{{ route('admin.filterBookings') }}"
-                    enctype="multipart/form-data">
-                    @csrf
+                <form class="needs-validation" novalidate method="get" action="">
                     <div class="modal-body">
                         <div class="row">
                             <!-- form group -->
@@ -439,7 +441,7 @@
                                 <label class="form-label"><strong>Travel Route</strong></label>
                                 <select id="trvRoute" name="travel_route" class="form-select" data-width="100%"
                                     required>
-                                    <option value="null">Select Travel Route</option>
+                                    <option value="">Select Travel Route</option>
                                     @foreach ($travelRoutes as $troute)
                                         <option value="{{ $troute->destination }}"
                                             @if ($route == $troute->destination) selected @endif>{{ $troute->travelRoute() }}
@@ -449,16 +451,54 @@
                                 <div class="invalid-feedback">Please select travel route.</div>
                             </div>
 
-                            <div class="mb-3 col-12">
+                            <div class="mb-3 col-12 col-md-6">
                                 <label class="form-label"><strong>Booking Status</strong></label>
                                 <select id="bkStatus" name="booking_status" class="form-select" data-width="100%">
-                                    <option value="null">Select Booking Status</option>
+                                    <option value="">Select Booking Status</option>
                                     <option value="booked" @if ($status == 'booked') selected @endif>Booked
                                     </option>
                                     <option value="validated" @if ($status == 'validated') selected @endif>Validated
                                     </option>
                                 </select>
                                 <div class="invalid-feedback">Please select booking status.</div>
+                            </div>
+
+                            <div class="mb-3 col-12 col-md-6">
+                                <label class="form-label"><strong>Booking Method</strong></label>
+                                <select id="bkMethod" name="booking_method" class="form-select" data-width="100%">
+                                    <option value="">Select Booking Method</option>
+                                    <option value="online" @if ($method == 'online') selected @endif>Online Booking
+                                    </option>
+                                    <option value="physical" @if ($method == 'physical') selected @endif>Physical Booking
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">Please select booking method.</div>
+                            </div>
+
+                            <div class="mb-3 col-12 col-md-6">
+                                <label class="form-label"><strong>Payment Status</strong></label>
+                                <select id="payStatus" name="payment_status" class="form-select" data-width="100%">
+                                    <option value="">Select Payment Status</option>
+                                    <option value="paid" @if ($payment == 'paid') selected @endif>Paid
+                                    </option>
+                                    <option value="pending" @if ($payment == 'pending') selected @endif>Pending
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">Please select payment status.</div>
+                            </div>
+
+                            <div class="mb-3 col-12 col-md-6">
+                                <label class="form-label"><strong>Payment Channel</strong></label>
+                                <select id="payChannel" name="payment_channel" class="form-select" data-width="100%">
+                                    <option value="">Select Payment Channel</option>
+                                    <option value="transfer" @if ($channel == 'transfer') selected @endif>Funds Transfer
+                                    </option>
+                                    <option value="card payment" @if ($channel == 'card payment') selected @endif>Card Payment
+                                    </option>
+                                    <option value="wallet" @if ($channel == 'wallet') selected @endif>Wallet Payment
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">Please select payment channel.</div>
                             </div>
 
                             <div class="mb-3 col-12">

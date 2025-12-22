@@ -938,12 +938,45 @@ class AdminController extends Controller
         $searchParam  = null;
         $terminal     = Auth::user()->station;
         $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
-        $bookings     = TravelBooking::orderBy("id", "desc")->where("classification", "booking")->where("departure", $terminal)->get();
-        $status       = null;
-        $date         = null;
-        $route        = null;
+        $status       = request()->booking_status;
+        $date         = request()->travel_date;
+        $route        = request()->travel_route;
+        $payment      = request()->payment_status;
+        $channel      = request()->payment_channel;
+        $method       = request()->booking_method;
+
+        $query = TravelBooking::query();
+
+        $query->orderBy("id", "desc")->where("classification", "booking")->where("departure", $terminal);
+
+        if (isset(request()->booking_status)) {
+            $query->where("booking_status", $status);
+        }
+
+        if (isset(request()->travel_date)) {
+            $query->where("travel_date", $date);
+        }
+
+        if (isset(request()->travel_route)) {
+            $query->where("destination", $route);
+        }
+
+        if (isset(request()->payment_status)) {
+            $query->where("payment_status", $payment);
+        }
+
+        if (isset(request()->payment_channel)) {
+            $query->where("payment_channel", $channel);
+        }
+
+        if (isset(request()->booking_method)) {
+            $query->where("booking_method", $method);
+        }
+
+        $bookings = $query->get();
+
         $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
-        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam', "status", "date", "travelRoutes", "route"));
+        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam', "status", "date", "travelRoutes", "route", "payment", "channel", "method"));
     }
 
     /**
