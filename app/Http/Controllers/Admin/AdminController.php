@@ -1245,8 +1245,23 @@ class AdminController extends Controller
      */
     public function ticketerEndOfDayReport()
     {
-        alert()->info('Coming Soon.');
-        return back();
+        $date = request()->travel_date ?? date("Y-m-d");
+
+        $params = [
+            "tickets"         => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->count(),
+            "revenue"         => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->sum("travel_fare"),
+            "onlinebooking"   => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->where("booking_method", "online")->count(),
+            "physicalbooking" => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->where("booking_method", "physical")->count(),
+            "transfer"        => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->where("payment_channel", "transfer")->sum("travel_fare"),
+            "card"            => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->where("payment_channel", "card payment")->sum("travel_fare"),
+            "wallet"          => TravelBooking::where("payment_status", "paid")->where("ticketer", Auth::user()->id)->whereDate("travel_date", $date)->where("payment_channel", "wallet")->sum("travel_fare"),
+        ];
+        $totals = [
+            "bookingmethod"  => $params['onlinebooking'] + $params['physicalbooking'],
+            "paymentchannel" => $params['transfer'] + $params['card'] + $params['wallet'],
+        ];
+
+        return view("admin.ticketer_eod_report", compact("params", "totals", "date"));
     }
 
     /**
