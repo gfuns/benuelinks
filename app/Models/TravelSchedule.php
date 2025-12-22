@@ -119,9 +119,20 @@ class TravelSchedule extends Model implements Auditable
 
     public function passengers()
     {
-        $boardedPassengers = TravelBooking::where("schedule_id", $this->id)->where("boarding_status", "boarded")->count();
-        $vehicle           = CompanyVehicles::find($this->vehicle);
-        $vehicleCapacity   = isset($vehicle) ? $vehicle->seats : "Undefined";
+        $bookedSeats = TravelBooking::where("schedule_id", $this->id)
+            ->where("payment_status", "paid")
+            ->pluck("seat")
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->unique()
+            ->values()
+            ->toArray();
+        $boardedPassengers = count($bookedSeats);
+
+        $vehicle         = CompanyVehicles::find($this->vehicle);
+        $vehicleCapacity = isset($vehicle) ? $vehicle->seats : "Undefined";
         return $boardedPassengers . " / " . $vehicleCapacity;
     }
 
@@ -133,7 +144,7 @@ class TravelSchedule extends Model implements Auditable
 
     public function generatedRevenue()
     {
-        $revenue = TravelBooking::where("schedule_id", $this->id)->where("boarding_status", "boarded")->sum("travel_fare");
+        $revenue = TravelBooking::where("schedule_id", $this->id)->where("payment_status", "paid")->sum("travel_fare");
         return number_format($revenue, 2);
     }
 }

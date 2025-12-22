@@ -573,7 +573,7 @@ class AdminController extends Controller
 
         $query->orderBy("id", "desc");
 
-        $query->where("departure", Auth::user()->station)->whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate]);
+        $query->where("departure", Auth::user()->station)->whereBetween('scheduled_date', [$startDate, $endDate]);
 
         if (isset(request()->terminal)) {
             $query->where("destination", $terminal);

@@ -1660,7 +1660,7 @@ class SuperAdminController extends Controller
 
         $query->orderBy("id", "desc");
 
-        $query->whereIn("status", ["in transit", "trip successful"])->whereBetween('scheduled_date', [$startDate, $endDate]);
+        $query->whereBetween('scheduled_date', [$startDate, $endDate]);
 
         if (isset(request()->terminal)) {
             $query->where("departure", $terminal);
