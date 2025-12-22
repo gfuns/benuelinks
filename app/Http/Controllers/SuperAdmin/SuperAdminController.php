@@ -1253,6 +1253,39 @@ class SuperAdminController extends Controller
     }
 
     /**
+     * assignTicketer
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function assignTicketer(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'schedule_id' => 'required',
+            'ticketer'    => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $schedule           = TravelSchedule::find($request->schedule_id);
+        $schedule->ticketer = $request->ticketer;
+        if ($schedule->save()) {
+            toast('Ticketer Assigned Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+
+    }
+
+    /**
      * assignVehicle
      *
      * @param Request request
