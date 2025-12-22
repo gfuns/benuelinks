@@ -1,11 +1,5 @@
 @extends('admin.layouts.app')
 @section('content')
-    <style>
-        th,
-        td {
-            font-size: 12px !important;
-        }
-    </style>
 
     <div class="page-innerxxx">
         <div class="m-4 d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2">
@@ -51,12 +45,12 @@
             @if (isset($searchResults))
                 <div class="col-sm-12 col-md-12">
                     <div class="" style="background: #fff">
-                        <div class="card-header m-4 pt-4  ps-4 d-flex align-items-center">
+                        <div class="card-header m-4 pt-4 ps-4 d-flex align-items-center">
                             <div class="card-title" style="font-size: 16px">Search Result</div>
                         </div>
                         <div class="table-responsive m-4 pb-5">
 
-                            <table class="table mb-0 table-hover table-centered">
+                            <table style="width: 98%" class="table mb-0 table-hover table-centered">
                                 <thead>
                                     <tr>
                                         <th scope="col">S/No.</th>
@@ -71,7 +65,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($searchResults as $bk)
-                                        <tr style="font-size: 12px">
+                                        <tr>
                                             <td class="align-middle"> {{ $loop->index + 1 }} </td>
                                             <td class="align-middle"> {{ $bk->booking_number }} </td>
                                             <td class="align-middle"> {{ $bk->full_name }}<br /><span
@@ -185,23 +179,23 @@
 
                             <table class="table mb-0 text-nowrap table-hover table-centered">
                                 <thead>
-                                    <tr style="font-size: 12px">
+                                    <tr>
                                         <th scope="col">S/No.</th>
                                         <th scope="col">Travel Route</th>
                                         <th scope="col">Vehicle No.</th>
                                         <th scope="col">Driver</th>
-                                        <th scope="col">Passengers</th>
+                                        <th scope="col">Available Seats</th>
                                         <th scope="col">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($scheduledTrips as $trip)
-                                        <tr style="font-size: 12px">
+                                        <tr>
                                             <td>{{ $loop->index + 1 }}</td>
                                             <td>{{ $trip->travelRoute() }}</td>
                                             <td>@php echo $trip->getvehicle() @endphp</td>
                                             <td>@php echo $trip->getdriver() @endphp</td>
-                                            <td>{{ $trip->passengers() }}</td>
+                                            <td>{{ $trip->availableSeats() }} Seats</td>
                                             <td>
                                                 @if ($trip->status == 'scheduled')
                                                     <span class="badge badge-warning p-2"

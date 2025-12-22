@@ -82,7 +82,7 @@
                     </li>
                 @endif
 
-                @if (app('Menu')->allowAccess(Auth::user()->role_id, 14) == true)
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 13) == true)
                     <li id="elb" class="nav-item mb-3">
                         <a href="{{ route('admin.luggagebilling') }}">
                             <i class="fas fa-briefcase"></i>
@@ -91,7 +91,7 @@
                     </li>
                 @endif
 
-                @if (app('Menu')->allowAccess(Auth::user()->role_id, 13) == true && Auth::user()->role_id == 4)
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 12) == true && Auth::user()->role_id == 4)
                     <li id="teod" class="nav-item mb-3">
                         <a href="{{ route('admin.ticketerEndOfDayReport') }}">
                             <i class="fas fa-clipboard-list"></i>

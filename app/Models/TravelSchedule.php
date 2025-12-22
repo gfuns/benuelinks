@@ -24,7 +24,7 @@ class TravelSchedule extends Model implements Auditable
             $vehicle = $this->vehicledetail;
             return $vehicle->vehicle_number . "<br/> (" . $vehicle->manufacturer . " " . $vehicle->model . ")";
         } else {
-            return "Pending";
+            return "Awaiting Vehicle Assignment";
         }
     }
 

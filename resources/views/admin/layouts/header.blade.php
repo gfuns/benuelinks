@@ -184,5 +184,13 @@
             border: 1px solid rgba(0, 40, 100, .12);
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
         }
+        th{
+
+            font-size: 12px !important;
+        }
+        td{
+
+            font-size: 13px !important;
+        }
     </style>
 </head>

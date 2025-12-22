@@ -71,7 +71,9 @@
                                             <th scope="col">Travel Route</th>
                                             <th scope="col">Departure Date/Time</th>
                                             <th scope="col">Booking Date</th>
-                                            <th scope="col">Status</th>
+                                            <th scope="col">Payment Channel</th>
+                                            <th scope="col">Payment Status</th>
+                                            <th scope="col">Booking Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -89,6 +91,18 @@
                                                 </td>
                                                 <td class="align-middle">
                                                     {{ date_format($bk->created_at, 'jS M, Y g:i a') }}
+                                                </td>
+                                                <td class="align-middle">
+                                                    {{ ucwords($bk->payment_channel) }}
+                                                </td>
+                                                <td>
+                                                    @if ($bk->payment_status == 'paid')
+                                                        <span class="badge badge-success p-2"
+                                                            style="font-size: 10px">Payment Successful</span>
+                                                    @else
+                                                        <span class="badge badge-warning p-2"
+                                                            style="font-size: 10px">{{ ucwords($bk->payment_status) }}</span>
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     @if ($bk->booking_status == 'validated')

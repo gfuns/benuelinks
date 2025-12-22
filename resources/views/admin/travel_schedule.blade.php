@@ -103,11 +103,12 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">S/No.</th>
-                                            <th scope="col">Take-off Point</th>
-                                            <th scope="col">Destination</th>
-                                            <th scope="col">Assigned Vehicle</th>
+                                            <th scope="col">Travel Route</th>
+                                            <th scope="col">Available Seats</th>
                                             <th scope="col">Scheduled Date</th>
-                                            <th scope="col">Time of Departure</th>
+                                            <th scope="col">Departure Time</th>
+                                            <th scope="col">Vehicle No.</th>
+                                            <th scope="col">Driver</th>
                                             <th scope="col">Ticketer</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Date Created</th>
@@ -118,13 +119,14 @@
                                         @foreach ($travelSchedules as $schedule)
                                             <tr>
                                                 <td class="align-middle"> {{ $loop->index + 1 }} </td>
-                                                <td class="align-middle"> {{ $schedule->departurePoint->terminal }} </td>
-                                                <td class="align-middle">{{ $schedule->destinationPoint->terminal }}</td>
-                                                <td class="align-middle">@php echo $schedule->getvehicle() @endphp</td>
+                                                <td>{{ $schedule->travelRoute() }}</td>
+                                                <td>{{ $schedule->availableSeats() }} Seats</td>
                                                 <td class="align-middle">
                                                     {{ date_format(new DateTime($schedule->scheduled_date), 'l - jS M, Y') }}
                                                 </td>
                                                 <td class="align-middle">{{ $schedule->scheduled_time }}</td>
+                                                <td class="align-middle">@php echo $schedule->getvehicle() @endphp</td>
+                                                 <td>@php echo $schedule->getdriver() @endphp</td>
                                                 <td>{{ isset($schedule->ticketerdetail) ? ucwords(strtolower($schedule->ticketerdetail->last_name . ' ' . $schedule->ticketerdetail->other_names)) : 'Nil' }}
                                                 </td>
                                                 <td>
