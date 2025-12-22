@@ -124,7 +124,8 @@
                                                     {{ date_format(new DateTime($schedule->scheduled_date), 'l - jS M, Y') }}
                                                 </td>
                                                 <td class="align-middle">{{ $schedule->scheduled_time }}</td>
-                                                <td>{{ isset($schedule->ticketerdetail) ? ucwords(strtolower($schedule->ticketerdetail->last_name . ' ' . $schedule->ticketerdetail->other_names)) : 'Nil' }}</td>
+                                                <td>{{ isset($schedule->ticketerdetail) ? ucwords(strtolower($schedule->ticketerdetail->last_name . ' ' . $schedule->ticketerdetail->other_names)) : 'Nil' }}
+                                                </td>
                                                 <td>
                                                     @if ($schedule->status == 'scheduled')
                                                         <span class="badge badge-warning p-2"
@@ -171,6 +172,19 @@
                                                                     Details</a>
 
                                                             </li>
+
+                                                            @if (!isset($schedule->ticketer))
+                                                                <li>
+                                                                    <a class="dropdown-item mb-2" href="#"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#assignTicketer"
+                                                                        data-backdrop="static"
+                                                                        data-myid="{{ $schedule->id }}"><i
+                                                                            class="fe fe-eye dropdown-item-icon"></i>Assign
+                                                                        Ticketer</a>
+                                                                </li>
+                                                            @endif
+
 
                                                             @if ($schedule->status == 'in transit' || $schedule->status == 'trip successful')
                                                                 <li>
@@ -553,6 +567,51 @@
         </div>
     </div>
 
+    <div class="modal fade" id="assignTicketer" tabindex="-1" role="dialog" aria-labelledby="newCatgoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mb-0" id="newCatgoryLabel">
+                        Assign Ticketer
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <form class="needs-validation" novalidate method="post"
+                    action="{{ route('superadmin.assignTicketer') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- form group -->
+                            <div class="mb-3 col-12">
+                                <label class="form-label"><strong>Ticketer</strong></label>
+                                <select id="tickter" name="ticketer" class="form-select" data-width="100%">
+                                    <option value="">Select Ticketer</option>
+                                    @foreach ($ticketers as $ticketer)
+                                        <option value="{{ $ticketer->id }}">
+                                            {{ ucwords(strtolower($ticketer->last_name . ' ' . $ticketer->other_names)) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback">Please select ticketer.</div>
+                            </div>
+
+                            <input id="myid" type="hidden" name="schedule_id" class="form-control" required>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Assign Ticketer</button>
+                        <button type="button" class="btn btn-outline-primary ms-2"
+                            data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <script type="text/javascript">
         document.getElementById("schedules").classList.add('active');
@@ -597,7 +656,7 @@
             }
         });
 
-         $('#departure').change(function() {
+        $('#departure').change(function() {
             var terminal = $(this).val();
             $('#booker').html(
                 '<option value="">Fetching data, please wait...</option>'); // Show "Fetching data" message
@@ -614,7 +673,5 @@
                 }
             });
         });
-
-
     </script>
 @endsection

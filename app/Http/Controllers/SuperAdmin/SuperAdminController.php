@@ -1097,7 +1097,9 @@ class SuperAdminController extends Controller
         $destination = null;
         $date        = null;
 
-        return view("superadmin.travel_schedule", compact("terminals", 'travelSchedules', "destination", "departure", "date", "weekData", "weekDates", "companyVehicles"));
+        $ticketers = User::where("role_id", 4)->where("status", "active")->get();
+
+        return view("superadmin.travel_schedule", compact("terminals", 'travelSchedules', "destination", "departure", "date", "weekData", "weekDates", "companyVehicles", "ticketers"));
     }
 
     /**

@@ -121,6 +121,10 @@ $('#booker').select2({
     dropdownParent: $('#offcanvasRight')
 });
 
+$('#tickter').select2({
+    dropdownParent: $('#assignTicketer')
+});
+
 
 $('#fdeparture').select2({});
 $('#fdestination').select2({});

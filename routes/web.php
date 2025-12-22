@@ -200,6 +200,8 @@ Route::group([
 
     Route::get('/endOfDay-report', [SuperAdminController::class, 'endOfDayReport'])->name('superadmin.endOfDayReport');
 
+    Route::post('/assignTicketer', [SuperAdminController::class, 'assignTicketer'])->name('superadmin.assignTicketer');
+
 });
 
 require __DIR__ . '/admin.php';
