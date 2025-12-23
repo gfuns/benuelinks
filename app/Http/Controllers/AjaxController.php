@@ -41,7 +41,7 @@ class AjaxController extends Controller
     public function getBookedSeats($scheduleId)
     {
         $bookedSeats = TravelBooking::where("schedule_id", $scheduleId)
-            ->where("payment_status", "paid")
+            ->whereIn("payment_status", ["paid", "locked", "reserved"])
             ->pluck("seat")
             ->flatMap(function ($seat) {
                 return collect(explode(',', $seat))
@@ -61,7 +61,7 @@ class AjaxController extends Controller
         $schedule = TravelSchedule::where("departure", $terminal)->where("destination", $destination)->whereDate("scheduled_date", $date)->where("scheduled_time", $time)->first();
 
         $bookedSeats = TravelBooking::where("schedule_id", $schedule->id)
-            ->where("payment_status", "paid")
+            ->whereIn("payment_status", ["paid", "locked", "reserved"])
             ->pluck("seat")
             ->flatMap(function ($seat) {
                 return collect(explode(',', $seat))

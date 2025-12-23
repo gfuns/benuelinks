@@ -1789,6 +1789,66 @@ class SuperAdminController extends Controller
         return view("superadmin.eod_report", compact("params", "totals", "date", "travelRoutes", "ticketers", "route", "routeData", "ticketer", "ticketerData"));
     }
 
+    public function lockSeats(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'schedule_id'  => 'required',
+            'seatnumber'   => 'required',
+            'vehicle_type' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            alert()->error('', $errors);
+            return back();
+        }
+
+        $schedule      = TravelSchedule::find($request->schedule_id);
+        $seats         = $request->input('seatnumber', []);
+        $selectedSeats = implode(', ', $seats);
+        $seatCount     = count($seats);
+        $seatNumber    = $selectedSeats ?? null; // Returns null if array is empty
+        if (! isset($seatNumber)) {
+            alert()->error('', 'Please Select Seats To Be Locked!');
+            return back();
+        }
+
+        if (isset($schedule)) {
+            $booking                    = new TravelBooking;
+            $booking->user_id           = Auth::user()->id;
+            $booking->schedule_id       = $schedule->id;
+            $booking->departure         = $schedule->departure;
+            $booking->destination       = $schedule->destination;
+            $booking->vehicle           = $schedule->vehicle;
+            $booking->vehicle_type      = $request->vehicle_type;
+            $booking->travel_date       = $schedule->scheduled_date;
+            $booking->departure_time    = $schedule->scheduled_time;
+            $booking->full_name         = Auth::user()->last_name . ", " . Auth::user()->other_names;
+            $booking->phone_number      = Auth::user()->phone_number;
+            $booking->seat              = $seatNumber;
+            $booking->payment_channel   = "cash";
+            $booking->classification    = "booking";
+            $booking->payment_status    = "locked";
+            $booking->travel_fare       = ($seatCount * $schedule->transportFare());
+            $booking->booking_number    = $this->genBookingID();
+            $booking->booking_method    = "physical";
+            $booking->booking_status    = "locked";
+            $booking->ticketer          = $schedule->ticketer;
+            $booking->assigned_ticketer = $schedule->ticketer;
+            if ($booking->save()) {
+                alert()->success('', 'Seats Locked Successfully.');
+                return back();
+            } else {
+                alert()->error('', 'Something went wrong. Please try again');
+                return back();
+            }
+        } else {
+            alert()->error('', 'Something went wrong. Please try again');
+            return back();
+        }
+    }
+
     /**
      * extraLuggageReport
      *
@@ -2156,6 +2216,28 @@ class SuperAdminController extends Controller
         }
 
         return $datesOfWeek;
+    }
+
+    /**
+     * genBookingID
+     *
+     * @return void
+     */
+    public function genBookingID()
+    {
+        // Get the current timestamp
+        $timestamp = (string) (strtotime('now') . microtime(true));
+
+        // Remove any non-numeric characters (like dots)
+        $cleanedTimestamp = preg_replace('/[^0-9]/', '', $timestamp);
+
+        // Shuffle the digits
+        $shuffled = str_shuffle($cleanedTimestamp);
+
+        // Extract the first 12 characters
+        $code = substr($shuffled, 0, 12);
+
+        return "PMT-BK-" . $code;
     }
 
 }

@@ -202,6 +202,8 @@ Route::group([
 
     Route::post('/assignTicketer', [SuperAdminController::class, 'assignTicketer'])->name('superadmin.assignTicketer');
 
+    Route::post('/lockSeats', [SuperAdminController::class, 'lockSeats'])->name('superadmin.lockSeats');
+
 });
 
 require __DIR__ . '/admin.php';

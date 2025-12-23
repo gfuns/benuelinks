@@ -33,9 +33,9 @@ return new class extends Migration
             $table->double("travel_fare", 12, 2);
             $table->enum("payment_channel", ["cash", "card payment", "transfer", "wallet", "pending"]);
             $table->enum("classification", ["booking", "ticketing"]);
-            $table->enum("payment_status", ["paid", "pending", "failed"]);
+            $table->enum("payment_status", ["paid", "pending", "failed", "locked", "reserved"]);
             $table->enum("booking_method", ["physical", "online"])->default("physical");
-            $table->enum("booking_status", ["booked", "validated", "pending"])->default("booked");
+            $table->enum("booking_status", ["booked", "validated", "pending", "locked"])->default("booked");
             $table->enum("boarding_status", ["boarded", "pending"])->default("pending");
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
