@@ -450,6 +450,7 @@ class PassengerController extends Controller
             $booking->booking_status    = "pending";
             $booking->ticketer          = $schedule->ticketer;
             $booking->assigned_ticketer = $schedule->ticketer;
+            $booking->reservation_date  = now();
             if ($booking->save()) {
                 return redirect()->route("passenger.passengerDetails", [$booking->id]);
             } else {

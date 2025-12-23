@@ -383,6 +383,7 @@ class FrontEndController extends Controller
             $booking->booking_method    = "online";
             $booking->booking_status    = "pending";
             $booking->assigned_ticketer = $schedule->ticketer;
+            $booking->reservation_date  = now();
             if ($booking->save()) {
                 Session::put("guestBookingID", encrypt($booking->id));
                 return redirect()->route("passenger.passengerDetails", [$booking->id]);
