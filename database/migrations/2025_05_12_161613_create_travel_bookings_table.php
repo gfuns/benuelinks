@@ -37,6 +37,7 @@ return new class extends Migration
             $table->enum("booking_method", ["physical", "online"])->default("physical");
             $table->enum("booking_status", ["booked", "validated", "pending", "locked"])->default("booked");
             $table->enum("boarding_status", ["boarded", "pending"])->default("pending");
+            $table->timestamp("reservation_date")->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('schedule_id')->references('id')->on('travel_schedules')->onDelete('cascade');
