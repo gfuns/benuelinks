@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CronController;
 use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
@@ -205,6 +206,9 @@ Route::group([
     Route::post('/lockSeats', [SuperAdminController::class, 'lockSeats'])->name('superadmin.lockSeats');
 
 });
+
+Route::get('/cron/cancelGuestReservation', [CronController::class, 'cancelGuestReservation']);
+Route::get('/cron/cancelPassengerReservation', [CronController::class, 'cancelPassengerReservation']);
 
 require __DIR__ . '/admin.php';
 require __DIR__ . '/passenger.php';

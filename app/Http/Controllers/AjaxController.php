@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AjaxController;
 use App\Models\CompanyTerminals;
+use App\Models\GuestBooking;
 use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
@@ -40,16 +41,32 @@ class AjaxController extends Controller
 
     public function getBookedSeats($scheduleId)
     {
-        $bookedSeats = TravelBooking::where("schedule_id", $scheduleId)
-            ->whereIn("payment_status", ["paid", "locked", "reserved"])
+        $passengerBookedSeats = TravelBooking::where("schedule_id", $scheduleId)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
             ->pluck("seat")
             ->flatMap(function ($seat) {
                 return collect(explode(',', $seat))
                     ->map(fn($s) => (int) trim($s));
             })
+            ->toArray();
+
+        $guestBookedSeats = GuestBooking::where("schedule_id", $scheduleId)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
+            ->pluck("seat")
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->toArray();
+
+        $bookedSeats = collect($passengerBookedSeats)
+            ->merge($guestBookedSeats)
             ->unique()
+            ->sort()
             ->values()
             ->toArray();
+
+        \Log::info($bookedSeats);
 
         return response()->json([
             'bookedSeats' => $bookedSeats,
@@ -60,16 +77,32 @@ class AjaxController extends Controller
     {
         $schedule = TravelSchedule::where("departure", $terminal)->where("destination", $destination)->whereDate("scheduled_date", $date)->where("scheduled_time", $time)->first();
 
-        $bookedSeats = TravelBooking::where("schedule_id", $schedule->id)
-            ->whereIn("payment_status", ["paid", "locked", "reserved"])
+        $passengerBookedSeats = TravelBooking::where("schedule_id", $schedule->id)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
             ->pluck("seat")
             ->flatMap(function ($seat) {
                 return collect(explode(',', $seat))
                     ->map(fn($s) => (int) trim($s));
             })
+            ->toArray();
+
+        $guestBookedSeats = GuestBooking::where("schedule_id", $schedule->id)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
+            ->pluck("seat")
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->toArray();
+
+        $bookedSeats = collect($passengerBookedSeats)
+            ->merge($guestBookedSeats)
             ->unique()
+            ->sort()
             ->values()
             ->toArray();
+
+        \Log::info($bookedSeats);
 
         $allSeats = range(1, 16); // seats 1 to 16
 

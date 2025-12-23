@@ -82,7 +82,32 @@ class TravelSchedule extends Model implements Auditable
 
     public function bookedSeats()
     {
-        $bookedSeats = TravelBooking::where("schedule_id", $this->id)->where("payment_status", "paid")->pluck("seat")->map(fn($seat) => (int) $seat) // ensure they are integers
+        // $bookedSeats = TravelBooking::where("schedule_id", $this->id)->where("payment_status", "paid")->pluck("seat")->map(fn($seat) => (int) $seat) // ensure they are integers
+        //     ->values()
+        //     ->toArray();
+
+        $passengerBookedSeats = TravelBooking::where("schedule_id", $this->id)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
+            ->pluck("seat")
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->toArray();
+
+        $guestBookedSeats = GuestBooking::where("schedule_id", $this->id)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
+            ->pluck("seat")
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->toArray();
+
+        $bookedSeats = collect($passengerBookedSeats)
+            ->merge($guestBookedSeats)
+            ->unique()
+            ->sort()
             ->values()
             ->toArray();
 
@@ -91,16 +116,31 @@ class TravelSchedule extends Model implements Auditable
 
     public function availableSeats()
     {
-        $bookedSeats = TravelBooking::where("schedule_id", $this->id)
-            ->where("payment_status", "paid")
+        $passengerBookedSeats = TravelBooking::where("schedule_id", $this->id)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
             ->pluck("seat")
             ->flatMap(function ($seat) {
                 return collect(explode(',', $seat))
                     ->map(fn($s) => (int) trim($s));
             })
+            ->toArray();
+
+        $guestBookedSeats = GuestBooking::where("schedule_id", $this->id)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
+            ->pluck("seat")
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->toArray();
+
+        $bookedSeats = collect($passengerBookedSeats)
+            ->merge($guestBookedSeats)
             ->unique()
+            ->sort()
             ->values()
             ->toArray();
+
         $bookings = count($bookedSeats);
 
         return (16 - $bookings);
@@ -120,7 +160,7 @@ class TravelSchedule extends Model implements Auditable
     public function passengers()
     {
         $bookedSeats = TravelBooking::where("schedule_id", $this->id)
-            ->where("payment_status", "paid")
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
             ->pluck("seat")
             ->flatMap(function ($seat) {
                 return collect(explode(',', $seat))
