@@ -66,8 +66,6 @@ class AjaxController extends Controller
             ->values()
             ->toArray();
 
-        \Log::info($bookedSeats);
-
         return response()->json([
             'bookedSeats' => $bookedSeats,
         ]);
@@ -101,8 +99,6 @@ class AjaxController extends Controller
             ->sort()
             ->values()
             ->toArray();
-
-        \Log::info($bookedSeats);
 
         $allSeats = range(1, 16); // seats 1 to 16
 
