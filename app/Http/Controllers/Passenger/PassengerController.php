@@ -655,6 +655,7 @@ class PassengerController extends Controller
             ])->post(env("XTRAPAY_BASE_URL") . "/peace/guest-va", [
                 "reference" => $reference, // required, unique per transaction
                 "amount"    => $booking->travel_fare,
+                "depot"     => $booking->departurePoint->terminal,
                 "meta"      => [
                     "customerId" => Auth::user()->id,
                     "note"       => "Passenger Booking",

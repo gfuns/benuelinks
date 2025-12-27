@@ -523,6 +523,7 @@ class FrontEndController extends Controller
             ])->post(env("XTRAPAY_BASE_URL") . "/peace/guest-va", [
                 "reference" => $reference, // required, unique per transaction
                 "amount"    => $booking->travel_fare,
+                "depot"     => $booking->departurePoint->terminal,
             ]);
 
             // \Log::info($response);
