@@ -351,6 +351,38 @@ class FrontEndController extends Controller
             return back();
         }
 
+        $submittedSeats = collect($request->seatnumber)
+            ->map(fn($s) => (int) $s)
+            ->unique()
+            ->values();
+
+        //Check if Seat Number is already selected on Travel Booking
+        $trvbookedSeats = TravelBooking::where('schedule_id', $request->schedule_id)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
+            ->pluck('seat')
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->unique();
+        $trvBkSeatExist = $submittedSeats->intersect($trvbookedSeats);
+
+        //Check if Seat Number is already selceted on Guest Booking
+        $guestbookedSeats = GuestBooking::where('schedule_id', $request->schedule_id)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
+            ->pluck('seat')
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->unique();
+        $guestBkSeatExist = $submittedSeats->intersect($guestbookedSeats);
+
+        if ($trvBkSeatExist->isNotEmpty() || $guestBkSeatExist->isNotEmpty()) {
+            alert()->error('', "Seat Number Already Selected! Please Choose Another Seat.");
+            return back();
+        }
+
         $schedule      = TravelSchedule::find($request->schedule_id);
         $seats         = $request->input('seatnumber', []);
         $selectedSeats = implode(', ', $seats);
