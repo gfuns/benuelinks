@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string("account_number")->nullable();
             $table->string("account_name")->nullable();
             $table->string("bank");
-            $table->enum("trx_type", ["topup", "booking", "guest"]);
+            $table->enum("trx_type", ["topup", "booking", "guest", "luggage"]);
             $table->enum("status", ["pending", "successful", "failed"]);
             $table->integer("handled")->default(0);
             $table->timestamps();

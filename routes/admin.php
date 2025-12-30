@@ -53,6 +53,12 @@ Route::group([
 
     Route::get('/luggage-billing', [AdminController::class, 'luggageBilling'])->name('admin.luggagebilling');
 
+    Route::post('/processLuggageBilling', [AdminController::class, 'processLuggageBilling'])->name('admin.processLuggageBilling');
+
+    Route::get('/pay-luggage-with-xtrapay/{id}', [AdminController::class, 'payLuggageWithXtrapay'])->name('admin.payLuggageWithXtrapay');
+
+    Route::get('/luggage-payment-details/{reference}', [AdminController::class, 'luggagePaymentDetails'])->name('admin.luggagePaymentDetails');
+
     Route::post('/filterTransactions', [AdminController::class, 'filterTransactions'])->name('admin.filterTransactions');
 
     Route::get('/transactions-report/{sd?}/{ed?}', [AdminController::class, 'processTransactionFilter'])->name('admin.processTransactionFilter');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Mail\BookingSuccessful as BookingSuccessful;
 use App\Mail\TopupSuccessful as TopupSuccessful;
 use App\Models\GuestBooking;
+use App\Models\LuggageTransactions;
 use App\Models\TravelBooking;
 use App\Models\User;
 use App\Models\WalletTransactions;
@@ -209,6 +210,49 @@ class XtrapayController extends Controller
                             }
 
                         }
+
+                        if ($xtraPayment->trx_type == "luggage") {
+                            try {
+                                DB::beginTransaction();
+
+                                if ($data->status == "success") {
+
+                                    $xtraPayment->handled = 1;
+                                    $xtraPayment->status  = "successful";
+                                    $xtraPayment->save();
+
+                                    $trx                  = LuggageTransactions::find($xtraPayment->transaction_id);
+                                    $trx->payment_status  = "paid";
+                                    $trx->payment_channel = "transfer";
+                                    $trx->save();
+
+                                } else {
+                                    $xtraPayment->handled = 1;
+                                    $xtraPayment->status  = "failed";
+                                    $xtraPayment->save();
+
+                                    $trx                 = LuggageTransactions::find($xtraPayment->transaction_id);
+                                    $trx->payment_status = "failed";
+                                    $trx->save();
+                                }
+
+                                DB::commit();
+
+                                return new JsonResponse([
+                                    'received' => true,
+                                ]);
+
+                            } catch (\Throwable $e) {
+                                DB::rollback();
+                                Log::channel('bankone')->error($e->getMessage());
+                                return new JsonResponse([
+                                    'received' => false,
+                                    'message'  => $e->getMessage(),
+                                ]);
+                            }
+
+                        }
+
                     } else {
                         return new JsonResponse([
                             'received' => false,

@@ -9,6 +9,8 @@ use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
 use App\Models\CompanyVehicles;
 use App\Models\GuestBooking;
+use App\Models\LuggageTransactions;
+use App\Models\PlatformConfig;
 use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
@@ -1366,7 +1368,159 @@ class AdminController extends Controller
      */
     public function luggageBilling()
     {
-        return view("admin.luggage_billing");
+        $config        = PlatformConfig::first();
+        $bookingNumber = request()->booking_number;
+        $bookingData   = null;
+        if (isset($bookingNumber)) {
+            $bookingData = TravelBooking::where("booking_number", $bookingNumber)->first();
+            if (! isset($bookingData)) {
+                alert()->error("Invalid Entry", "We couldn't find any booking with the provided booking number.");
+                return back();
+            }
+        }
+        return view("admin.luggage_billing", compact("config", "bookingNumber", "bookingData"));
+    }
+
+    /**
+     * processLuggageBilling
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function processLuggageBilling(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'booking_id'      => 'required|numeric',
+            'luggage_weight'  => 'required|numeric',
+            'payment_channel' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $booking = TravelBooking::find($request->booking_id);
+        $config  = PlatformConfig::first();
+
+        $luggageFee = ($request->luggage_weight * $config->fee);
+
+        $transaction                  = new LuggageTransactions;
+        $transaction->user_id         = Auth::user()->id;
+        $transaction->booking_id      = $booking->id;
+        $transaction->terminal_id     = $booking->departure;
+        $transaction->ticket_number   = $booking->booking_number;
+        $transaction->luggage_weight  = $request->luggage_weight;
+        $transaction->fee             = $luggageFee;
+        $transaction->payment_channel = $request->payment_channel;
+        $transaction->payment_status  = $request->payment_channel == "Transfer" ? "pending" : "paid";
+
+        if ($transaction->save()) {
+
+            if ($transaction->payment_channel == "Transfer") {
+                return redirect()->route("admin.payLuggageWithXtrapay", [$transaction->id]);
+            } else {
+                alert()->success('', 'Luggage Payment Made Successfully!');
+                return redirect()->route("admin.luggagebilling");
+            }
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+    }
+
+    /**
+     * payLuggageWithXtrapay
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function payLuggageWithXtrapay($trxId)
+    {
+        try {
+
+            $transaction = LuggageTransactions::find($trxId);
+            $reference   = self::genInternalRef(Auth::user()->id);
+
+            $response = Http::accept('application/json')->withHeaders([
+                'authorization' => "Bearer " . env('XTRAPAY_TOKEN'),
+                'content_type'  => "Content-Type: application/json",
+            ])->post(env("XTRAPAY_BASE_URL") . "/peace/guest-va", [
+                "reference" => $reference, // required, unique per transaction
+                "amount"    => $transaction->fee,
+                "depot"     => $transaction->departurePoint->terminal,
+                "meta"      => [
+                    "customerId" => $transaction->booking->user_id,
+                    "note"       => "Extra Luggage Payment",
+                ],
+            ]);
+
+            // \Log::info($response);
+
+            if ($response->failed()) {
+                $data = json_decode($response, true);
+                toast($data["message"], 'error');
+                return back();
+
+            } else {
+                $data = json_decode($response, true);
+                // \Log::info($data);
+                if ($data["status"] === true) {
+
+                    $xtrapay                 = new XtrapayPayments;
+                    $xtrapay->transaction_id = $transaction->id;
+                    $xtrapay->reference      = $data["data"]["reference"];
+                    $xtrapay->amount         = $transaction->fee;
+                    $xtrapay->trx_type       = "luggage";
+                    $xtrapay->bank           = "Providus Bank";
+                    $xtrapay->account_name   = $data["data"]["account_name"];
+                    $xtrapay->account_number = $data["data"]["account_number"];
+                    $xtrapay->save();
+
+                    return redirect()->route("admin.luggagePaymentDetails", [$xtrapay->reference]);
+                } else {
+                    toast($data["message"], 'error');
+                    return back();
+                }
+
+            }
+
+        } catch (\Throwable $e) {
+            report($e);
+            alert()->error('', $e->getMessage());
+            return back();
+        }
+    }
+
+    /**
+     * luggagePaymentDetails
+     *
+     * @param mixed reference
+     *
+     * @return void
+     */
+    public function luggagePaymentDetails($reference)
+    {
+        $paymentDetails = XtrapayPayments::where("reference", $reference)->first();
+        $transaction    = LuggageTransactions::find($paymentDetails->transaction_id);
+        if ($paymentDetails->status == "pending") {
+
+            return view("admin.luggage_payment_details", compact("paymentDetails", "transaction"));
+
+        } else if ($paymentDetails->status == "successful") {
+
+            alert()->success('', 'Luggage Payment Received Successfully!');
+            return redirect()->route("admin.luggagebilling");
+
+        } else {
+            alert()->error('', 'This transaction has timed out and your payment was not received!');
+            return redirect()->route("admin.luggagebilling");
+        }
+
     }
 
     /**

@@ -132,6 +132,7 @@ $('#fterminal').select2({});
 $('#event').select2({});
 $('#month').select2({});
 $('#ticketer').select2({});
+$('#paymentChannel').select2({});
 
 $(document).ready(function() {
        $('#example').DataTable({
