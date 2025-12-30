@@ -743,6 +743,20 @@ $('#editAdmin').on('show.bs.offcanvas', function(event) {
     }).val(role).trigger('change');
 })
 
+$('#editFee').on('show.bs.offcanvas', function(event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var myid = button.data('myid') // Extract info from data-* attributes
+    var fee = button.data('fee') // Extract info from data-* attributes
+
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+
+    var offcanvas = $(this)
+    // modal.find('.modal-body #myid').val(myid)
+    offcanvas.find('.offcanvas-body #myid').val(myid)
+    offcanvas.find('.offcanvas-body #fee').val(fee)
+})
+
 function validateInput(event) {
     const input = event.target;
     let value = input.value;

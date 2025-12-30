@@ -199,6 +199,8 @@ Route::group([
 
     Route::get('/extra-luggage-config', [SuperAdminController::class, 'extraLuggageConfig'])->name('superadmin.extraLuggageConfig');
 
+    Route::post('/updateExtraLuggaeFee', [SuperAdminController::class, 'updateExtraLuggaeFee'])->name('superadmin.updateExtraLuggaeFee');
+
     Route::get('/endOfDay-report', [SuperAdminController::class, 'endOfDayReport'])->name('superadmin.endOfDayReport');
 
     Route::post('/assignTicketer', [SuperAdminController::class, 'assignTicketer'])->name('superadmin.assignTicketer');

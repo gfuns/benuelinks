@@ -1366,8 +1366,7 @@ class AdminController extends Controller
      */
     public function luggageBilling()
     {
-        alert()->info('Coming Soon.');
-        return back();
+        return view("admin.luggage_billing");
     }
 
     /**

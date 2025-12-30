@@ -9,6 +9,7 @@ use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
 use App\Models\CompanyVehicles;
 use App\Models\GuestAccounts;
+use App\Models\PlatformConfig;
 use App\Models\PlatformFeature;
 use App\Models\States;
 use App\Models\TravelBooking;
@@ -1867,8 +1868,34 @@ class SuperAdminController extends Controller
      */
     public function extraLuggageConfig()
     {
-        alert()->info('Coming Soon.');
-        return back();
+        $config = PlatformConfig::first();
+        return view("superadmin.exra_luggage_config", compact("config"));
+    }
+
+    public function updateExtraLuggaeFee(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'config_id' => 'required|numeric',
+            'fee'       => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $config      = PlatformConfig::find($request->config_id);
+        $config->fee = $request->fee;
+        if ($config->save()) {
+            toast('Extra Luggage Fee Updated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+
     }
 
     /**

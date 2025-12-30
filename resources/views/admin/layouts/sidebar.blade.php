@@ -73,6 +73,15 @@
                     </li>
                 @endif
 
+                @if (app('Menu')->allowAccess(Auth::user()->role_id, 14) == true)
+                    <li id="rerouting" class="nav-item mb-3">
+                        <a href="">
+                            <i class="fas fa-route"></i>
+                            <p>Ticket Re-routing </p>
+                        </a>
+                    </li>
+                @endif
+
                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 11) == true)
                     <li id="boarding" class="nav-item mb-3">
                         <a href="{{ route('admin.boardPassengers') }}">

@@ -60,7 +60,7 @@
                                     </a>
                                 </li>
 
-                                <li id="roles">
+                                <li id="luggageFee">
                                     <a href="{{ route('superadmin.extraLuggageConfig') }}">
                                         <span class="sub-item">Extra Luggages Config</span>
                                     </a>
