@@ -75,7 +75,7 @@
 
                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 14) == true)
                     <li id="rerouting" class="nav-item mb-3">
-                        <a href="">
+                        <a href="{{ route("admin.ticketRerouting") }}">
                             <i class="fas fa-route"></i>
                             <p>Ticket Re-routing </p>
                         </a>

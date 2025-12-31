@@ -1701,6 +1701,26 @@ class AdminController extends Controller
     }
 
     /**
+     * ticketRerouting
+     *
+     * @return void
+     */
+    public function ticketRerouting()
+    {
+        $bookingNumber = request()->booking_number;
+        $bookingData   = null;
+        if (isset($bookingNumber)) {
+            $bookingData = TravelBooking::where("booking_number", $bookingNumber)->first();
+            if (! isset($bookingData)) {
+                alert()->error("Invalid Entry", "We couldn't find any booking with the provided booking number.");
+                return back();
+            }
+        }
+        $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
+        return view("admin.ticket_rerouting", compact("bookingNumber", "bookingData", "vehicleTypes"));
+    }
+
+    /**
      * genBookingID
      *
      * @return void

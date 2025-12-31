@@ -7,7 +7,7 @@
                     <div class="col-md-7">
                         <div class="card">
                             <div class="card-header">
-                                <div class="card-title">Extra Luggage Billing</div>
+                                <div class="card-title">Ticket Rerouting</div>
                             </div>
 
                             <div class="card-body">
@@ -83,7 +83,8 @@
 
                                         <tr>
                                             <td class=""><strong>Travel Fare:</strong></td>
-                                            <td class="">&#8358; {{ number_format($bookingData->travel_fare, 2) }}</td>
+                                            <td class="">&#8358; {{ number_format($bookingData->travel_fare, 2) }}
+                                            </td>
                                         </tr>
 
                                         <tr>
@@ -100,10 +101,14 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
-                                <div class="card-title">Billing Calculator</div>
+                                <div class="card-title">Reroute Ticket</div>
                             </div>
 
                             <div class="card-body">
+                                @php
+                                    $today = now()->toDateString();
+                                    $minDate = now()->hour >= 12 ? now()->addDay()->toDateString() : $today;
+                                @endphp
 
                                 <form method="POST" action="{{ route('admin.processLuggageBilling') }}">
                                     @csrf
@@ -112,11 +117,13 @@
 
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="bookingNumber"><strong>Weight Of Luggage</strong></label>
-                                                    <input type="text" name="luggage_weight" class="form-control"
-                                                        id="weight" placeholder="Weight Of Luggage" required />
+                                                    <label for="travDater"><strong>Travel Date</strong></label>
+                                                    <input id="travDater" type="date" name="travel_date"
+                                                        class="form-control" placeholder="Select Travel Date"
+                                                        min="{{ $minDate }}" onkeydown="return false"
+                                                        onpaste="return false" ondrop="return false" required>
 
-                                                    @error('weight')
+                                                    @error('date')
                                                         <span class="" role="alert">
                                                             <strong
                                                                 style="color: #b02a37; font-size:12px">{{ $message }}</strong>
@@ -127,31 +134,68 @@
 
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="bookingNumber"><strong>Amount Payable</strong></label>
-                                                    <input type="text" name="amount" class="form-control" id="amount"
-                                                        placeholder="Amount Payable" required readonly />
-
-                                                    @error('amount')
-                                                        <span class="" role="alert">
-                                                            <strong
-                                                                style="color: #b02a37; font-size:12px">{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="paymentChannel"><strong>Payment Channel</strong></label>
-                                                    <select id="paymentChannel" name="payment_channel" class="form-select"
+                                                    <label for="destinationr"><strong>Destination</strong></label>
+                                                    <select id="destinationr" name="destination" class="form-select"
                                                         data-width="100%" required>
-                                                        <option value="">Select Payment Channel</option>
-                                                        {{-- <option value="Cash">Cash</option> --}}
-                                                        <option value="Transfer">Transfer</option>
-                                                        <option value="Card Payment">Card Payment</option>
+                                                        <option value="">Select Destination</option>
                                                     </select>
 
-                                                    @error('payment_channel')
+                                                    @error('destination')
+                                                        <span class="" role="alert">
+                                                            <strong
+                                                                style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="depTimer"><strong>Preferred Departure Time</strong></label>
+                                                    <select id="depTimer" name="departure_time" class="form-select"
+                                                        data-width="100%" required>
+                                                        <option value="">Select Departure Time</option>
+                                                    </select>
+
+                                                    @error('departure_time')
+                                                        <span class="" role="alert">
+                                                            <strong
+                                                                style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="vehChoicer"><strong>Choice of Vehicle</strong></label>
+                                                    <select id="vehChoicer" name="vehicle_choice" class="form-select"
+                                                        data-width="100%" required>
+                                                        <option value="">Select Choice Of Vehicle</option>
+                                                        @foreach ($vehicleTypes as $vt)
+                                                            <option value="{{ $vt->model }}">{{ $vt->model }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+
+                                                    @error('vehicle_choice')
+                                                        <span class="" role="alert">
+                                                            <strong
+                                                                style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="seatr"><strong>Seat Number</strong></label>
+                                                    <select id="seatr" name="seat_number" class="form-select"
+                                                        data-width="100%" required>
+                                                        <option value="">Select Seat Number</option>
+                                                    </select>
+
+                                                    @error('seat_number')
                                                         <span class="" role="alert">
                                                             <strong
                                                                 style="color: #b02a37; font-size:12px">{{ $message }}</strong>
@@ -164,15 +208,13 @@
                                         <input type="hidden" name="booking_id" class="form-control"
                                             value="{{ $bookingData->id }}" required />
 
-                                        <input type="hidden" name="fee" class="form-control" id="fee"
-                                            value="{{ $config->fee }}" required />
 
                                         <div class="card-action">
                                             <button type="submit" class="btn btn-primary w-100">Submit Details</button>
                                         </div>
                                     @else
                                         <div class="alert alert-warning mt-3" role="alert">
-                                            <strong>Warning!</strong> Luggage billing can only be processed for bookings
+                                            <strong>Warning!</strong> Ticket Rerouting can only be processed for bookings
                                             with
                                             payment status marked as <b>PAID</b>.
                                     @endif
@@ -186,22 +228,70 @@
     </div>
 
     <script type="text/javascript">
-        document.getElementById("elb").classList.add('active');
+        document.getElementById("rerouting").classList.add('active');
     </script>
 @endsection
 
 @section('customjs')
-    <script>
-        document.getElementById('weight').addEventListener('keyup', calculateCost);
-        document.getElementById('weight').addEventListener('change', calculateCost);
+    <script type="text/javascript">
+        $('#travDater').change(function() {
+            var terminal = {{ Js::from(Auth::user()->terminal->id) }};
+            var date = $(this).val();
+            $('#destinationr').html(
+                '<option value="">Fetching data, please wait...</option>'); // Show "Fetching data" message
+            $.ajax({
+                url: "/ajax/get-schedules/" + terminal + "/" + date,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var options = "<option value=''>Select Destination</option>";
+                    $.each(data, function(key, value) {
+                        options += "<option value='" + key + "'>" + value + "</option>";
+                    });
+                    $('#destinationr').html(options);
+                }
+            });
+        });
 
-        function calculateCost() {
-            const fee = parseFloat(document.getElementById('fee').value) || 0;
-            const weight = parseFloat(document.getElementById('weight').value) || 0;
+        $('#destinationr').change(function() {
+            var terminal = {{ Js::from(Auth::user()->terminal->id) }};
+            var destination = $(this).val();
+            var date = $('#travDater').val();
+            $('#depTimer').html(
+                '<option value="">Fetching data, please wait...</option>'); // Show "Fetching data" message
+            $.ajax({
+                url: "/ajax/get-times/" + terminal + "/" + destination + "/" + date,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var options = "<option value=''>Select Departure Time</option>";
+                    $.each(data, function(key, value) {
+                        options += "<option value='" + value + "'>" + value + "</option>";
+                    });
+                    $('#depTimer').html(options);
+                }
+            });
+        });
 
-            const cost = fee * weight;
-
-            document.getElementById('amount').value = cost.toFixed(2);
-        }
+        $('#depTimer').change(function() {
+            var terminal = {{ Js::from(Auth::user()->terminal->id) }};
+            var destination = $('#destinationr').val();
+            var date = $('#travDater').val();
+            var time = $(this).val();
+            $('#seatr').html(
+                '<option value="">Fetching data, please wait...</option>'); // Show "Fetching data" message
+            $.ajax({
+                url: "/ajax/get-seats/" + terminal + "/" + destination + "/" + date + "/" + time,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var options = "<option value=''>Available Seats</option>";
+                    $.each(data.availableSeats, function(index, value) {
+                        options += "<option value='" + value + "'> Seat " + value + "</option>";
+                    });
+                    $('#seatr').html(options);
+                }
+            });
+        });
     </script>
 @endsection

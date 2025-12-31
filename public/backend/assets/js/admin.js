@@ -133,6 +133,10 @@ $('#event').select2({});
 $('#month').select2({});
 $('#ticketer').select2({});
 $('#paymentChannel').select2({});
+$('#destinationr').select2({});
+$('#depTimer').select2({});
+$('#seatr').select2({});
+$('#vehChoicer').select2({});
 
 $(document).ready(function() {
        $('#example').DataTable({

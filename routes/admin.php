@@ -105,6 +105,8 @@ Route::group([
 
     Route::get('/print-manifest/{id}', [AdminController::class, 'printPassengerManifest'])->name('admin.printPassengerManifest');
 
+    Route::get('/ticket-rerouting', [AdminController::class, 'ticketRerouting'])->name('admin.ticketRerouting');
+
 });
 
 Route::get('/ajax/get-schedules/{terminal}/{date}', [AjaxController::class, 'getSchedules'])->name('ajax.getSchedules');
