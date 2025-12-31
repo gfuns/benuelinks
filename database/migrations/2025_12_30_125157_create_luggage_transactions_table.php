@@ -13,18 +13,22 @@ return new class extends Migration
     {
         Schema::create('luggage_transactions', function (Blueprint $table) {
             $table->id();
-            $table->integer("user_id")->unsigned();
+            $table->integer("ticketer")->unsigned();
             $table->integer("booking_id")->unsigned();
             $table->integer("terminal_id")->unsigned();
+            $table->integer("destination")->unsigned();
+            $table->integer("vehicle")->unsigned();
             $table->string("ticket_number");
             $table->string("luggage_weight");
             $table->double("fee", 12, 2);
             $table->enum("payment_channel", ["cash", "card payment", "transfer"]);
             $table->enum("payment_status", ["paid", "pending", "failed"])->default("pending");
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('ticketer')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('booking_id')->references('id')->on('travel_bookings')->onDelete('cascade');
             $table->foreign('terminal_id')->references('id')->on('company_terminals')->onDelete('cascade');
+            $table->foreign('destination')->references('id')->on('company_terminals')->onDelete('cascade');
+            $table->foreign('vehicle')->references('id')->on('company_vehicles')->onDelete('cascade');
         });
     }
 

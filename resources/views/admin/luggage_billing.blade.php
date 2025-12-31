@@ -100,71 +100,77 @@
 
                             <div class="card-body">
 
-                                <form method="POST" action="{{ route("admin.processLuggageBilling") }}">
+                                <form method="POST" action="{{ route('admin.processLuggageBilling') }}">
                                     @csrf
+                                    @if ($bookingData->payment_status == 'paid')
+                                        <div class="row">
 
-                                    <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="bookingNumber"><strong>Weight Of Luggage</strong></label>
+                                                    <input type="text" name="luggage_weight" class="form-control"
+                                                        id="weight" placeholder="Weight Of Luggage" required />
 
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="bookingNumber"><strong>Weight Of Luggage</strong></label>
-                                                <input type="text" name="luggage_weight" class="form-control" id="weight"
-                                                    placeholder="Weight Of Luggage" required />
+                                                    @error('weight')
+                                                        <span class="" role="alert">
+                                                            <strong
+                                                                style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
 
-                                                @error('weight')
-                                                    <span class="" role="alert">
-                                                        <strong
-                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="bookingNumber"><strong>Amount Payable</strong></label>
+                                                    <input type="text" name="amount" class="form-control" id="amount"
+                                                        placeholder="Amount Payable" required readonly />
+
+                                                    @error('amount')
+                                                        <span class="" role="alert">
+                                                            <strong
+                                                                style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="paymentChannel"><strong>Payment Channel</strong></label>
+                                                    <select id="paymentChannel" name="payment_channel" class="form-select"
+                                                        data-width="100%" required>
+                                                        <option value="">Select Payment Channel</option>
+                                                        {{-- <option value="Cash">Cash</option> --}}
+                                                        <option value="Transfer">Transfer</option>
+                                                        <option value="Card Payment">Card Payment</option>
+                                                    </select>
+
+                                                    @error('payment_channel')
+                                                        <span class="" role="alert">
+                                                            <strong
+                                                                style="color: #b02a37; font-size:12px">{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="bookingNumber"><strong>Amount Payable</strong></label>
-                                                <input type="text" name="amount" class="form-control" id="amount"
-                                                    placeholder="Amount Payable" required readonly />
-
-                                                @error('amount')
-                                                    <span class="" role="alert">
-                                                        <strong
-                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="paymentChannel"><strong>Payment Channel</strong></label>
-                                                <select id="paymentChannel" name="payment_channel" class="form-select"
-                                                    data-width="100%" required>
-                                                    <option value="">Select Payment Channel</option>
-                                                    {{-- <option value="Cash">Cash</option> --}}
-                                                    <option value="Transfer">Transfer</option>
-                                                    <option value="Card Payment">Card Payment</option>
-                                                </select>
-
-                                                @error('payment_channel')
-                                                    <span class="" role="alert">
-                                                        <strong
-                                                            style="color: #b02a37; font-size:12px">{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <input type="hidden" name="booking_id" class="form-control"
-                                        value="{{ $bookingData->id }}" required />
+                                        <input type="hidden" name="booking_id" class="form-control"
+                                            value="{{ $bookingData->id }}" required />
 
                                         <input type="hidden" name="fee" class="form-control" id="fee"
-                                        value="{{ $config->fee }}" required />
+                                            value="{{ $config->fee }}" required />
 
-                                    <div class="card-action">
-                                        <button type="submit" class="btn btn-primary w-100">Submit Details</button>
-                                    </div>
+                                        <div class="card-action">
+                                            <button type="submit" class="btn btn-primary w-100">Submit Details</button>
+                                        </div>
+                                    @else
+                                        <div class="alert alert-warning mt-3" role="alert">
+                                            <strong>Warning!</strong> Luggage billing can only be processed for bookings
+                                            with
+                                            payment status marked as <b>PAID</b>.
+                                    @endif
                                 </form>
                             </div>
                         </div>

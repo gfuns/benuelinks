@@ -19,4 +19,10 @@ class LuggageTransactions extends Model
         return $this->belongsTo('App\Models\TravelBooking', "booking_id");
 
     }
+
+    public function ticketerdetail()
+    {
+        return $this->belongsTo('App\Models\User', "user_id");
+
+    }
 }

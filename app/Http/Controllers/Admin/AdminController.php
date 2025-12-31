@@ -1404,14 +1404,22 @@ class AdminController extends Controller
         }
 
         $booking = TravelBooking::find($request->booking_id);
-        $config  = PlatformConfig::first();
+
+        if (! isset($booking->vehicle) || $booking->vehicle == null) {
+            toast('Vehicle has not been assigned for this travel schedule. Please assign a vehicle and try again.', 'error');
+            return back();
+        }
+
+        $config = PlatformConfig::first();
 
         $luggageFee = ($request->luggage_weight * $config->fee);
 
         $transaction                  = new LuggageTransactions;
-        $transaction->user_id         = Auth::user()->id;
+        $transaction->ticketer        = Auth::user()->id;
         $transaction->booking_id      = $booking->id;
         $transaction->terminal_id     = $booking->departure;
+        $transaction->destination     = $booking->destination;
+        $transaction->vehicle         = $booking->vehicle;
         $transaction->ticket_number   = $booking->booking_number;
         $transaction->luggage_weight  = $request->luggage_weight;
         $transaction->fee             = $luggageFee;
@@ -1530,8 +1538,56 @@ class AdminController extends Controller
      */
     public function extraLuggageReport()
     {
-        alert()->info('Coming Soon.');
-        return back();
+        if (isset($request->start_date) || isset($request->end_date)) {
+            $validator = Validator::make($request->all(), [
+                'start_date' => 'required',
+                'end_date'   => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                $errors = $validator->errors()->all();
+                $errors = implode("<br>", $errors);
+                toast($errors, 'error');
+                return back();
+            }
+        }
+
+        $startDate = request()->start_date ?? Carbon::today()->startOfMonth();
+        $endDate   = request()->end_date ?? Carbon::today()->endOfMonth();
+
+        if ($startDate > $endDate) {
+            toast('End Date must be a date after Start Date.', 'error');
+            return back();
+        }
+
+        $terminal = request()->terminal;
+        $bus      = request()->bus;
+        $ticketer = request()->ticketer;
+
+        $query = LuggageTransactions::query();
+
+        $query->orderBy("id", "desc");
+
+        $query->where("terminal_id", Auth::user()->station)->whereBetween('created_at', [$startDate, $endDate]);
+
+        if (isset(request()->terminal)) {
+            $query->where("destination", $terminal);
+        }
+
+        if (isset(request()->bus)) {
+            $query->where("vehicle", $bus);
+        }
+
+        if (isset(request()->ticketer)) {
+            $query->where("ticketer", $ticketer);
+        }
+
+        $transactions = $query->get();
+
+        $terminals = CompanyTerminals::where("status", "active")->get();
+        $vehicles  = CompanyVehicles::where("status", "active")->get();
+        $ticketers = User::where("role_id", 4)->where("station", Auth::user()->station)->get();
+        return view("admin.luggages_report", compact("transactions", 'startDate', 'endDate', 'bus', 'terminal', 'ticketer', 'terminals', 'vehicles', 'ticketers'));
     }
 
     /**

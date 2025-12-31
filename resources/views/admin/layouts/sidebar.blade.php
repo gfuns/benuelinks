@@ -130,7 +130,7 @@
                                 @if (app('Menu')->allowAccess(Auth::user()->role_id, 8) == true)
                                     <li id="luggages">
                                         <a href="{{ route('admin.extraLuggageReport') }}">
-                                            <span class="sub-item">Extra Luggages Transactions</span>
+                                            <span class="sub-item">Extra Luggage Transactions</span>
                                         </a>
                                     </li>
                                 @endif
