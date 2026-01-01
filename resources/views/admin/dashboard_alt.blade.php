@@ -546,5 +546,25 @@
                 }
             });
         });
+
+        $('#seat').change(function() {
+            var terminal = {{ Js::from(Auth::user()->terminal->id) }};
+            var destination = $('#destination').val();
+
+            $('#payable').text('Fetching...');
+
+            $.ajax({
+                url: "/ajax/get-fare/" + terminal + "/" + destination,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    // data is already the formatted fare string
+                    $('#payable').text(data);
+                },
+                error: function() {
+                    $('#payable').text('Unable to fetch fare');
+                }
+            });
+        });
     </script>
 @endsection

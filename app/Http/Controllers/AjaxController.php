@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AjaxController;
+use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
 use App\Models\GuestBooking;
 use App\Models\TravelBooking;
@@ -114,5 +115,12 @@ class AjaxController extends Controller
         $ticketers = User::where('role_id', 4)->where('station', $terminal)->get()->pluck('full_name', 'id');
 
         return response()->json($ticketers);
+    }
+
+    public function getFare($terminal, $destination)
+    {
+        $route = CompanyRoutes::where("departure", $terminal)->where("destination", $destination)->first();
+
+        return response()->json(number_format($route->transport_fare, 2));
     }
 }
