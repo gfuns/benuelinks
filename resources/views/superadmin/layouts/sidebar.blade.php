@@ -66,6 +66,12 @@
                                     </a>
                                 </li>
 
+                                <li id="discount">
+                                    <a href="{{ route('superadmin.discountConfig') }}">
+                                        <span class="sub-item">Discounts</span>
+                                    </a>
+                                </li>
+
                             </ul>
                         </div>
                     </li>

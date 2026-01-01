@@ -107,6 +107,8 @@ Route::group([
 
     Route::get('/ticket-rerouting', [AdminController::class, 'ticketRerouting'])->name('admin.ticketRerouting');
 
+    Route::post('/processTicketRerouting', [AdminController::class, 'processTicketRerouting'])->name('admin.processTicketRerouting');
+
 });
 
 Route::get('/ajax/get-schedules/{terminal}/{date}', [AjaxController::class, 'getSchedules'])->name('ajax.getSchedules');

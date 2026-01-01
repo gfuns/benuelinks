@@ -165,7 +165,7 @@
                                             value="{{ $bookingData->id }}" required />
 
                                         <input type="hidden" name="fee" class="form-control" id="fee"
-                                            value="{{ $config->fee }}" required />
+                                            value="{{ $config->value }}" required />
 
                                         <div class="card-action">
                                             <button type="submit" class="btn btn-primary w-100">Submit Details</button>

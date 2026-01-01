@@ -18,7 +18,7 @@
                                         <tr>
                                             <th scope="col">S/No.</th>
                                             <th scope="col">Configuration Name</th>
-                                            <th scope="col">Fee</th>
+                                            <th scope="col">Fee Per KG</th>
                                             <th scope="col">Date Created</th>
                                             <th scope="col">Action</th>
                                         </tr>
@@ -27,7 +27,7 @@
                                         <tr>
                                                 <td class="align-middle"> 1. </td>
                                                 <td class="align-middle"> {{ $config->configuration_name }} </td>
-                                                <td class="align-middle"> &#8358; {{ number_format($config->fee, 2) }} </td>
+                                                <td class="align-middle"> &#8358; {{ number_format($config->value, 2) }} </td>
                                                 <td class="align-middle"> {{ date_format($config->created_at, 'jS F, Y') }}
                                                 </td>
                                                 <td class="align-middle">
@@ -43,7 +43,7 @@
                                                                         data-bs-toggle="offcanvas"
                                                                         data-bs-target="#editFee" data-backdrop="static"
                                                                         data-myid="{{ $config->id }}"
-                                                                        data-fee="{{ $config->fee }}"><i
+                                                                        data-fee="{{ $config->value }}"><i
                                                                             class="fe fe-eye dropdown-item-icon"></i>Edit
                                                                         Fee Amount</a>
                                                                 </li>

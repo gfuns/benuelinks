@@ -8,7 +8,7 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center">
                                 <h4 class="card-title">User Roles</h4>
-                                <button class="btn btn-primary btn-round ms-auto btn-sm" data-bs-toggle="offcanvas"
+                                <button class="btn btn-primary ms-auto btn-sm" data-bs-toggle="offcanvas"
                                     data-bs-target="#offcanvasRight">
                                     <i class="fa fa-plus"></i>
                                     New User Role

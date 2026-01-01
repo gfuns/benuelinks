@@ -1886,10 +1886,95 @@ class SuperAdminController extends Controller
             return back();
         }
 
-        $config      = PlatformConfig::find($request->config_id);
-        $config->fee = $request->fee;
+        $config        = PlatformConfig::find($request->config_id);
+        $config->value = $request->fee;
         if ($config->save()) {
             toast('Extra Luggage Fee Updated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+
+    }
+
+    /**
+     * discountConfig
+     *
+     * @return void
+     */
+    public function discountConfig()
+    {
+        $discounts = PlatformConfig::where("type", "discount")->get();
+        return view("superadmin.discount_config", compact("discounts"));
+    }
+
+    /**
+     * updateDiscountData
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function updateDiscountData(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'config_id'   => 'required|numeric',
+            'description' => 'required',
+            'discount'    => 'required|numeric',
+            'metric'      => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $config                     = PlatformConfig::find($request->config_id);
+        $config->configuration_name = $request->description;
+        $config->value              = $request->discount;
+        $config->metric             = $request->metric;
+        if ($config->save()) {
+            toast('Discount Details Updated Successfully', 'success');
+            return back();
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+
+    }
+
+    /**
+     * storeDiscountData
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function storeDiscountData(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'description' => 'required',
+            'discount'    => 'required|numeric',
+            'metric'      => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $config                     = new PlatformConfig;
+        $config->configuration_name = $request->description;
+        $config->value              = $request->discount;
+        $config->metric             = $request->metric;
+        $config->type               = "discount";
+        if ($config->save()) {
+            toast('Discount Created Successfully', 'success');
             return back();
         } else {
             toast('Something went wrong. Please try again', 'error');

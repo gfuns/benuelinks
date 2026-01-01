@@ -201,6 +201,12 @@ Route::group([
 
     Route::post('/updateExtraLuggaeFee', [SuperAdminController::class, 'updateExtraLuggaeFee'])->name('superadmin.updateExtraLuggaeFee');
 
+    Route::get('/discount-config', [SuperAdminController::class, 'discountConfig'])->name('superadmin.discountConfig');
+
+    Route::post('/storeDiscountData', [SuperAdminController::class, 'storeDiscountData'])->name('superadmin.storeDiscountData');
+
+    Route::post('/updateDiscountData', [SuperAdminController::class, 'updateDiscountData'])->name('superadmin.updateDiscountData');
+
     Route::get('/endOfDay-report', [SuperAdminController::class, 'endOfDayReport'])->name('superadmin.endOfDayReport');
 
     Route::post('/assignTicketer', [SuperAdminController::class, 'assignTicketer'])->name('superadmin.assignTicketer');

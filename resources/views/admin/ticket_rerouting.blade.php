@@ -110,7 +110,7 @@
                                     $minDate = now()->hour >= 12 ? now()->addDay()->toDateString() : $today;
                                 @endphp
 
-                                <form method="POST" action="{{ route('admin.processLuggageBilling') }}">
+                                <form method="POST" action="{{ route('admin.processTicketRerouting') }}">
                                     @csrf
                                     @if ($bookingData->payment_status == 'paid')
                                         <div class="row">

@@ -21,6 +21,10 @@ function allowOnlyNumbersAndDecimal(event) {
     }
 }
 
+$('#metrik').select2({
+    dropdownParent: $('#offcanvasRight')
+});
+
 $('#scheduleConfig').select2({
     dropdownParent: $('#offcanvasRight')
 });
@@ -201,6 +205,25 @@ $('#editUser').on('show.bs.offcanvas', function(event) {
     $('#usrrole').select2({
         dropdownParent: $('#editUser'),
     }).val(role).trigger('change');
+})
+
+$('#editDiscount').on('show.bs.offcanvas', function(event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var myid = button.data('myid') // Extract info from data-* attributes
+    var description = button.data('description') // Extract info from data-* attributes
+    var discount = button.data('discount') // Extract info from data-* attributes
+    var metric = button.data('metric') // Extract info from data-* attributes
+
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var offcanvas = $(this)
+    // modal.find('.modal-body #myid').val(myid)
+    offcanvas.find('.offcanvas-body #myid').val(myid)
+    offcanvas.find('.offcanvas-body #description').val(description)
+    offcanvas.find('.offcanvas-body #discount').val(discount)
+    $('#metric').select2({
+        dropdownParent: $('#editDiscount'),
+    }).val(metric).trigger('change');
 })
 
 $('#editAccountType').on('show.bs.offcanvas', function(event) {

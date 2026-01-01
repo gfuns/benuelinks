@@ -11,6 +11,7 @@ use App\Models\CompanyVehicles;
 use App\Models\GuestBooking;
 use App\Models\LuggageTransactions;
 use App\Models\PlatformConfig;
+use App\Models\ReroutingTransaction;
 use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
@@ -1120,7 +1121,6 @@ class AdminController extends Controller
                 return back();
             }
         } else {
-            dd("No Route or Schedule");
             toast('Something went wrong. Please try again', 'error');
             return back();
         }
@@ -1718,6 +1718,110 @@ class AdminController extends Controller
         }
         $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
         return view("admin.ticket_rerouting", compact("bookingNumber", "bookingData", "vehicleTypes"));
+    }
+
+    /**
+     * processTicketRerouting
+     *
+     * @param Request request
+     *
+     * @return void
+     */
+    public function processTicketRerouting(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'booking_id'     => 'required',
+            'travel_date'    => 'required',
+            'destination'    => 'required',
+            'departure_time' => 'required',
+            'vehicle_choice' => 'required',
+            'seat_number'    => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errors = implode("<br>", $errors);
+            toast($errors, 'error');
+            return back();
+        }
+
+        $schedule = TravelSchedule::where("departure", Auth::user()->station)->where("destination", $request->destination)->whereDate("scheduled_date", $request->travel_date)->where("scheduled_time", $request->departure_time)->first();
+
+        $submittedSeats = collect($request->seat_number)
+            ->map(fn($s) => (int) $s)
+            ->unique()
+            ->values();
+
+        //Check if Seat Number is already selected on Travel Booking
+        $trvbookedSeats = TravelBooking::where('schedule_id', $schedule->id)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
+            ->pluck('seat')
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->unique();
+        $trvBkSeatExist = $submittedSeats->intersect($trvbookedSeats);
+
+        //Check if Seat Number is already selceted on Guest Booking
+        $guestbookedSeats = GuestBooking::where('schedule_id', $schedule->id)
+            ->whereIn("payment_status", ["paid", "locked", "pending"])
+            ->pluck('seat')
+            ->flatMap(function ($seat) {
+                return collect(explode(',', $seat))
+                    ->map(fn($s) => (int) trim($s));
+            })
+            ->unique();
+        $guestBkSeatExist = $submittedSeats->intersect($guestbookedSeats);
+
+        if ($trvBkSeatExist->isNotEmpty() || $guestBkSeatExist->isNotEmpty()) {
+            alert()->error('', "Seat Number Already Selected! Please Choose Another Seat.");
+            return back();
+        }
+
+        $route = CompanyRoutes::where("departure", Auth::user()->station)->where("destination", $request->destination)->first();
+
+        if (isset($schedule) && isset($route)) {
+            try {
+                DB::beginTransaction();
+
+                $booking = TravelBooking::find($request->booking_id);
+
+                $trx                       = new ReroutingTransaction;
+                $trx->previous_schedule_id = $booking->schedule_id;
+                $trx->new_schedule_id      = $schedule->id;
+                $trx->customer_name        = $booking->full_name;
+                $trx->previous_seat        = $booking->seat;
+                $trx->new_seat             = $request->seat_number;
+                $trx->ticketer             = Auth::user()->id;
+                $trx->save();
+
+                $booking->schedule_id    = $schedule->id;
+                $booking->destination    = $request->destination;
+                $booking->vehicle        = $schedule->vehicle;
+                $booking->vehicle_type   = $request->vehicle_choice;
+                $booking->travel_date    = $request->travel_date;
+                $booking->departure_time = $request->departure_time;
+                $booking->seat           = $request->seat_number;
+                $booking->save();
+
+                DB::commit();
+
+                alert()->success('', 'Passenger Ticket Rerouted Successfully!');
+                return redirect()->route("admin.ticketRerouting");
+
+            } catch (\Throwable $e) {
+                DB::rollback();
+                report($e);
+                toast('Something went wrong. Please try again', 'error');
+                return back();
+
+            }
+        } else {
+            toast('Something went wrong. Please try again', 'error');
+            return back();
+        }
+
     }
 
     /**
