@@ -175,6 +175,7 @@
                                             <strong>Warning!</strong> Luggage billing can only be processed for bookings
                                             with
                                             payment status marked as <b>PAID</b>.
+                                        </div>
                                     @endif
                                 </form>
                             </div>

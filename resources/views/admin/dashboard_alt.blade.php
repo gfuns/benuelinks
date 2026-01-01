@@ -322,7 +322,21 @@
                             <div class="invalid-feedback">Please select gender.</div>
                         </div>
 
-                        <div class="mb-3 col-12">
+                        <div class="mb-3 col-md-6 col-12">
+                            <label class="form-label"><strong>Emergency Contact</strong> </label>
+                            <input type="text" name="nok" class="form-control"
+                                placeholder="Enter Emergency Contact">
+                            <div class="invalid-feedback">Please enter emergency contact.</div>
+                        </div>
+
+                        <div class="mb-3 col-md-6 col-12">
+                            <label class="form-label"><strong>Emergency Contact's Number</strong> </label>
+                            <input type="text" name="nok_phone" class="form-control"
+                                placeholder="Enter Emergency Contact's Number">
+                            <div class="invalid-feedback">Please enter emergency contact's number.</div>
+                        </div>
+
+                        <div class="mb-3 col-md-6 col-12">
                             <label class="form-label"><strong>Payment Channel</strong> <span
                                     class="text-danger">*</span></label>
                             <select id="channel" name="payment_channel" class="form-select" data-width="100%"
@@ -336,17 +350,18 @@
                         </div>
 
                         <div class="mb-3 col-md-6 col-12">
-                            <label class="form-label"><strong>Emergency Contact</strong> </label>
-                            <input type="text" name="nok" class="form-control"
-                                placeholder="Enter Emergency Contact">
-                            <div class="invalid-feedback">Please enter emergency contact.</div>
+                            <label class="form-label"><strong>Discount</strong> </label>
+                            <select id="metrik" name="discount" class="form-select" data-width="100%" required>
+                                <option value="">Select Applicable Discount</option>
+                                @foreach ($discounts as $discount)
+                                    <option value="{{ $discount->id }}">{{ $discount->configuration_name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback">Please select payment channel.</div>
                         </div>
 
-                        <div class="mb-3 col-md-6 col-12">
-                            <label class="form-label"><strong>Emergency Contact's Number</strong> </label>
-                            <input type="text" name="nok_phone" class="form-control"
-                                placeholder="Enter Emergency Contact's Number">
-                            <div class="invalid-feedback">Please enter emergency contact's number.</div>
+                        <div class="col-11 alert alert-info ms-3 mt-1" role="alert">
+                            <strong>Amount Payable</strong> &#8358; <span id="payable"></span>.
                         </div>
 
                         <div class="col-md-12 border-bottom"></div>

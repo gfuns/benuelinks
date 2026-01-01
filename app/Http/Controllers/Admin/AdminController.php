@@ -82,6 +82,7 @@ class AdminController extends Controller
             }
             $vehicleTypes = CompanyVehicles::select('model')->distinct()->get();
             $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
+            $discounts    = PlatformConfig::where("type", "discount")->get();
             if (Carbon::now()->gt(Carbon::today()->addHours(12))) {
                 $period = "Tomorrow";
                 // $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", Carbon::tomorrow())->where("ticketer", Auth::user()->id)->limit(5)->get();
@@ -91,7 +92,7 @@ class AdminController extends Controller
                 // $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->where("ticketer", Auth::user()->id)->limit(5)->get();
                 $scheduledTrips = TravelSchedule::where("departure", $terminal)->whereDate("scheduled_date", today())->limit(5)->get();
             }
-            return view("admin.dashboard_alt", compact("scheduledTrips", "searchParam", "vehicleTypes", "travelRoutes", "period", "searchResults"));
+            return view("admin.dashboard_alt", compact("scheduledTrips", "searchParam", "vehicleTypes", "travelRoutes", "period", "searchResults", "discounts"));
         }
     }
 
@@ -996,7 +997,8 @@ class AdminController extends Controller
         $bookings = $query->get();
 
         $travelRoutes = CompanyRoutes::where("departure", $terminal)->get();
-        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam', "status", "date", "travelRoutes", "route", "payment", "channel", "method"));
+        $discounts    = PlatformConfig::where("type", "discount")->get();
+        return view("admin.passenger_booking", compact("bookings", "vehicleTypes", 'searchParam', "status", "date", "travelRoutes", "route", "payment", "channel", "method", "discounts"));
     }
 
     /**
