@@ -1043,6 +1043,7 @@ class AdminController extends Controller
             'gender'          => 'nullable',
             'nok'             => 'nullable',
             'nok_phone'       => 'nullable',
+            'discount'        => 'nullable',
         ]);
 
         if ($validator->fails()) {
@@ -1088,6 +1089,19 @@ class AdminController extends Controller
 
         $route = CompanyRoutes::where("departure", Auth::user()->station)->where("destination", $request->destination)->first();
 
+        $fare = $route->transport_fare;
+
+        if (isset($request->discount)) {
+            $discountData = PlatformConfig::find($request->discount);
+            if ($discountData->metric == "flat") {
+                $discountAmount = $discountData->value;
+            } else {
+                $discountAmount = ($discountData->value / 100) * $fare;
+            }
+
+            $fare = $fare - $discountAmount;
+        }
+
         if (isset($schedule) && isset($route)) {
             $booking                    = new TravelBooking;
             $booking->schedule_id       = $schedule->id;
@@ -1104,13 +1118,15 @@ class AdminController extends Controller
             $booking->classification    = "booking";
             $booking->payment_status    = $request->payment_channel == "Transfer" ? "pending" : "paid";
             $booking->booking_status    = $request->payment_channel == "Transfer" ? "pending" : "booked";
-            $booking->travel_fare       = $route->transport_fare;
+            $booking->travel_fare       = $fare;
             $booking->booking_number    = $this->genBookingID();
             $booking->gender            = $request->gender;
             $booking->nok               = $request->nok;
             $booking->nok_phone         = $request->nok_phone;
             $booking->ticketer          = Auth::user()->id;
             $booking->assigned_ticketer = $schedule->ticketer;
+            $booking->applied_discount  = $request->discount ?? null;
+            $booking->discounted_amount = isset($request->discount) ? $discountAmount : null;
             if ($booking->save()) {
                 if ($booking->payment_channel == "Transfer") {
                     return redirect()->route("admin.payWithXtrapay", [$booking->id]);
@@ -1414,7 +1430,7 @@ class AdminController extends Controller
 
         $config = PlatformConfig::first();
 
-        $luggageFee = ($request->luggage_weight * $config->fee);
+        $luggageFee = ($request->luggage_weight * $config->value);
 
         $transaction                  = new LuggageTransactions;
         $transaction->ticketer        = Auth::user()->id;
