@@ -22,7 +22,7 @@ class LuggageTransactions extends Model
 
     public function ticketerdetail()
     {
-        return $this->belongsTo('App\Models\User', "user_id");
+        return $this->belongsTo('App\Models\User', "ticketer");
 
     }
 }
