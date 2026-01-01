@@ -17,7 +17,6 @@ return new class extends Migration
             $table->double("value", 12, 2);
             $table->enum("metric", ["flat", "percentage"]);
             $table->enum("type", ["luggage", "discount"]);
-            $table->enum("payment_channel", ["cash", "card payment", "transfer"]);
             $table->timestamps();
         });
     }
