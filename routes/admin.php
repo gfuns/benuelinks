@@ -116,3 +116,4 @@ Route::get('/ajax/get-times/{terminal}/{destination}/{date}', [AjaxController::c
 Route::get('/ajax/get-seats/{terminal}/{destination}/{date}/{time}', [AjaxController::class, 'getAvailableSeats'])->name('ajax.availableSeats');
 Route::get('/ajax/get-ticketers/{terminal}', [AjaxController::class, 'getTicketers'])->name('ajax.getTicketers');
 Route::get('/ajax/get-fare/{terminal}/{destination}', [AjaxController::class, 'getFare'])->name('ajax.getFare');
+Route::get('/ajax/apply-discount/{terminal}/{destination}/{discount}', [AjaxController::class, 'applyDiscount'])->name('ajax.applyDiscount');

@@ -418,7 +418,12 @@
                                 <select id="metrik" name="discount" class="form-select" data-width="100%" required>
                                     <option value="">Select Applicable Discount</option>
                                     @foreach ($discounts as $discount)
-                                        <option value="{{ $discount->id }}">{{ $discount->configuration_name }}</option>
+                                        <option value="{{ $discount->id }}">{{ $discount->configuration_name }} -
+                                            @if ($discount->metric == 'flat')
+                                                &#8358;
+                                                @endif{{ number_format($discount->value, 2) }}@if ($discount->metric == 'percentage')
+                                                    %
+                                                @endif Discount</option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">Please select payment channel.</div>
@@ -623,6 +628,27 @@
 
             $.ajax({
                 url: "/ajax/get-fare/" + terminal + "/" + destination,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    // data is already the formatted fare string
+                    $('#payable').text(data);
+                },
+                error: function() {
+                    $('#payable').text('Unable to fetch fare');
+                }
+            });
+        });
+
+        $('#metrik').change(function() {
+            var terminal = {{ Js::from(Auth::user()->terminal->id) }};
+            var destination = $('#destination').val();
+            var discount = $(this).val();
+
+            $('#payable').text('Fetching...');
+
+            $.ajax({
+                url: "/ajax/apply-discount/" + terminal + "/" + destination + "/" + discount,
                 type: "GET",
                 dataType: "json",
                 success: function(data) {

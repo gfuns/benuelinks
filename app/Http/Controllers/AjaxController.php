@@ -5,6 +5,7 @@ use App\Http\Controllers\AjaxController;
 use App\Models\CompanyRoutes;
 use App\Models\CompanyTerminals;
 use App\Models\GuestBooking;
+use App\Models\PlatformConfig;
 use App\Models\TravelBooking;
 use App\Models\TravelSchedule;
 use App\Models\User;
@@ -122,5 +123,23 @@ class AjaxController extends Controller
         $route = CompanyRoutes::where("departure", $terminal)->where("destination", $destination)->first();
 
         return response()->json(number_format($route->transport_fare, 2));
+    }
+
+    public function applyDiscount($terminal, $destination, $discount)
+    {
+
+        $route = CompanyRoutes::where("departure", $terminal)->where("destination", $destination)->first();
+        $fare  = $route->transport_fare;
+
+        $discountData = PlatformConfig::find($discount);
+        if ($discountData->metric == "flat") {
+            $discountAmount = $discountData->value;
+        } else {
+            $discountAmount = ($discountData->value / 100) * $fare;
+        }
+
+        $discountedFare = $fare - $discountAmount;
+
+        return response()->json(number_format($discountedFare, 2));
     }
 }
