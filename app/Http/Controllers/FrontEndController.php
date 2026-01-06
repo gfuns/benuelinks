@@ -587,7 +587,7 @@ class FrontEndController extends Controller
             return redirect()->route("guest.bookingReceipt", [$booking->booking_number]);
 
         } else {
-            alert()->error('', 'This transaction has timed out and your payment was not received!');
+            alert()->error('', 'This transaction has either failed, timed out or your payment was not received!');
             return redirect()->route("guest.bookingPreview", [$paymentDetails->transaction_id]);
         }
 

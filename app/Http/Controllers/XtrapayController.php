@@ -102,7 +102,7 @@ class XtrapayController extends Controller
                             try {
                                 DB::beginTransaction();
 
-                                if ($data->status == "success") {
+                                if ($data->status == "success" && $data->amount >= $xtraPayment->amount) {
                                     $xtraPayment->handled = 1;
                                     $xtraPayment->status  = "successful";
                                     $xtraPayment->save();
@@ -124,7 +124,7 @@ class XtrapayController extends Controller
 
                                 DB::commit();
 
-                                if ($data->status == "success") {
+                                if ($data->status == "success" && $data->amount >= $xtraPayment->amount) {
                                     Mail::to($booking)->send(new BookingSuccessful($booking));
                                 }
 
@@ -142,7 +142,7 @@ class XtrapayController extends Controller
                             try {
                                 DB::beginTransaction();
 
-                                if ($data->status == "success") {
+                                if ($data->status == "success" && $data->amount >= $xtraPayment->amount) {
 
                                     $xtraPayment->handled = 1;
                                     $xtraPayment->status  = "successful";
@@ -191,7 +191,7 @@ class XtrapayController extends Controller
 
                                 DB::commit();
 
-                                if ($data->status == "success") {
+                                if ($data->status == "success" && $data->amount >= $xtraPayment->amount) {
                                     Session::forget('guestBookingID');
                                     Mail::to($booking)->send(new BookingSuccessful($booking));
                                 }
@@ -202,6 +202,7 @@ class XtrapayController extends Controller
 
                             } catch (\Throwable $e) {
                                 DB::rollback();
+                                Log::channel('bankone')->error("C");
                                 Log::channel('bankone')->error($e->getMessage());
                                 return new JsonResponse([
                                     'received' => false,
@@ -215,7 +216,7 @@ class XtrapayController extends Controller
                             try {
                                 DB::beginTransaction();
 
-                                if ($data->status == "success") {
+                                if ($data->status == "success" && $data->amount >= $xtraPayment->amount) {
 
                                     $xtraPayment->handled = 1;
                                     $xtraPayment->status  = "successful";
@@ -244,6 +245,7 @@ class XtrapayController extends Controller
 
                             } catch (\Throwable $e) {
                                 DB::rollback();
+                                Log::channel('bankone')->error("A");
                                 Log::channel('bankone')->error($e->getMessage());
                                 return new JsonResponse([
                                     'received' => false,
@@ -273,6 +275,7 @@ class XtrapayController extends Controller
             }
 
         } catch (\Throwable $e) {
+            Log::channel('bankone')->error("B");
             Log::channel('bankone')->error($e->getMessage());
             return new JsonResponse([
                 'received' => false,
