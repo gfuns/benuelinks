@@ -3,13 +3,13 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="author" content="XtraPay">
+    <meta name="author" content="{{ env("APP_NAME") }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Peace Mass Transit">
+    <meta name="description" content="{{ env("APP_NAME") }}">
     <!-- Fav Icon  -->
     <link rel="shortcut icon" href="images/favicon.png">
     <!-- Page Title  -->
-    <title>Administrator Sign In | Peace Mass Transit</title>
+    <title>Administrator Sign In | {{ env("APP_NAME") }}</title>
     <!-- StyleSheets  -->
     <link rel="stylesheet" href="{{ asset('dash/assets/css/dashlite.css') }}?ver=2.2.0">
     <link id="skin-default" rel="stylesheet" href="{{ asset('dash/assets/css/theme.css') }}?ver=2.2.0">
@@ -213,7 +213,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-lg btn-primary btn-block">Sign In</button>
+                                        <button type="submit" class="btn btn-lg btn-success btn-block">Sign In</button>
                                     </div>
                                 </form>
                             </div>

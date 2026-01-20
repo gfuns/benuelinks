@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="apps" content="Xtratech Global Solution">
-    <meta name="author" content="Xtratech Global Solution">
+    <meta name="apps" content="{{ env("APP_NAME") }}">
+    <meta name="author" content="{{ env("APP_DEVELOPER") }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="images/favicon.png">
-    <title>Sign In | Peace Mass Transit</title>
+    <title>Sign In | {{ env("APP_NAME") }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/vendor.bundle.css') }}?ver=20241116180">
     <link rel="stylesheet" href="{{ asset('assets/css/register.css') }}?ver=20241116180">
 
@@ -97,7 +97,7 @@
         <div class="page-ath-content customPageContent">
             <div class="page-ath-header">
                 <a href="/" class="page-ath-logo">
-                    <img class="page-ath-logo-img" src="{{ asset('images/logo.png') }}" alt="Peace Mass Transit Logo">
+                    <img class="page-ath-logo-img" src="{{ asset('images/logo.png') }}" alt="Benue Links Logo" style="max-height: 80px">
                 </a>
             </div>
 
@@ -134,7 +134,7 @@
                             <input type="text" name="digit_4" class="verification-box input-bordered" maxlength="1"
                                 id="digit4">
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block mt-2">Verify Email</button>
+                        <button type="submit" class="btn btn-success btn-block mt-2">Verify Email</button>
                     </form>
 
                 </div>

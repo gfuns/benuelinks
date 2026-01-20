@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="apps" content="Xtratech Global Solution">
-    <meta name="author" content="Xtratech Global Solution">
+    <meta name="apps" content="{{ env("APP_NAME") }}">
+    <meta name="author" content="{{ env("APP_DEVELOPER") }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="images/favicon.png">
-    <title>Password Reset | Benue Links Transport Company</title>
+    <title>Password Reset | {{ env("APP_NAME") }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/vendor.bundle.css') }}?ver=20241116180">
     <link rel="stylesheet" href="{{ asset('assets/css/register.css') }}?ver=20241116180">
 
@@ -141,7 +141,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block">Reset Password</button>
+                    <button type="submit" class="btn btn-success btn-block">Reset Password</button>
 
                 </form>
 

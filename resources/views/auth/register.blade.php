@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="apps" content="Xtratech Global Solution">
-    <meta name="author" content="Xtratech Global Solution">
+    <meta name="apps" content="{{ env("APP_NAME") }}">
+    <meta name="author" content="{{ env("APP_DEVELOPER") }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="images/favicon.png">
-    <title>Sign Up | Benue Links Transport Company</title>
+    <title>Sign Up | {{ env("APP_NAME") }}</title>
     <link rel="stylesheet" href="assets/css/vendor.bundle.css?ver=20241116180">
     <link rel="stylesheet" href="assets/css/register.css?ver=20241116180">
 
@@ -201,7 +201,7 @@
                             and <a target="_blank" href="#">Privacy
                                 Policy</a>.</label>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                    <button type="submit" class="btn btn-success btn-block">Create Account</button>
                 </form>
 
 

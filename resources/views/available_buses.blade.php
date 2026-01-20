@@ -47,8 +47,8 @@
         }
 
         .cstgfunsBtn {
-            background: #6A6DFD;
-            border: #6A6DFD;
+            background: #155e50;
+            border: #155e50;
         }
 
         .socialicon {
