@@ -7,9 +7,9 @@
     <meta name="author" content="{{ env('APP_NAME') }} - No. 1 P2P Platform">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}?version={{ date('his') }}">
-    <title>Peace Mass Transit (PMT) | {{ env('APP_NAME') }}</title>
+    <title>{{ env("APP_NAME") }} | {{ env('APP_NAME') }}</title>
     <link rel="stylesheet" href="{{ asset('assets/css/vendor.bundle.css') }}?ver={{ date('his') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style-blue.css') }}?ver={{ date('his') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style-green.css') }}?ver={{ date('his') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/seats.css') }}?ver={{ date('his') }}">
 
     <style type="text/css">
@@ -33,7 +33,7 @@
     <div class="page-content">
         <div class="container">
             <h4><strong>Welcome Back {{ Auth::user()->last_name }}, {{ Auth::user()->other_names }}: </strong></h4>
-            <div style="color: #253992; font-weight:bold; font-size: 15px; margin-top: 40px">Where would you like to
+            <div style="color: #155e50; font-weight:bold; font-size: 15px; margin-top: 40px">Where would you like to
                 travel to next?</div>
             <div>
                 <div class="page-nav-wrap">

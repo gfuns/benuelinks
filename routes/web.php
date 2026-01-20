@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/', function () {
-    return redirect()->away('https://peacextracomfort.com');
+    return redirect()->away('https://benuelinks.com');
 })->name("welcome");
 
 // Route::get('/about', function () {

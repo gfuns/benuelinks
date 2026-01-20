@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peace Mass Transit (PMT) - Booking</title>
+    <title>{{ env("APP_NAME")}} - Booking</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/seats.css') }}?ver={{ date('his') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
@@ -187,19 +187,19 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="https://pmt.gabrielnwankwo.com"><img src="{{ asset('images/logo.png') }}" /></a>
+            <a class="navbar-brand" href="/"><img src="{{ asset('images/logo.png') }}" style="max-height:50px"/></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav cstnavbar">
-                    <li class="nav-item"><a class="nav-link" href="https://pmt.gabrielnwankwo.com">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Hire a Bus</a></li>
-                    <li class="nav-item"><a class="nav-link" href="https://pmt.gabrielnwankwo.com/about-us">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
                 </ul>
                 <a href="/login"
-                    class="cstgfunsBtn btn btn-primary cstLoginBtn rounded-pill ms-auto mt-md-0 mt-4 mb-md-0 mb-4">Sign
+                    class="cstgfunsBtn btn btn-success cstLoginBtn rounded-pill ms-auto mt-md-0 mt-4 mb-md-0 mb-4">Sign
                     Up /
                     Login</a>
             </div>
@@ -212,7 +212,7 @@
     <section class="busSection bg-light">
         <div class="containersss">
             <h4><strong>Online Vehicle Booking: </strong></h4>
-            <div style="color: #253992; font-weight:bold; font-size: 15px; margin-top: 20px; margin-bottom: 20px">
+            <div style="color: #155e50; font-weight:bold; font-size: 15px; margin-top: 20px; margin-bottom: 20px">
                 {{ $title }} &nbsp;<img src="{{ asset('images/separator.png') }}" style="height: 5px" />
                 &nbsp;{{ $date }} </div>
             <div class="row" style="background: url('/images/PerspectiveGrid.png') bottom center no-repeat; ">

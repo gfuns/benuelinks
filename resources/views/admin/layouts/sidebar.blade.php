@@ -4,7 +4,7 @@
         <div class="logo-header" data-background-color="dark">
             <a href="{{ route('admin.dashboard') }}" class="logo">
                 <img src="{{ asset('images/logo-light.png') }}" alt="Peace MFB Logo" class="navbar-brand"
-                    style="height: 40px" />
+                    style="height: 50px" />
             </a>
             <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">

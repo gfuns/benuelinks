@@ -5,7 +5,7 @@
         </nav>
         <div class="copyright">
             &copy; {{ date('Y') }} | Made with <i class="fa fa-heart heart text-danger"></i> by
-            <a href="https://xtratechgs.com/" target="_blank">Xtratech Global Solutions</a>
+            <a href="{{ env("DEVELOPER_WEBSITE") }}" target="_blank" style="color: #155e50;">{{ env("APP_DEVELOPER") }}</a>
         </div>
         <div>
 

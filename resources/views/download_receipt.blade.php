@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peace Mass Transit (PMT) | Passenger Boarding Ticket</title>
+    <title>{{ env("APP_NAME")}} | Passenger Boarding Ticket</title>
 
     <style>
         /* Basic reset */
@@ -93,9 +93,9 @@
         <!-- Header Section -->
         <div class="header">
             <div class="header">
-                <h2>Peace Xtra Comfort</h2>
+                <h2>{{ env("APP_NAME")}}</h2>
                 {{-- <img src="https://portal.peacextracomfort.com/images/logo.png" alt="Logo" class="logo"
-                    style="max-width:200px; margin-bottom: 10px"> --}}
+                    style="max-heigt:70px; margin-bottom: 10px"> --}}
                 <div class="title">
                     PASSENGER BOARDING TICKET
                 </div>

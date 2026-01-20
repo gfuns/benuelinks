@@ -7,7 +7,7 @@
     <meta name="author" content="Xtratech Global Solution">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="images/favicon.png">
-    <title>Sign Up | Peace Mass Transit</title>
+    <title>Sign Up | Benue Links Transport Company</title>
     <link rel="stylesheet" href="assets/css/vendor.bundle.css?ver=20241116180">
     <link rel="stylesheet" href="assets/css/register.css?ver=20241116180">
 
@@ -86,14 +86,14 @@
         <div class="page-ath-content customPageContent">
             <div class="page-ath-header">
                 <a href="/" class="page-ath-logo">
-                    <img class="page-ath-logo-img" src="images/logo.png" alt="Peace Mass Transit Logo">
+                    <img class="page-ath-logo-img" src="images/logo.png" alt="Benue Links Logo" style="max-height: 80px">
                 </a>
             </div>
 
 
 
-            <div class="page-ath-form">
-                <h2 class=""><small><strong>Sign Up For Your PMT Account!</strong></small></h2>
+            <div class="page-ath-form mt-2">
+                <h2 class=""><small><strong>Sign Up For Your Benue Links Account!</strong></small></h2>
 
                 {{-- @if ($errors->has('regError'))
                     <div class="alert alert-dismissible fade show alert-danger"><a href="javascript:void(0)"
